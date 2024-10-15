@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import './styles/LoginPage.css';
+import './RegisterPage.css';
 
-function LoginPage() {
+function RegisterPage() {
   const [formData, setFormData] = useState({
+    username: '',
     email: '',
     password: '',
+    confirmPassword: '',
   });
 
   const handleChange = (e) => {
@@ -17,9 +19,19 @@ function LoginPage() {
   };
 
   return (
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleSubmit}>
-        <h1>Connexion</h1>
+    <div className="register-container">
+      <form className="register-form" onSubmit={handleSubmit}>
+        <h1>Inscription</h1>
+        <div className="form-group">
+          <input
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            placeholder="Nom d'utilisateur"
+            required
+          />
+        </div>
         <div className="form-group">
           <input
             type="email"
@@ -40,10 +52,10 @@ function LoginPage() {
             required
           />
         </div>
-        <button type="submit" className="submit-btn">Se connecter</button>
+        <button type="submit" className="submit-btn">S'inscrire</button>
       </form>
     </div>
   );
 }
 
-export default LoginPage;
+export default RegisterPage;
