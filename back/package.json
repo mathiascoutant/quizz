@@ -1,13 +1,25 @@
 {
-  "name": "quizzgo",
+  "name": "quizz-backend",
   "version": "1.0.0",
-  "description": "Application de quiz avec Node.js",
+  "description": "Backend pour l'application de quiz",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon index.js",
+    "test": "echo \"Aucun test spécifié\" && exit 1"
   },
-  "keywords": ["quiz", "nodejs"],
+  "keywords": [
+    "quiz",
+    "backend",
+    "express"
+  ],
   "author": "Votre Nom",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
 }
+
