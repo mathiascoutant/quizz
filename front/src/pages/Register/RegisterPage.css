@@ -1,4 +1,4 @@
-.login-container {
+.register-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -6,7 +6,7 @@
   background-color: #f0f2f5;
 }
 
-.login-form {
+.register-container .register-form {
   background-color: white;
   padding: 2rem;
   border-radius: 8px;
@@ -15,31 +15,32 @@
   max-width: 400px;
 }
 
-h1 {
+.register-container .register-form h1 {
   text-align: center;
   color: #333;
   margin-bottom: 1.5rem;
 }
 
-.form-group {
+.register-container .register-form .form-group {
   margin-bottom: 1rem;
 }
 
-input {
+.register-container .register-form input {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
+  box-sizing: border-box;
 }
 
-input:focus {
+.register-container .register-form input:focus {
   outline: none;
   border-color: #4a90e2;
 }
 
-.submit-btn {
+.register-container .register-form .submit-btn {
   width: 100%;
   padding: 0.75rem;
   background-color: #4a90e2;
@@ -49,8 +50,9 @@ input:focus {
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  box-sizing: border-box;
 }
 
-.submit-btn:hover {
+.register-container .register-form .submit-btn:hover {
   background-color: #357ae8;
 }
