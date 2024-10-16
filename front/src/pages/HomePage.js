@@ -2,8 +2,8 @@ import React from 'react';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
-import quizImage from '../assets/quizz-image.png'; // Assurez-vous d'avoir cette image dans vos assets
-import { FaBrain, FaCoins, FaGift } from 'react-icons/fa'; // Assurez-vous d'installer react-icons
+import quizImage from '../assets/quizz-image.png';
+import { FaBrain, FaCoins, FaGift } from 'react-icons/fa';
 
 function HomePage() {
   const testimonials = [
