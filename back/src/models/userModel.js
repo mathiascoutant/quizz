@@ -69,4 +69,11 @@ User.prototype.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
+// Ajoutez cette méthode statique au modèle User
+User.findByEmail = async function(email) {
+  return await this.findOne({
+    where: { email: email }
+  });
+};
+
 export { User };

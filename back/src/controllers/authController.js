@@ -47,16 +47,17 @@ export const login = async (req, res) => {
     if (!email || !password) {
         return res.status(400).json({ message: 'Tous les champs sont obligatoires' });
     }
-
+    console.log(email);
     // Vérifier si l'utilisateur existe
-    const user = await User.findOne({ email } );
+    const user = await User.findByEmail(email);
     if (!user) {
-      return res.status(400).json({ message: 'Nom d\'utilisateur/email ou mot de passe incorrect' });
+      return res.status(400).json({ message: 'Email incorrect' });
     }
+    console.log(user.email);
 
     // Vérifier le mot de passe
     const isPasswordValid = await comparePassword(password, user.password);
-  if (!isPasswordValid) {
+    if (!isPasswordValid) {
       return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
     } 
 
