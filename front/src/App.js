@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import QuizzPage from './pages/QuizzPage';
 import RegisterPage from './pages/RegisterPage';
+import LoginPage from './pages/LoginPage';
 import './index.css';
 
 function App() {
@@ -27,6 +28,7 @@ function AppContent() {
           <Route path="/" element={<HomePage />} />
           <Route path="/quizz" element={<QuizzPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </div>
       {!isQuizzPage && <Footer />}
