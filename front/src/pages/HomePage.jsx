@@ -219,7 +219,7 @@ function HomePage() {
                   <Modal
                     setSelectedCategory={setSelectedCategory}
                     title={category.title}
-                    path={`/quizz?theme=${category.title}`}
+                    path={`/quizz?category=${category.title}`}
                   >
                     <p>{category.description}</p>
                   </Modal>
