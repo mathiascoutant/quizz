@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -21,7 +21,10 @@ function RegisterPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md" onSubmit={handleSubmit}>
+      <form
+        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md"
+        onSubmit={handleSubmit}
+      >
         <h1 className="text-2xl font-bold mb-6 text-center">Inscription</h1>
         <div className="mb-4">
           <input
@@ -78,8 +81,8 @@ function RegisterPage() {
             required
           />
         </div>
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
         >
           S'inscrire
