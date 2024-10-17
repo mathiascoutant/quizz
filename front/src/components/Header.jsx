@@ -3,6 +3,7 @@ import { FaCoins, FaUser } from 'react-icons/fa';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { MENU_ITEMS_LINKS } from '../constants/menu.items.constants';
 import TokenService from '../services/token.service';
+import { Button } from './common/Button';
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -61,7 +62,7 @@ function Header() {
             {MENU_ITEMS_LINKS.map((item, index) => (
               <NavLink
                 key={index}
-                to={`/${item.label.toLowerCase()}`}
+                to={item.href}
                 className={({ isActive }) => `
                   relative text-lg font-medium
                   ${isActive ? 'text-purple-500' : 'text-gray-700'}
@@ -101,18 +102,11 @@ function Header() {
             </>
           ) : (
             <>
-              <Link
-                to="/login"
-                className="bg-transparent hover:bg-purple-100 text-purple-500 font-bold py-2 px-4 rounded-3xl transition duration-300 border border-purple-500 hover:border-purple-600"
-              >
+              <Button variant="outline" href={'/login'}>
                 Se connecter
-              </Link>
-              <Link
-                to="/register"
-                className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-3xl transition duration-300 border border-purple-500"
-              >
-                S'inscrire
-              </Link>
+              </Button>
+
+              <Button href={'/register'}>S'inscrire</Button>
             </>
           )}
         </div>
