@@ -1,8 +1,16 @@
 import express from 'express';
+import cors from 'cors';
 import authRoutes from '../back/src/routes/authRoutes.js';
 // import userRoutes from './routes/userRoutes.js';
 
 const app = express();
+
+// Configuration de CORS
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Middleware pour parser le JSON
 app.use(express.json());
