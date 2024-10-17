@@ -46,28 +46,9 @@ const User = sequelize.define('Users', {
       }
     }
   }
-}, {
-  timestamps: true,
-  hooks: {
-    beforeCreate: async (user) => {
-      if (user.password) {
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(user.password, salt);
-      }
-    },
-    beforeUpdate: async (user) => {
-      if (user.changed('password')) {
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(user.password, salt);
-      }
-    }
-  }
 });
 
-// Méthode pour comparer les mots de passe
-User.prototype.comparePassword = async function(candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
+
 
 // Ajoutez cette méthode statique au modèle User
 User.findByEmail = async function(email) {
