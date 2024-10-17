@@ -18,12 +18,14 @@ function App() {
 
 function AppContent() {
   const location = useLocation();
-  const isQuizzPage = location.pathname.includes('/quizz');
+  const hideHeaderFooter = ['/quizz', '/login', '/register'].some(path => 
+    location.pathname.startsWith(path)
+  );
 
   return (
     <div className="App flex flex-col min-h-screen">
-      {!isQuizzPage && <Header />}
-      <div className={`flex-grow ${!isQuizzPage ? 'pt-16' : ''}`}>
+      {!hideHeaderFooter && <Header />}
+      <div className={`flex-grow ${!hideHeaderFooter ? 'pt-16' : ''}`}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/quizz" element={<QuizzPage />} />
@@ -31,7 +33,7 @@ function AppContent() {
           <Route path="/login" element={<LoginPage />} />
         </Routes>
       </div>
-      {!isQuizzPage && <Footer />}
+      {!hideHeaderFooter && <Footer />}
     </div>
   );
 }
