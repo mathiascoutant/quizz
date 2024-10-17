@@ -1,5 +1,5 @@
 import { Category } from '../models/categoryModel.js';
-import { Question } from '../models/questionModel.js';
+import { Form } from '../models/questionModel.js';
 import { Sequelize } from 'sequelize';
 
 export const getCategories = async (req, res) => {
@@ -28,46 +28,32 @@ export const getEnter = async (req, res) => {
       return res.status(400).json({ message: "Catégorie, difficulté et nombre de réponses sont requis" });
     }
 
-    const whereClause = {
-      category: category,
-      difficulty: difficulty,
-    };
-
-    // Ajuster la clause WHERE en fonction du nombre de réponses
-    if (numberOfAnswers === 2) {
-      whereClause.choice3 = null;
-      whereClause.choice4 = null;
-    } else if (numberOfAnswers === 3) {
-      whereClause.choice3 = { [Sequelize.Op.ne]: null };
-      whereClause.choice4 = null;
-    } else if (numberOfAnswers === 4) {
-      whereClause.choice3 = { [Sequelize.Op.ne]: null };
-      whereClause.choice4 = { [Sequelize.Op.ne]: null };
-    }
-
-    const question = await Question.findOne({
-      where: whereClause,
+    const form = await Form.findOne({
+      where: {
+        '$Category.name$': category,
+        '$Coin.difficulty$': difficulty,
+        [Sequelize.where(Sequelize.fn('JSON_LENGTH', Sequelize.col('possibleAnswers')), numberOfAnswers)]: true
+      },
+      include: [
+        { model: Category, attributes: ['name'] },
+        { model: Coins, attributes: ['difficulty'] }
+      ],
       order: Sequelize.literal('RAND()'), // Pour MySQL
       // Si vous utilisez PostgreSQL, utilisez : order: Sequelize.fn('RANDOM')
     });
 
-    if (!question) {
+    if (!form) {
       return res.status(404).json({ message: "Aucune question trouvée avec ces critères" });
     }
 
     // Formater la réponse
     const formattedQuestion = {
-      id: question.id,
-      category: question.category,
-      questionText: question.questionText,
-      difficulty: question.difficulty,
-      choices: [
-        question.choice1,
-        question.choice2,
-        question.choice3,
-        question.choice4
-      ].filter(choice => choice !== null),
-      correctAnswer: question.correctAnswer
+      id: form.id,
+      category: form.Category.name,
+      content: form.content,
+      difficulty: form.Coin.difficulty,
+      possibleAnswers: form.possibleAnswers,
+      correctAnswer: form.correctAnswer
     };
 
     res.status(200).json(formattedQuestion);

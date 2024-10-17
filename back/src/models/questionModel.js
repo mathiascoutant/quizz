@@ -1,34 +1,12 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
+import { Category } from './categoryModel.js';
+import { Coins } from './coinsModel.js';
 
-const Question = sequelize.define('Form', {
-  theme: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
+const Form = sequelize.define('Form', {
   content: {
     type: DataTypes.STRING,
     allowNull: false,
-  },
-  difficulty: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  choice1: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  choice2: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  choice3: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  choice4: {
-    type: DataTypes.STRING,
-    allowNull: true,
   },
   correctAnswer: {
     type: DataTypes.INTEGER,
@@ -37,7 +15,30 @@ const Question = sequelize.define('Form', {
       min: 1,
       max: 4
     }
+  },
+  possibleAnswers: {
+    type: DataTypes.JSON,
+    allowNull: false
+  },
+  categoryId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Category,
+      key: 'id'
+    }
+  },
+  difficultyId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Coins,
+      key: 'id'
+    }
   }
 });
 
-export { Question };
+Form.belongsTo(Category, { foreignKey: 'categoryId' });
+Form.belongsTo(Coins, { foreignKey: 'difficultyId' });
+
+export { Form };
