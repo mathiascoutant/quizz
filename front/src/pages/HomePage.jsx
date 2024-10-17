@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import {
+  FaArrowAltCircleDown,
+  FaArrowAltCircleLeft,
+  FaArrowAltCircleRight,
+  FaArrowAltCircleUp,
   FaBookOpen,
   FaBrain,
   FaCoins,
@@ -16,7 +20,9 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 import quizImage from '../assets/quizz-image.png';
+import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
+import { cn } from '../utils/utils';
 import './HomePage.css';
 
 function HomePage() {
@@ -118,9 +124,7 @@ function HomePage() {
               Jouez, apprenez et récoltez des Miams avec nos quiz savoureux !
               Transformez votre savoir en récompenses délicieuses.
             </p>
-            <button className="bg-purple-600 text-white font-bold py-3 px-6 rounded-full hover:bg-purple-700 transition duration-300">
-              Commencer l'aventure
-            </button>
+            <Button href={'/quizz'}>Commencer l'aventure</Button>
           </div>
           <div className="md:w-1/2 flex justify-center items-center">
             <img
@@ -138,27 +142,36 @@ function HomePage() {
           <h2 className="text-3xl font-bold text-center mb-12">
             Comment ça marche ?
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+
+          <div className="grid grid-cols-1 place-items-center lg:grid-cols-[min-content, auto] grid-rows-[7, auto] lg:grid-rows-[min-content, auto] gap-8 max-w-4xl mx-auto">
             <FeatureCard
+              className="row-start-1"
               icon={<FaQuestionCircle className="text-5xl text-purple-600" />}
               title="1. Choisissez un quiz"
               description="Parcourez notre large sélection de quiz dans différentes catégories."
             />
+            <FaArrowAltCircleRight className="text-purple-600 rotate-90 row-start-2 lg:row-start-1 lg:rotate-0 text-5xl" />
             <FeatureCard
+              className="row-start-3 lg:row-start-1"
               icon={<FaBrain className="text-5xl text-blue-500" />}
               title="2. Répondez aux questions"
               description="Mettez vos connaissances à l'épreuve en répondant aux questions."
             />
+            <FaArrowAltCircleDown className="text-purple-600 row-start-4 text-5xl lg:row-start-2 lg:col-start-3" />
             <FeatureCard
+              className="row-start-7 lg:row-start-3 lg:col-start-1"
               icon={<FaGift className="text-5xl text-green-500" />}
               title="4. Échangez vos récompenses"
               description="Utilisez vos Miams pour obtenir des récompenses exclusives."
             />
+            <FaArrowAltCircleLeft className="text-purple-600 -rotate-90 lg:rotate-0 text-5xl row-start-6 lg:row-start-3 lg:col-start-2" />
             <FeatureCard
+              className="row-start-5 lg:row-start-3 lg:col-start-3"
               icon={<FaCoins className="text-5xl text-yellow-500" />}
               title="3. Gagnez des Miams"
               description="Accumulez des Miams pour chaque bonne réponse et quiz terminé."
             />
+            <FaArrowAltCircleUp className="text-purple-600 hidden lg:block text-5xl row-start-6 lg:row-start-2 lg:col-start-1" />
           </div>
         </div>
       </div>
@@ -242,9 +255,14 @@ function HomePage() {
   );
 }
 
-function FeatureCard({ icon, title, description }) {
+function FeatureCard({ icon, title, description, className }) {
   return (
-    <div className="bg-gray-50 rounded-lg shadow-md p-6 flex flex-col h-full">
+    <div
+      className={cn(
+        'bg-gray-50 rounded-lg shadow-md p-6 flex flex-col h-full max-w-[375px] min-w-[350px]',
+        className
+      )}
+    >
       <div className="mb-4">{icon}</div>
       <h3 className="text-lg font-semibold mb-2 text-center">{title}</h3>
       <p className="text-sm text-center flex-grow">{description}</p>
