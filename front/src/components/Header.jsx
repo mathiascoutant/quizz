@@ -1,30 +1,16 @@
 import React, { useState } from 'react';
 import { FaCoins, FaUser } from 'react-icons/fa';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { MENU_ITEMS_LINKS } from '../constants/menu.items.constants';
-import TokenService from '../services/token.service';
+import { useSessionStore } from '../store/session.store';
 import { Button } from './common/Button';
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return !!localStorage.getItem('token');
-  });
-  const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem('token');
-  //   setIsLoggedIn(!!token);
-  // }, []);
+  const { session, sessionLogOut } = useSessionStore();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-  };
-
-  const handleLogout = () => {
-    TokenService.handleLogout();
-    setIsLoggedIn(false);
-    navigate('/');
   };
 
   return (
@@ -79,7 +65,7 @@ function Header() {
 
         {/* User icons and login/register buttons */}
         <div className="hidden lg:flex items-center space-x-4">
-          {isLoggedIn ? (
+          {session ? (
             <>
               <Link
                 to="/profile"
@@ -94,7 +80,7 @@ function Header() {
                 <FaCoins className="text-xl" />
               </Link>
               <button
-                onClick={handleLogout}
+                onClick={sessionLogOut}
                 className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-3xl transition duration-300"
               >
                 Se déconnecter
@@ -114,7 +100,7 @@ function Header() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <MobileMenu isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+        <MobileMenu isLoggedIn={session} handleLogout={sessionLogOut} />
       )}
     </header>
   );
