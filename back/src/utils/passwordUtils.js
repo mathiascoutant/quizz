@@ -1,17 +1,19 @@
-import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 
-const hashPassword = async (password) => {
-  return await bcrypt.hash(password);
+const hashPassword = (password) => {
+  return crypto.createHash('sha256').update(password).digest('hex');
 };
 
-export const comparePassword = async (password, hashedPassword) => {
+export const comparePassword = (password, hashedPassword) => {
   console.log('Mot de passe fourni:', password);
   console.log('Mot de passe haché stocké:', hashedPassword);
   try {
-    const hashedInputPassword = await bcrypt.hash(password);
-    console.log('Mot de passe fourni haché:', hashedInputPassword);
-    const isMatch = await bcrypt.compare(password, hashedPassword);
-    console.log('Résultat de la comparaison:', isMatch ? 'Correspondance' : 'Pas de correspondance');
+    if (!password || !hashedPassword) {
+      throw new Error('Le mot de passe ou le hash est manquant');
+    }
+    const hashedInputPassword = hashPassword(password);
+    const isMatch = hashedInputPassword === hashedPassword;
+    console.log(isMatch);
     return isMatch;
   } catch (error) {
     console.error('Erreur lors de la comparaison des mots de passe:', error);
