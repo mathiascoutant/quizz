@@ -9,6 +9,7 @@ function LoginPage() {
     password: '',
     rememberMe: false,
   });
+  const [error, setError] = useState('');
 
   const navigate = useNavigate();
 
@@ -19,16 +20,19 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(''); // Réinitialiser l'erreur à chaque soumission
     try {
       const response = await axios.post('http://localhost:3002/auth/login', formData);
       console.log('Réponse du serveur:', response.data);
-      // Stocker le token dans le localStorage
       localStorage.setItem('token', response.data.token);
-      // Rediriger vers la page d'accueil ou le tableau de bord
-      navigate('/dashboard');
+      navigate('/');
     } catch (error) {
       console.error('Erreur de connexion:', error.response?.data?.message || error.message);
-      // Afficher un message d'erreur à l'utilisateur
+      if (error.response && error.response.status === 400) {
+        setError('Adresse e-mail ou mot de passe invalide');
+      } else {
+        setError('Une erreur est survenue. Veuillez réessayer.');
+      }
     }
   };
 
@@ -45,6 +49,11 @@ function LoginPage() {
         <div className="flex-grow flex items-center justify-center">
           <form className="w-full max-w-md" onSubmit={handleSubmit}>
             <h1 className="text-2xl font-bold mb-8 text-gray-800">Connexion</h1>
+            {error && (
+              <div className="mb-4 text-red-500 text-sm font-medium">
+                {error}
+              </div>
+            )}
             <div className="mb-6">
               <input
                 className="w-full px-3 py-2 text-gray-700 border-b-2 border-gray-300 focus:outline-none focus:border-purple-500 transition-colors"
