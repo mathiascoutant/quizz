@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import authRoutes from '../back/src/routes/authRoutes.js';
+import listRoutes from '../back/src/routes/listRoutes.js';
+import quizzRoutes from '../back/src/routes/quizzRoutes.js';
 // import userRoutes from './routes/userRoutes.js';
 
 const app = express();
@@ -16,6 +18,8 @@ app.use(express.json());
 
 // Utilisation des routes d'authentification
 app.use('/auth', authRoutes);
+app.use('/list', listRoutes);
+app.use('/quizz', quizzRoutes);
 // app.use('/users', userRoutes);
 
 // Gestion des erreurs 404

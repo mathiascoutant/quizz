@@ -7,7 +7,6 @@ const userController = require('../controllers/userController');
 const protect = authController.protect;
 
 // Routes utilisateur
-router.get('/profile', protect, userController.getProfile);
 router.put('/profile', protect, userController.updateProfile);
 router.get('/:id', protect, userController.getUser);
 router.put('/:id', protect, userController.updateUser);
