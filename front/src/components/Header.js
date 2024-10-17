@@ -58,7 +58,7 @@ function Header() {
           </div>
         </nav>
         
-        {/* User icons and login button */}
+        {/* User icons and login/register buttons */}
         <div className="hidden lg:flex items-center space-x-4">
           {isLoggedIn ? (
             <>
@@ -76,9 +76,14 @@ function Header() {
               </button>
             </>
           ) : (
-            <button className="bg-transparent hover:bg-purple-100 text-purple-500 font-bold py-2 px-4 rounded-3xl transition duration-300 border border-purple-500 hover:border-purple-600">
-              Se connecter
-            </button>
+            <>
+              <Link to="/login" className="bg-transparent hover:bg-purple-100 text-purple-500 font-bold py-2 px-4 rounded-3xl transition duration-300 border border-purple-500 hover:border-purple-600">
+                Se connecter
+              </Link>
+              <Link to="/register" className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-3xl transition duration-300 border border-purple-500">
+                S'inscrire
+              </Link>
+            </>
           )}
         </div>
       </div>
@@ -122,12 +127,20 @@ function Header() {
                 </button>
               </>
             ) : (
-              <Link
-                to="/login"
-                className="block px-3 py-2 rounded-md text-base font-medium bg-purple-500 text-white hover:bg-purple-600"
-              >
-                Se connecter
-              </Link>
+              <>
+                <Link
+                  to="/login"
+                  className="block px-3 py-2 rounded-md text-base font-medium bg-transparent text-purple-500 hover:bg-purple-100 border border-purple-500"
+                >
+                  Se connecter
+                </Link>
+                <Link
+                  to="/register"
+                  className="block px-3 py-2 rounded-md text-base font-medium bg-purple-500 text-white hover:bg-purple-600 border border-purple-500"
+                >
+                  S'inscrire
+                </Link>
+              </>
             )}
           </div>
         </div>
