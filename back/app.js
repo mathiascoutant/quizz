@@ -1,5 +1,6 @@
 import express from 'express';
 import authRoutes from '../back/src/routes/authRoutes.js';
+import formRoutes from '../back/src/routes/formRoutes.js';
 // import userRoutes from './routes/userRoutes.js';
 
 const app = express();
@@ -9,6 +10,7 @@ app.use(express.json());
 
 // Utilisation des routes d'authentification
 app.use('/auth', authRoutes);
+app.use('/', formRoutes);
 // app.use('/users', userRoutes);
 
 // Gestion des erreurs 404
