@@ -61,7 +61,7 @@ function Header() {
             {MENU_ITEMS_LINKS.map((item, index) => (
               <NavLink
                 key={index}
-                to={`/${item.label.toLowerCase()}`}
+                to={item.href}
                 className={({ isActive }) => `
                   relative text-lg font-medium
                   ${isActive ? 'text-purple-500' : 'text-gray-700'}
