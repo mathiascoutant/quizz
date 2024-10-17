@@ -1,6 +1,6 @@
 export const MENU_ITEMS_LINKS = [
   {
-    label: 'Home',
+    label: 'Accueil',
     href: '/',
   },
   {
@@ -8,11 +8,7 @@ export const MENU_ITEMS_LINKS = [
     href: '/quizz',
   },
   {
-    label: 'About',
-    href: '/about',
-  },
-  {
-    label: 'Discount',
+    label: 'Bon de réduction',
     href: '/discount',
   },
 ];
