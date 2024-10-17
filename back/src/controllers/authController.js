@@ -1,9 +1,11 @@
 import { User } from '../models/userModel.js';
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Op } from 'sequelize';
 import mongoose from 'mongoose';
-import { comparePassword } from '../utils/passwordUtils.js';
+import { comparePassword, hashPassword } from '../utils/passwordUtils.js';
+import { JWT_SECRET } from '../utils/jwtUtils.js';
+
+
 
 
 export const register = async (req, res) => {
@@ -15,20 +17,24 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: 'Tous les champs sont obligatoires' });
     }
 
+
     console.log('Recherche d\'un utilisateur existant');
     const existingUser = await User.findOne({ where: { [Op.or]: [{ pseudo }, { email }] } });
     if (existingUser) {
       return res.status(400).json({ message: "Un utilisateur avec ce nom d'utilisateur ou cet email existe déjà." });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
+    const createdPassword = await hashPassword(password);
+    if (!createdPassword) {
+      return res.status(400).json({ message: 'Erreur lors de la création du mot de passe' });
+    } 
+    console.log("passwrorddd", createdPassword);
     const newUser = await User.create({
       firstname,
       lastname,
       pseudo,
       email,
-      password: hashedPassword
+      password: createdPassword
     });
 
     console.log('Utilisateur créé avec succès');
@@ -47,13 +53,11 @@ export const login = async (req, res) => {
     if (!email || !password) {
         return res.status(400).json({ message: 'Tous les champs sont obligatoires' });
     }
-    console.log(email);
     // Vérifier si l'utilisateur existe
     const user = await User.findByEmail(email);
     if (!user) {
       return res.status(400).json({ message: 'Email incorrect' });
     }
-    console.log(user.email);
 
     // Vérifier le mot de passe
     const isPasswordValid = await comparePassword(password, user.password);
@@ -62,9 +66,10 @@ export const login = async (req, res) => {
     } 
 
     // Générer un token JWT
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
     res.status(200).json({ token, userId: user._id });
+    console.log(token, "T'est co mec !!!");
   } catch (error) {
     res.status(500).json({ message: 'Erreur lors de la connexion', error: error.message });
   }
@@ -104,3 +109,5 @@ export const restrictTo = async (...roles) => {
     next();
   };
 };
+
+
