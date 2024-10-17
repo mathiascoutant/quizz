@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { FaCoins, FaUser } from 'react-icons/fa';
+import React, { useState, useRef, useEffect } from 'react';
+import { FaCoins, FaUser, FaChevronDown } from 'react-icons/fa';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { MENU_ITEMS_LINKS } from '../constants/menu.items.constants';
 import TokenService from '../services/token.service';
 import { Button } from './common/Button';
+import coinIcon from '../assets/coin.png'; // Assurez-vous que le chemin est correct
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,11 +12,26 @@ function Header() {
     return !!localStorage.getItem('token');
   });
   const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   // useEffect(() => {
   //   const token = localStorage.getItem('token');
   //   setIsLoggedIn(!!token);
   // }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -25,6 +41,10 @@ function Header() {
     TokenService.handleLogout();
     setIsLoggedIn(false);
     navigate('/');
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   return (
@@ -80,32 +100,54 @@ function Header() {
         {/* User icons and login/register buttons */}
         <div className="hidden lg:flex items-center space-x-4">
           {isLoggedIn ? (
-            <>
-              <Link
-                to="/profile"
-                className="text-gray-700 hover:text-purple-500"
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={toggleDropdown}
+                className="flex items-center space-x-2 text-gray-700 hover:text-purple-500 transition-colors duration-300"
               >
                 <FaUser className="text-xl" />
-              </Link>
-              <Link
-                to="/wallet"
-                className="text-gray-700 hover:text-purple-500"
-              >
-                <FaCoins className="text-xl" />
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-3xl transition duration-300"
-              >
-                Se déconnecter
+                <span className="font-medium">Test82</span>
+                <FaChevronDown className={`text-sm transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
-            </>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-md py-2 z-10 border border-gray-200">
+                  <div className="px-4 py-2 border-b border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-700">Mes Miams</span>
+                      <div className="flex items-center space-x-1">
+                        <img src={coinIcon} alt="Miam" className="w-4 h-4" />
+                        <span className="text-sm font-bold text-purple-600">86</span>
+                      </div>
+                    </div>
+                  </div>
+                  <Link
+                    to="/profile"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100 transition-colors duration-300"
+                  >
+                    Mon profil
+                  </Link>
+                  <Link
+                    to="/coupons"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100 transition-colors duration-300"
+                  >
+                    Mes coupons
+                  </Link>
+                  <div className="px-4 pt-2">
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-center px-4 py-2 text-sm text-white bg-purple-500 hover:bg-purple-600 rounded-md transition-colors duration-300"
+                    >
+                      Se déconnecter
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
             <>
               <Button variant="outline" href={'/login'}>
                 Se connecter
               </Button>
-
               <Button href={'/register'}>S'inscrire</Button>
             </>
           )}
