@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import './styles/RegisterPage.css';
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
     username: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -19,11 +20,12 @@ function RegisterPage() {
   };
 
   return (
-    <div className="register-container">
-      <form className="register-form" onSubmit={handleSubmit}>
-        <h1>Inscription</h1>
-        <div className="form-group">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md" onSubmit={handleSubmit}>
+        <h1 className="text-2xl font-bold mb-6 text-center">Inscription</h1>
+        <div className="mb-4">
           <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="text"
             name="username"
             value={formData.username}
@@ -32,8 +34,31 @@ function RegisterPage() {
             required
           />
         </div>
-        <div className="form-group">
+        <div className="mb-4">
           <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            type="text"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            placeholder="Prénom"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            type="text"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            placeholder="Nom"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="email"
             name="email"
             value={formData.email}
@@ -42,8 +67,9 @@ function RegisterPage() {
             required
           />
         </div>
-        <div className="form-group">
+        <div className="mb-6">
           <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
             type="password"
             name="password"
             value={formData.password}
@@ -52,7 +78,12 @@ function RegisterPage() {
             required
           />
         </div>
-        <button type="submit" className="submit-btn">S'inscrire</button>
+        <button 
+          type="submit" 
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+        >
+          S'inscrire
+        </button>
       </form>
     </div>
   );

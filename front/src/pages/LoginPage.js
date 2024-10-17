@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './styles/LoginPage.css';
 
 function LoginPage() {
   const [formData, setFormData] = useState({
@@ -13,15 +12,16 @@ function LoginPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Données du formulaire:', formData);
+    console.log('Données du formulaire de connexion:', formData);
   };
 
   return (
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleSubmit}>
-        <h1>Connexion</h1>
-        <div className="form-group">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md" onSubmit={handleSubmit}>
+        <h1 className="text-2xl font-bold mb-6 text-center">Connexion</h1>
+        <div className="mb-4">
           <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="email"
             name="email"
             value={formData.email}
@@ -30,8 +30,9 @@ function LoginPage() {
             required
           />
         </div>
-        <div className="form-group">
+        <div className="mb-6">
           <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
             type="password"
             name="password"
             value={formData.password}
@@ -40,7 +41,12 @@ function LoginPage() {
             required
           />
         </div>
-        <button type="submit" className="submit-btn">Se connecter</button>
+        <button 
+          type="submit" 
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+        >
+          Se connecter
+        </button>
       </form>
     </div>
   );
