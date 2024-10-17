@@ -143,35 +143,35 @@ function HomePage() {
             Comment ça marche ?
           </h2>
 
-          <div className="grid grid-cols-1 place-items-center lg:grid-cols-[min-content, auto] grid-rows-[7, auto] lg:grid-rows-[min-content, auto] gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 place-items-center lg:grid-cols-[minmax(350px,_1fr)_auto]  lg:grid-rows-[min-content_auto] gap-6 max-w-3xl mx-auto">
             <FeatureCard
               className="row-start-1"
-              icon={<FaQuestionCircle className="text-5xl text-purple-600" />}
+              icon={<FaQuestionCircle className="text-4xl text-purple-600" />}
               title="1. Choisissez un quiz"
               description="Parcourez notre large sélection de quiz dans différentes catégories."
             />
-            <FaArrowAltCircleRight className="text-purple-600 rotate-90 row-start-2 lg:row-start-1 lg:rotate-0 text-5xl" />
+            <FaArrowAltCircleRight className="text-purple-600 rotate-90 row-start-2 lg:row-start-1 lg:rotate-0 text-4xl" />
             <FeatureCard
               className="row-start-3 lg:row-start-1"
-              icon={<FaBrain className="text-5xl text-blue-500" />}
+              icon={<FaBrain className="text-4xl text-blue-500" />}
               title="2. Répondez aux questions"
               description="Mettez vos connaissances à l'épreuve en répondant aux questions."
             />
-            <FaArrowAltCircleDown className="text-purple-600 row-start-4 text-5xl lg:row-start-2 lg:col-start-3" />
+            <FaArrowAltCircleDown className="text-purple-600 row-start-4 text-4xl lg:row-start-2 lg:col-start-3" />
             <FeatureCard
               className="row-start-7 lg:row-start-3 lg:col-start-1"
-              icon={<FaGift className="text-5xl text-green-500" />}
+              icon={<FaGift className="text-4xl text-green-500" />}
               title="4. Échangez vos récompenses"
               description="Utilisez vos Miams pour obtenir des récompenses exclusives."
             />
-            <FaArrowAltCircleLeft className="text-purple-600 -rotate-90 lg:rotate-0 text-5xl row-start-6 lg:row-start-3 lg:col-start-2" />
+            <FaArrowAltCircleLeft className="text-purple-600 -rotate-90 lg:rotate-0 text-4xl row-start-6 lg:row-start-3 lg:col-start-2" />
             <FeatureCard
               className="row-start-5 lg:row-start-3 lg:col-start-3"
-              icon={<FaCoins className="text-5xl text-yellow-500" />}
+              icon={<FaCoins className="text-4xl text-yellow-500" />}
               title="3. Gagnez des Miams"
               description="Accumulez des Miams pour chaque bonne réponse et quiz terminé."
             />
-            <FaArrowAltCircleUp className="text-purple-600 hidden lg:block text-5xl row-start-6 lg:row-start-2 lg:col-start-1" />
+            <FaArrowAltCircleUp className="text-purple-600 hidden lg:block text-4xl row-start-6 lg:row-start-2 lg:col-start-1" />
           </div>
         </div>
       </div>
