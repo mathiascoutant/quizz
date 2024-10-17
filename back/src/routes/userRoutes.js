@@ -9,7 +9,6 @@ const protect = authController.protect;
 // Routes utilisateur
 router.get('/profile', protect, userController.getProfile);
 router.put('/profile', protect, userController.updateProfile);
-router.get('/', protect, userController.getAllUsers);
 router.get('/:id', protect, userController.getUser);
 router.put('/:id', protect, userController.updateUser);
 router.delete('/:id', protect, userController.deleteUser);

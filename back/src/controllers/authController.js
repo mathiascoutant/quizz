@@ -1,51 +1,64 @@
-const User = require('../models/User');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+import { User } from '../models/userModel.js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { Op } from 'sequelize';
+import mongoose from 'mongoose';
+import { comparePassword } from '../utils/passwordUtils.js';
 
-exports.register = async (req, res) => {
+
+export const register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    console.log('Début de l\'inscription');
+    const { firstname, lastname, pseudo, email, password } = req.body;
     
-    // Vérifier si l'utilisateur existe déjà
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'Cet email est déjà utilisé' });
+    if (!firstname || !lastname || !pseudo || !email || !password) {
+      return res.status(400).json({ message: 'Tous les champs sont obligatoires' });
     }
 
-    // Hasher le mot de passe
+    console.log('Recherche d\'un utilisateur existant');
+    const existingUser = await User.findOne({ where: { [Op.or]: [{ pseudo }, { email }] } });
+    if (existingUser) {
+      return res.status(400).json({ message: "Un utilisateur avec ce nom d'utilisateur ou cet email existe déjà." });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Créer un nouvel utilisateur
-    const newUser = new User({
-      username,
+    const newUser = await User.create({
+      firstname,
+      lastname,
+      pseudo,
       email,
       password: hashedPassword
     });
 
-    // Sauvegarder l'utilisateur dans la base de données
-    await newUser.save();
-
-    res.status(201).json({ message: 'Utilisateur créé avec succès' });
+    console.log('Utilisateur créé avec succès');
+    res.status(201).json({ message: "Utilisateur enregistré avec succès", userId: newUser.id });
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de l\'inscription', error: error.message });
+    console.error('Erreur détaillée lors de l\'inscription:', error);
+    console.error('État de la connexion MongoDB:', mongoose.connection.readyState);
+    res.status(500).json({ message: "Erreur lors de l'inscription", error: error.message });
   }
 };
 
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Tous les champs sont obligatoires' });
+    }
+
     // Vérifier si l'utilisateur existe
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email } );
     if (!user) {
-      return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
+      return res.status(400).json({ message: 'Nom d\'utilisateur/email ou mot de passe incorrect' });
     }
 
     // Vérifier le mot de passe
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
+    const isPasswordValid = await comparePassword(password, user.password);
+  if (!isPasswordValid) {
       return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
-    }
+    } 
 
     // Générer un token JWT
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -56,7 +69,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.protect = async (req, res, next) => {
+export const protect = async (req, res, next) => {
   try {
     // Vérifier si le token est présent
     const token = req.headers.authorization?.startsWith('Bearer') && req.headers.authorization.split(' ')[1];
@@ -82,7 +95,7 @@ exports.protect = async (req, res, next) => {
   }
 };
 
-exports.restrictTo = (...roles) => {
+export const restrictTo = async (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({ message: 'Vous n\'avez pas la permission d\'effectuer cette action' });

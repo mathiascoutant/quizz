@@ -1,62 +1,72 @@
-import mongoose from 'mongoose';
+import { DataTypes } from 'sequelize';
 import bcrypt from 'bcrypt';
+import { sequelize } from '../config/database.js';
 
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: [true, 'Le nom d\'utilisateur est requis'],
+const User = sequelize.define('Users', {
+  firstname: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: false,
+    validate: {
+      notEmpty: { msg: 'Le prénom est requis' }
+    }
+  },
+  lastname: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: false,
+    validate: {
+      notEmpty: { msg: 'Le nom de famille est requis' }
+    }
+  },
+  pseudo: {
+    type: DataTypes.STRING,
+    allowNull: false,
     unique: true,
-    trim: true
+    validate: {
+      notEmpty: { msg: 'Le nom d\'utilisateur est requis' }
+    }
   },
   email: {
-    type: String,
-    required: [true, 'L\'adresse email est requise'],
+    type: DataTypes.STRING,
+    allowNull: false,
     unique: true,
-    lowercase: true,
-    trim: true,
     validate: {
-      validator: function(v) {
-        return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v);
-      },
-      message: props => `${props.value} n'est pas une adresse email valide!`
+      isEmail: { msg: 'L\'adresse email n\'est pas valide' },
+      notEmpty: { msg: 'L\'adresse email est requise' }
     }
   },
   password: {
-    type: String,
-    required: [true, 'Le mot de passe est requis'],
-    minlength: [6, 'Le mot de passe doit contenir au moins 6 caractères']
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  role: {
-    type: String,
-    enum: ['user', 'admin'],
-    default: 'user'
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      len: {
+        args: [6, 100],
+        msg: 'Le mot de passe doit contenir au moins 6 caractères'
+      }
+    }
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  hooks: {
+    beforeCreate: async (user) => {
+      if (user.password) {
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
+      }
+    },
+    beforeUpdate: async (user) => {
+      if (user.changed('password')) {
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
+      }
+    }
+  }
 });
 
 // Méthode pour comparer les mots de passe
-userSchema.methods.comparePassword = async function(candidatePassword) {
+User.prototype.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Middleware pour hacher le mot de passe avant de sauvegarder
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
-
-const User = mongoose.model('User', userSchema);
-
-export default User;
+export { User };

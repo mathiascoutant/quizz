@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/userModel');
 const { hashPassword } = require('../utils/passwordUtils');
 
 exports.getUserById = async (req, res) => {
@@ -13,9 +13,9 @@ exports.getUserById = async (req, res) => {
 
 exports.createUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { pseudo, email, password } = req.body;
     const hashedPassword = await hashPassword(password);
-    const newUser = new User({ username, email, password: hashedPassword });
+    const newUser = new User({ pseudo, email, password: hashedPassword });
     await newUser.save();
     res.status(201).json({ message: "Utilisateur créé avec succès", userId: newUser._id });
   } catch (error) {
@@ -25,10 +25,10 @@ exports.createUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
-    const { username, email } = req.body;
+    const { pseudo, email } = req.body;
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
-      { username, email },
+      { pseudo, email },
       { new: true }
     ).select('-password');
     if (!updatedUser) return res.status(404).json({ message: "Utilisateur non trouvé" });

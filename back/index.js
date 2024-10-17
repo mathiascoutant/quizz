@@ -1,26 +1,21 @@
-const express = require('express');
-const app = express();
-const port = 3000;
+import { app } from './app.js';
+import { connectDatabase } from './src/config/database.js';
 
-// Middleware pour parser le JSON
-app.use(express.json());
 
-// Route de base
-app.get('/', (req, res) => {
-  res.json({ message: 'Bienvenue sur l\'API du Quiz !' });
-});
+const PORT = 3002;
 
-// Route pour obtenir tous les quiz (à implémenter)
-app.get('/quiz', (req, res) => {
-  res.json({ message: 'Liste de tous les quiz (à implémenter)' });
-});
+async function startServer() {
+  try {
+    await connectDatabase();
+    console.log('Connexion à la base de données réussie');
 
-// Route pour créer un nouveau quiz (à implémenter)
-app.post('/quiz', (req, res) => {
-  res.json({ message: 'Création d\'un nouveau quiz (à implémenter)' });
-});
+    app.listen(PORT, () => {
+      console.log(`Serveur démarré sur http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Erreur lors du démarrage du serveur:', error);
+    process.exit(1);
+  }
+}
 
-// Démarrage du serveur
-app.listen(port, () => {
-  console.log(`Serveur Quiz démarré sur http://localhost:${port}`);
-});
+startServer();
