@@ -1,22 +1,44 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import inscriptionImage from '../assets/inscription.jpg';
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
-    username: '',
+    firstname: '',
+    lastname: '',
+    pseudo: '',
     email: '',
     password: '',
-    confirmPassword: '',
   });
+
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Données du formulaire d\'inscription:', formData);
+    setError('');
+    setSuccess('');
+    try {
+      const response = await axios.post('http://localhost:3002/auth/register', formData);
+      setSuccess('Inscription réussie ! Vous pouvez maintenant vous ');
+      console.log('Réponse du serveur:', response.data);
+      // Clear the form after successful registration
+      setFormData({
+        firstname: '',
+        lastname: '',
+        pseudo: '',
+        email: '',
+        password: '',
+      });
+    } catch (error) {
+      setError(error.response?.data?.message || 'Une erreur est survenue lors de l\'inscription');
+      console.error('Erreur lors de l\'inscription:', error.response?.data || error.message);
+    }
   };
 
   return (
@@ -30,10 +52,32 @@ function RegisterPage() {
               <input
                 className="w-full px-3 py-2 text-gray-700 border-b-2 border-gray-300 focus:outline-none focus:border-purple-500 transition-colors"
                 type="text"
-                name="username"
-                value={formData.username}
+                name="pseudo"
+                value={formData.pseudo}
                 onChange={handleChange}
-                placeholder="Nom d'utilisateur"
+                placeholder="Pseudo"
+                required
+              />
+            </div>
+            <div className="mb-6">
+              <input
+                className="w-full px-3 py-2 text-gray-700 border-b-2 border-gray-300 focus:outline-none focus:border-purple-500 transition-colors"
+                type="text"
+                name="firstname"
+                value={formData.firstname}
+                onChange={handleChange}
+                placeholder="Prénom"
+                required
+              />
+            </div>
+            <div className="mb-6">
+              <input
+                className="w-full px-3 py-2 text-gray-700 border-b-2 border-gray-300 focus:outline-none focus:border-purple-500 transition-colors"
+                type="text"
+                name="lastname"
+                value={formData.lastname}
+                onChange={handleChange}
+                placeholder="Nom"
                 required
               />
             </div>
@@ -59,17 +103,6 @@ function RegisterPage() {
                 required
               />
             </div>
-            <div className="mb-8">
-              <input
-                className="w-full px-3 py-2 text-gray-700 border-b-2 border-gray-300 focus:outline-none focus:border-purple-500 transition-colors"
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="Confirmer le mot de passe"
-                required
-              />
-            </div>
             <button 
               type="submit" 
               className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-colors"
@@ -79,7 +112,7 @@ function RegisterPage() {
             <div className="text-center mt-6">
               <Link to="/login" className="text-purple-600 hover:text-purple-800 transition-colors">
                 Déjà inscrit ? Se connecter
-              </Link>
+              </Link> 
             </div>
           </form>
         </div>

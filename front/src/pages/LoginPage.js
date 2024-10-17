@@ -1,20 +1,35 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import loginImage from '../assets/inscription.jpg';
+import axios from 'axios';
 
 function LoginPage() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    rememberMe: false,
   });
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    setFormData({ ...formData, [e.target.name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Données du formulaire de connexion:', formData);
+    try {
+      const response = await axios.post('http://localhost:3002/auth/login', formData);
+      console.log('Réponse du serveur:', response.data);
+      // Stocker le token dans le localStorage
+      localStorage.setItem('token', response.data.token);
+      // Rediriger vers la page d'accueil ou le tableau de bord
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Erreur de connexion:', error.response?.data?.message || error.message);
+      // Afficher un message d'erreur à l'utilisateur
+    }
   };
 
   return (
@@ -51,6 +66,22 @@ function LoginPage() {
                 placeholder="Mot de passe"
                 required
               />
+            </div>
+            <div className="mb-6 flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  name="rememberMe"
+                  checked={formData.rememberMe}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                <label htmlFor="rememberMe" className="text-sm text-gray-600">Se souvenir de moi</label>
+              </div>
+              <Link to="/forgot-password" className="text-sm text-purple-600 hover:text-purple-800 transition-colors">
+                Mot de passe oublié ?
+              </Link>
             </div>
             <button 
               type="submit" 
