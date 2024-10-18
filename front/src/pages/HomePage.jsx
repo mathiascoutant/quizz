@@ -1,20 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   FaArrowAltCircleDown,
   FaArrowAltCircleLeft,
   FaArrowAltCircleRight,
   FaArrowAltCircleUp,
-  FaBookOpen,
   FaBrain,
   FaCoins,
-  FaFilm,
-  FaFlask,
   FaGift,
-  FaGlobeAmericas,
-  FaHistory,
   FaLongArrowAltRight,
-  FaMusic,
-  FaQuestionCircle,
+  FaQuestionCircle
 } from 'react-icons/fa';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick-theme.css';
@@ -24,6 +18,7 @@ import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
 import { cn } from '../utils/utils';
 import './HomePage.css';
+import { getCategoryIcon } from '../utils/categoryIcons';
 
 function HomePage() {
   const testimonials = [
@@ -44,49 +39,27 @@ function HomePage() {
       text: "QuizzGo est devenu ma pause préférée au travail. C'est amusant, éducatif et récompensant à la fois.",
     },
     {
-      name: 'Willial Fort',
+      name: 'William Fort',
       text: "Grâce à QuizzGo, j'apprends quelque chose de nouveau chaque jour. C'est une façon ludique et motivante d'enrichir sa culture générale.",
     },
   ];
 
-  const categories = [
-    {
-      icon: <FaGlobeAmericas className="text-5xl text-blue-500" />,
-      title: 'Géographie',
-      description:
-        'Testez vos connaissances sur les pays, les capitales et les merveilles du monde.',
-    },
-    {
-      icon: <FaFlask className="text-5xl text-green-500" />,
-      title: 'Sciences',
-      description:
-        "Plongez dans l'univers fascinant de la physique, de la chimie et de la biologie.",
-    },
-    {
-      icon: <FaBookOpen className="text-5xl text-yellow-500" />,
-      title: 'Littérature',
-      description:
-        'Explorez les grands classiques et les œuvres contemporaines de la littérature mondiale.',
-    },
-    {
-      icon: <FaFilm className="text-5xl text-red-500" />,
-      title: 'Cinéma',
-      description:
-        "Mettez à l'épreuve vos connaissances sur les films, les acteurs et l'histoire du cinéma.",
-    },
-    {
-      icon: <FaMusic className="text-5xl text-purple-500" />,
-      title: 'Musique',
-      description:
-        'Testez votre culture musicale à travers les genres et les époques.',
-    },
-    {
-      icon: <FaHistory className="text-5xl text-brown-500" />,
-      title: 'Histoire',
-      description:
-        "Revivez les grands moments de l'histoire et découvrez des anecdotes fascinantes.",
-    },
-  ];
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('http://localhost:3002/list/categories');
+      const data = await response.json();
+      const processedCategories = processCategories(data);
+      setCategories(processedCategories);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
 
   const settings = {
     dots: true,
@@ -113,6 +86,19 @@ function HomePage() {
 
   const [selectedCategory, setSelectedCategory] = useState(null);
 
+  const [displayedCategories, setDisplayedCategories] = useState(6);
+  const [showAllCategories, setShowAllCategories] = useState(false);
+
+  const toggleCategoriesDisplay = () => {
+    if (showAllCategories) {
+      setDisplayedCategories(6);
+      setShowAllCategories(false);
+    } else {
+      setDisplayedCategories(categories.length);
+      setShowAllCategories(true);
+    }
+  };
+
   return (
     <div className="bg-gray-100">
       {/* Hero Section */}
@@ -124,7 +110,7 @@ function HomePage() {
               Jouez, apprenez et récoltez des Miams avec nos quiz savoureux !
               Transformez votre savoir en récompenses délicieuses.
             </p>
-            <Button href={'/quizz'}>Commencer l'aventure</Button>
+            <Button href={'/register'}>Commencer l'aventure</Button>
           </div>
           <div className="md:w-1/2 flex justify-center items-center">
             <img
@@ -204,7 +190,7 @@ function HomePage() {
             Explorez nos catégories de quiz
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {categories.map((category, index) => (
+            {categories.slice(0, displayedCategories).map((category, index) => (
               <>
                 <CategoryCard
                   key={index}
@@ -219,7 +205,7 @@ function HomePage() {
                   <Modal
                     setSelectedCategory={setSelectedCategory}
                     title={category.title}
-                    path={`/quizz?theme=${category.title}`}
+                    path={`/quizz?category=${category.title}`}
                   >
                     <p>{category.description}</p>
                   </Modal>
@@ -228,9 +214,15 @@ function HomePage() {
             ))}
           </div>
           <div className="text-center">
-            <button className="bg-purple-600 text-white font-bold py-3 px-8 rounded-full hover:bg-purple-700 transition duration-300 inline-flex items-center">
-              Voir toutes les catégories
-              <FaLongArrowAltRight className="ml-2" />
+            <button
+              onClick={toggleCategoriesDisplay}
+              className="inline-flex items-center text-purple-700 font-medium text-lg focus:outline-none"
+            >
+              <span className="h-px w-12 bg-purple-600 mr-3"></span>
+              <span className="hover:underline italic">
+                {showAllCategories ? 'Voir moins' : 'Afficher plus'}
+              </span>
+              <span className="h-px w-12 bg-purple-600 ml-3"></span>
             </button>
           </div>
         </div>
@@ -285,6 +277,16 @@ function CategoryCard({ icon, title, description, setSelectedCategory }) {
 
 const handleCategoryClick = (category) => {
   console.log(`Clicked on category: ${category.title}`);
+};
+
+const processCategories = (categories) => {
+  const description = "Explorez cette catégorie passionnante et testez vos connaissances !";
+  
+  return categories.map(category => ({
+    icon: getCategoryIcon(category.name),
+    title: category.name,
+    description: description
+  }));
 };
 
 export default HomePage;
