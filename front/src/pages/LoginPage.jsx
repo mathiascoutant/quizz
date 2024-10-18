@@ -25,6 +25,7 @@ function LoginPage() {
       const response = await axios.post('http://localhost:3002/auth/login', formData);
       console.log('Réponse du serveur:', response.data);
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userData', JSON.stringify(response.data.user));
       navigate('/');
     } catch (error) {
       console.error('Erreur de connexion:', error.response?.data?.message || error.message);

@@ -14,11 +14,18 @@ function Header() {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const [userData, setUserData] = useState(null);
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem('token');
-  //   setIsLoggedIn(!!token);
-  // }, []);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+    if (token) {
+      const userDataString = localStorage.getItem('userData');
+      if (userDataString) {
+        setUserData(JSON.parse(userDataString));
+      }
+    }
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -40,6 +47,7 @@ function Header() {
   const handleLogout = () => {
     TokenService.handleLogout();
     setIsLoggedIn(false);
+    setUserData(null);
     navigate('/');
   };
 
@@ -99,14 +107,14 @@ function Header() {
 
         {/* User icons and login/register buttons */}
         <div className="hidden lg:flex items-center space-x-4">
-          {isLoggedIn ? (
+          {isLoggedIn && userData ? (
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={toggleDropdown}
                 className="flex items-center space-x-2 text-gray-700 hover:text-purple-500 transition-colors duration-300"
               >
                 <FaUser className="text-xl" />
-                <span className="font-medium">Test82</span>
+                <span className="font-medium">{userData.pseudo}</span>
                 <FaChevronDown className={`text-sm transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
               {isDropdownOpen && (
@@ -116,7 +124,7 @@ function Header() {
                       <span className="text-sm font-medium text-gray-700">Mes Miams</span>
                       <div className="flex items-center space-x-1">
                         <img src={coinIcon} alt="Miam" className="w-4 h-4" />
-                        <span className="text-sm font-bold text-purple-600">86</span>
+                        <span className="text-sm font-bold text-purple-600">{userData.id}</span>
                       </div>
                     </div>
                   </div>
