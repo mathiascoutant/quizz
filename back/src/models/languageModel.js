@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
 
-const Category = sequelize.define('Category', {
+const Language = sequelize.define('Language', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -13,8 +13,8 @@ const Category = sequelize.define('Category', {
     allowNull: false
   }
 }, {
-  tableName: 'Category',           
+  tableName: 'Language',           
   timestamps: false,            
 });
 
-export default Category;
+export default Language;
