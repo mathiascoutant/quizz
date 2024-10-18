@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import axios from 'axios';
 import { getCategoryIcon } from '../../utils/categoryIcons';
+import coin from '../../assets/coin.png';
 
 export const Modal = ({ title, children, path, setSelectedCategory }) => {
   const [difficulties, setDifficulties] = useState([]);
@@ -62,6 +63,34 @@ export const Modal = ({ title, children, path, setSelectedCategory }) => {
 
 const ModalContent = ({ title, children, path, setSelectedCategory, difficulties, selectedDifficulty, setSelectedDifficulty }) => {
   const [answerChoiceCount, setAnswerChoiceCount] = useState('');
+  const [coinsWon, setCoinsWon] = useState(0);
+  const [coinsLost, setCoinsLost] = useState(0);
+
+  useEffect(() => {
+    const calculateCoins = () => {
+      const difficulty = difficulties.find(d => d.id === selectedDifficulty);
+      const difficultyLevel = difficulty ? difficulty.Difficulty : '';
+      
+      let newCoinsWon = 3;
+      let newCoinsLost = 2;
+
+      if (difficultyLevel === 'débutant') {
+        newCoinsWon = answerChoiceCount === '2' ? 2 : 3;
+        newCoinsLost = 1;
+      } else if (difficultyLevel === 'confirmé') {
+        newCoinsWon = answerChoiceCount === '2' ? 3 : 4;
+        newCoinsLost = 2;
+      } else if (difficultyLevel === 'expert') {
+        newCoinsWon = answerChoiceCount === '2' ? 4 : 5;
+        newCoinsLost = 3;
+      }
+
+      setCoinsWon(newCoinsWon);
+      setCoinsLost(newCoinsLost);
+    };
+
+    calculateCoins();
+  }, [selectedDifficulty, answerChoiceCount, difficulties]);
 
   return (
     <motion.div
@@ -103,6 +132,10 @@ const ModalContent = ({ title, children, path, setSelectedCategory, difficulties
           <option value="2">2 choix</option>
           <option value="4">4 choix</option>
         </select>
+        
+        <p className="text-xs text-gray-500 mt-1">
+          Gagnez {coinsWon} <img src={coin} alt="coin" className="inline w-4 h-4" /> par bonne réponse et perdez {coinsLost} <img src={coin} alt="coin" className="inline w-4 h-4" /> pour chaque erreur !
+        </p>
         
         <a
           className="bg-purple-600 text-white py-2 px-4 rounded-full block w-full text-center hover:bg-purple-700 transition duration-200 font-semibold"

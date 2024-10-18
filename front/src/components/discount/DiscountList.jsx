@@ -51,7 +51,7 @@ export const DiscountList = ({ discounts }) => {
     <div>
       <DiscountSearch setDiscounts={setFilteredDiscounts} />
       <div className="p-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredDiscounts.map((discount) => (
             <DiscountItem key={discount.id} discount={discount} />
           ))}
@@ -64,16 +64,16 @@ export const DiscountList = ({ discounts }) => {
 const DiscountItem = ({ discount }) => {
   return (
     <div 
-      className="relative rounded-lg overflow-hidden shadow-lg h-64 flex flex-col justify-between w-full"
+      className="relative rounded-lg overflow-hidden shadow-lg h-48 flex flex-col justify-between"
       style={{ backgroundColor: discount.backgroundColor }}
     >
-      <div className="absolute top-2 right-2 text-2xl font-bold" style={{ color: discount.textColor }}>
+      <div className="absolute top-2 right-2 text-xl font-bold" style={{ color: discount.textColor }}>
         {discount.discount}
       </div>
       <div className="flex-grow flex items-center justify-center p-4">
-        <img src={discount.logo} alt={`${discount.brand} logo`} className="max-w-1/4 max-h-1/4 object-contain" />
+        <img src={discount.logo} alt={`${discount.brand} logo`} className="max-w-1/3 max-h-1/3 object-contain" />
       </div>
-      <div className="p-4">
+      <div className="p-2">
         <p className="text-xs" style={{ color: discount.textColor }}>{discount.condition}</p>
       </div>
       <button 

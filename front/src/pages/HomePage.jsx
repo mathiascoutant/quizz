@@ -110,7 +110,7 @@ function HomePage() {
               Jouez, apprenez et récoltez des Miams avec nos quiz savoureux !
               Transformez votre savoir en récompenses délicieuses.
             </p>
-            <Button href={'/quizz'}>Commencer l'aventure</Button>
+            <Button href={'/register'}>Commencer l'aventure</Button>
           </div>
           <div className="md:w-1/2 flex justify-center items-center">
             <img
