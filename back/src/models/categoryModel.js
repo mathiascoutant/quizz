@@ -11,8 +11,18 @@ const Category = sequelize.define('Category', {
   name: {
     type: DataTypes.STRING(50),
     allowNull: false
+  },
+
+  shortDescription: { 
+    type: DataTypes.STRING(255),
+    allowNull: false
+  },
+  longDescription: {
+    type: DataTypes.TEXT,
+    allowNull: false
   }
-}, {
+},
+{
   tableName: 'Category',           
   timestamps: false,            
 });
