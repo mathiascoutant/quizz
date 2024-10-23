@@ -1,12 +1,14 @@
 import express from 'express';
-import { createForm, getForms, getFormById, updateForm, deleteForm } from '../controllers/formController.js';
+import { createForm, getForms, getFormById, updateForm, deleteForm,getRandomQuizByDifficultyAndCategory } from '../controllers/formController.js';
 
 const router = express.Router();
 
-router.post('/', createForm);           
+router.post('/create', createForm);           
 router.get('/', getForms);              
 router.get('/:id', getFormById);       
-router.put('/:id', updateForm);        
-router.delete('/:id', deleteForm);    
+router.put('/update/:id', updateForm);        
+router.delete('/delete/:id', deleteForm);    
+router.get('/:userId/:difficultyId/:categoryId', getRandomQuizByDifficultyAndCategory);
+
 
 export default router;
