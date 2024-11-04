@@ -31,7 +31,7 @@ export const Modal = ({ title, children, path, setSelectedCategory }) => {
   useEffect(() => {
     const fetchDifficulties = async () => {
       try {
-        const response = await axios.get('http://localhost:3002/api/list/levels');
+        const response = await axios.get('http://localhost:3002/api/levels/list');
         setDifficulties(response.data);
       } catch (error) {
         console.error('Error fetching difficulties:', error);
@@ -118,7 +118,7 @@ const ModalContent = ({ title, children, path, setSelectedCategory, difficulties
           <option value="">Sélectionnez une difficulté</option>
           {difficulties.map((difficulty) => (
             <option key={difficulty.id} value={difficulty.id}>
-              {difficulty.Difficulty}
+              {difficulty.difficulty}
             </option>
           ))}
         </select>
