@@ -14,6 +14,7 @@ import LoginPage from './pages/LoginPage';
 import QuizzPage from './pages/QuizzPage';
 import RegisterPage from './pages/RegisterPage';
 import { ProtectedRoute } from './router/ProtectedRoutes';
+import DiscountPage from './pages/DiscountPage';
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function AppContent() {
           />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/discount" element={<DiscountPage />} />
         </Routes>
       </div>
       {!hideHeaderFooter && <Footer />}

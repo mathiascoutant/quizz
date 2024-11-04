@@ -8,7 +8,6 @@ function DiscountPage() {
 
   return (
     <section className="my-24 max-w-[80%] mx-auto space-y-12">
-      <DiscountSearch setDiscounts={setDiscounts} />
       <DiscountList discounts={discounts} />
     </section>
   );

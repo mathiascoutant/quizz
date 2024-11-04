@@ -1,5 +1,4 @@
 import { DataTypes } from 'sequelize';
-import bcrypt from 'bcrypt';
 import { sequelize } from '../config/database.js';
 
 const User = sequelize.define('Users', {
@@ -45,10 +44,13 @@ const User = sequelize.define('Users', {
         msg: 'Le mot de passe doit contenir au moins 6 caractères'
       }
     }
-  }
+  },
+  coins: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    unique: false,
+  },
 });
-
-
 
 // Ajoutez cette méthode statique au modèle User
 User.findByEmail = async function(email) {

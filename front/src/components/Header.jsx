@@ -4,15 +4,17 @@ import { Link, NavLink } from 'react-router-dom';
 import { MENU_ITEMS_LINKS } from '../constants/menu.items.constants';
 import { useSessionStore } from '../store/session.store';
 import { Button } from './common/Button';
+import coinIcon from '../assets/coin.png'; // Assurez-vous que le chemin est correct
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { session, sessionLogOut } = useSessionStore();
 
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-
+  
   return (
     <header className="fixed top-0 left-0 right-0 bg-white z-50">
       <div className="container relative mx-auto px-4 sm:px-6 lg:px-12 py-4 flex justify-between items-center">
@@ -83,15 +85,49 @@ function Header() {
                 onClick={sessionLogOut}
                 className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-3xl transition duration-300"
               >
-                Se déconnecter
+                <FaUser className="text-xl" />
+                <span className="font-medium">{userData.pseudo}</span>
+                <FaChevronDown className={`text-sm transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
-            </>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-md py-2 z-10 border border-gray-200">
+                  <div className="px-4 py-2 border-b border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-700">Mes Miams</span>
+                      <div className="flex items-center space-x-1">
+                        <img src={coinIcon} alt="Miam" className="w-4 h-4" />
+                        <span className="text-sm font-bold text-purple-600">{userData.id}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <Link
+                    to="/profile"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100 transition-colors duration-300"
+                  >
+                    Mon profil
+                  </Link>
+                  <Link
+                    to="/coupons"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100 transition-colors duration-300"
+                  >
+                    Mes coupons
+                  </Link>
+                  <div className="px-4 pt-2">
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-center px-4 py-2 text-sm text-white bg-purple-500 hover:bg-purple-600 rounded-md transition-colors duration-300"
+                    >
+                      Se déconnecter
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
             <>
               <Button variant="outline" href={'/login'}>
                 Se connecter
               </Button>
-
               <Button href={'/register'}>S'inscrire</Button>
             </>
           )}
