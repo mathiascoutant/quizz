@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import nikelogo from '../../assets/logos/nike-logo.png';
 import ikealogo from '../../assets/logos/ikea-logo.png';
 import ubereatslogo from '../../assets/logos/ubereats-logo.png';
@@ -46,6 +46,20 @@ export const discountsData = [
 
 export const DiscountList = ({ discounts }) => {
   const [filteredDiscounts, setFilteredDiscounts] = useState(discounts);
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    const savedCart = document.cookie.split("; ").find((row) => row.startsWith("cart="))?.split("=")[1];
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+  }, []);
+
+  const addToCart = (discount) => {
+    const newCart = [...cart, discount.brand];
+    setCart(newCart);
+    document.cookie = `cart=${JSON.stringify(newCart)}; expires=${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString()}; SameSite=None; Secure`;
+  };
 
   return (
     <div>
@@ -53,7 +67,11 @@ export const DiscountList = ({ discounts }) => {
       <div className="p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredDiscounts.map((discount) => (
-            <DiscountItem key={discount.id} discount={discount} />
+            <DiscountItem 
+              key={discount.id} 
+              discount={discount} 
+              addToCart={addToCart}
+            />
           ))}
         </div>
       </div>
@@ -61,11 +79,10 @@ export const DiscountList = ({ discounts }) => {
   );
 };
 
-const DiscountItem = ({ discount }) => {
+const DiscountItem = ({ discount, addToCart }) => {
   return (
     <div 
-      className="relative rounded-lg overflow-hidden shadow-lg h-48 flex flex-col justify-between"
-      style={{ backgroundColor: discount.backgroundColor }}
+
     >
       <div className="absolute top-2 right-2 text-xl font-bold" style={{ color: discount.textColor }}>
         {discount.discount}
@@ -78,8 +95,9 @@ const DiscountItem = ({ discount }) => {
       </div>
       <button 
         className="w-full py-2 px-4 bg-purple-600 text-white rounded-none font-semibold hover:bg-purple-700 transition-colors"
+        onClick={() => addToCart(discount)}
       >
-        Choisir
+        Ajouter au panier
       </button>
     </div>
   );

@@ -31,7 +31,7 @@ export const Modal = ({ title, children, path, setSelectedCategory }) => {
   useEffect(() => {
     const fetchDifficulties = async () => {
       try {
-        const response = await axios.get('http://localhost:3002/list/levels');
+        const response = await axios.get('http://localhost:3002/api/list/levels');
         setDifficulties(response.data);
       } catch (error) {
         console.error('Error fetching difficulties:', error);

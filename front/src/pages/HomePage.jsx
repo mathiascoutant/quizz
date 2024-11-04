@@ -52,7 +52,7 @@ function HomePage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:3002/list/categories');
+      const response = await fetch('http://localhost:3002/api/list/categories');
       const data = await response.json();
       const processedCategories = processCategories(data);
       setCategories(processedCategories);
