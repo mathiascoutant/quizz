@@ -2,17 +2,29 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
 
 const Category = sequelize.define('Category', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
+  
   name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-    validate: {
-      notEmpty: { msg: 'Le nom de la catégorie est requis' }
-    }
+    type: DataTypes.STRING(50),
+    allowNull: false
+  },
+
+  shortDescription: { 
+    type: DataTypes.STRING(255),
+    allowNull: false
+  },
+  longDescription: {
+    type: DataTypes.TEXT,
+    allowNull: false
   }
-}, {
-  tableName: 'Category',
-  timestamps: true // Gardez ceci si vous voulez les champs createdAt et updatedAt
+},
+{
+  tableName: 'Category',           
+  timestamps: false,            
 });
 
-export { Category };
+export default Category;

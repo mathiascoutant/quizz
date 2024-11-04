@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import QuizzPage from './pages/QuizzPage';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
+import DiscountPage from './pages/DiscountPage';
 import './index.css';
 
 function App() {
@@ -31,6 +32,7 @@ function AppContent() {
           <Route path="/quizz" element={<QuizzPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/discount" element={<DiscountPage />} />
         </Routes>
       </div>
       {!hideHeaderFooter && <Footer />}
