@@ -22,6 +22,7 @@ import {
   FaTheaterMasks,
   FaTv,
   FaUtensils,
+  FaBookOpen,
 } from 'react-icons/fa';
 
 export const getCategoryIcon = (name) => {
@@ -71,7 +72,7 @@ export const getCategoryIcon = (name) => {
     case 'tourisme':
       return <FaPlane className="text-5xl text-cyan-500" />;
     case 'légendes':
-      return <FaBookOpen className="text-5xl text-cyan-500" />;
+      return <FaBookOpen className="text-5xl text-indigo-500" />;
     default:
       return <FaQuestionCircle className="text-5xl text-gray-500" />;
   }

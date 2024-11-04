@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { FaChevronDown, FaCoins, FaUser } from 'react-icons/fa';
+import React, { useState, useRef } from 'react';
+import { FaCoins, FaUser, FaChevronDown, FaShoppingCart } from 'react-icons/fa';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { MENU_ITEMS_LINKS } from '../constants/menu.items.constants';
 import { useSessionStore } from '../store/session.store';
@@ -16,7 +16,47 @@ function Header() {
   const [cartCount, setCartCount] = useState(0);
   const [coins, setCoins] = useState(0);
 
-  const toggleMenu = () => {  
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const savedCart = document.cookie.split("; ").find((row) => row.startsWith("cart="))?.split("=")[1];
+    if (savedCart) {
+      const cartItems = JSON.parse(savedCart);
+      setCartCount(cartItems.length);
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchCoins = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await fetch(`http://localhost:3002/profile/coins?token=${token}`, {
+            method: 'GET',
+          });
+          const data = await response.json();
+          setCoins(data.coins);
+        } catch (error) {
+          console.error('Erreur lors de la récupération des miams:', error);
+        }
+      }
+    };
+
+    fetchCoins();
+  }, [isLoggedIn]);
+
+  const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
@@ -76,9 +116,8 @@ function Header() {
 
         {/* User icons and login/register buttons */}
         <div className="hidden lg:flex items-center space-x-4">
-          {session ? (
-            <div>
-    
+          {session && session.user ? (
+            <div className="relative flex items-start" ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className=" items-center flex gap-4 font-bold py-2 px-4 rounded-3xl transition duration-300"
@@ -88,13 +127,13 @@ function Header() {
                 <FaChevronDown className={`text-sm transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-md py-2 z-10 border border-gray-200">
+                <div className="absolute right-0 mt-7 w-56 bg-white rounded-lg shadow-md py-2 z-10 border border-gray-200">
                   <div className="px-4 py-2 border-b border-gray-200">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-gray-700">Mes Miams</span>
                       <div className="flex items-center space-x-1">
                         <img src={coinIcon} alt="Miam" className="w-4 h-4" />
-                        <span className="text-sm font-bold text-purple-600">{session.user.id}</span>
+                        <span className="text-sm font-bold text-purple-600">{coins}</span>
                       </div>
                     </div>
                   </div>
@@ -120,6 +159,14 @@ function Header() {
                   </div>
                 </div>
               )}
+              <Link to="/cart" className="flex items-center relative ml-4">
+                <FaShoppingCart className="text-xl text-gray-700 hover:text-purple-500 transition-colors duration-300" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
             </div>
           ) : (
             <>
