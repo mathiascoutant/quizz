@@ -16,6 +16,7 @@ function Header() {
   const dropdownRef = useRef(null);
   const [userData, setUserData] = useState(null);
   const [cartCount, setCartCount] = useState(0);
+  const [coins, setCoins] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -48,6 +49,25 @@ function Header() {
       setCartCount(cartItems.length);
     }
   }, []);
+
+  useEffect(() => {
+    const fetchCoins = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await fetch(`http://localhost:3002/profile/coins?token=${token}`, {
+            method: 'GET',
+          });
+          const data = await response.json();
+          setCoins(data.coins);
+        } catch (error) {
+          console.error('Erreur lors de la récupération des miams:', error);
+        }
+      }
+    };
+
+    fetchCoins();
+  }, [isLoggedIn]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -133,7 +153,7 @@ function Header() {
                       <span className="text-sm font-medium text-gray-700">Mes Miams</span>
                       <div className="flex items-center space-x-1">
                         <img src={coinIcon} alt="Miam" className="w-4 h-4" />
-                        <span className="text-sm font-bold text-purple-600">{userData.id}</span>
+                        <span className="text-sm font-bold text-purple-600">{coins}</span>
                       </div>
                     </div>
                   </div>
