@@ -1,9 +1,10 @@
+import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import axios from 'axios';
-import { getCategoryIcon } from '../../utils/categoryIcons';
 import coin from '../../assets/coin.png';
+import { getCategoryIcon } from '../../utils/categoryIcons';
+import { cn } from '../../utils/utils';
 
 export const Modal = ({ title, children, path, setSelectedCategory }) => {
   const [difficulties, setDifficulties] = useState([]);
@@ -31,7 +32,9 @@ export const Modal = ({ title, children, path, setSelectedCategory }) => {
   useEffect(() => {
     const fetchDifficulties = async () => {
       try {
-        const response = await axios.get('http://localhost:3002/api/levels/list');
+        const response = await axios.get(
+          'http://localhost:3002/api/levels/list'
+        );
         setDifficulties(response.data);
       } catch (error) {
         console.error('Error fetching difficulties:', error);
@@ -61,20 +64,27 @@ export const Modal = ({ title, children, path, setSelectedCategory }) => {
   );
 };
 
-const ModalContent = ({ title, children, path, setSelectedCategory, difficulties, selectedDifficulty, setSelectedDifficulty }) => {
+const ModalContent = ({
+  title,
+  children,
+  path,
+  setSelectedCategory,
+  difficulties,
+  selectedDifficulty,
+  setSelectedDifficulty,
+}) => {
   const [answerChoiceCount, setAnswerChoiceCount] = useState('');
   const [coinsWon, setCoinsWon] = useState(0);
   const [coinsLost, setCoinsLost] = useState(0);
 
   useEffect(() => {
     const calculateCoins = () => {
- 
-      const { difficulty } = difficulties.find(d => String(d.id) === selectedDifficulty);
+      const { difficulty } = difficulties.find(
+        (d) => String(d.id) === selectedDifficulty
+      );
 
-      
       let newCoinsWon = 3;
       let newCoinsLost = 2;
-
 
       if (difficulty === 'Débutant') {
         newCoinsWon = answerChoiceCount === '2' ? 2 : 3;
@@ -91,7 +101,9 @@ const ModalContent = ({ title, children, path, setSelectedCategory, difficulties
       setCoinsLost(newCoinsLost);
     };
 
-    calculateCoins();
+    if (selectedDifficulty) {
+      calculateCoins();
+    }
   }, [selectedDifficulty, answerChoiceCount, difficulties]);
 
   return (
@@ -106,12 +118,12 @@ const ModalContent = ({ title, children, path, setSelectedCategory, difficulties
       <div className="w-1/3 bg-gray-100 p-6 flex items-center justify-center">
         {getCategoryIcon(title)}
       </div>
-      
+
       {/* Partie droite avec les informations et le bouton */}
       <div className="w-2/3 p-6 space-y-4">
         <h2 className="text-3xl font-bold">{title}</h2>
         <div className="text-gray-600">{children}</div>
-        
+
         <select
           value={selectedDifficulty}
           onChange={(e) => setSelectedDifficulty(e.target.value)}
@@ -124,7 +136,7 @@ const ModalContent = ({ title, children, path, setSelectedCategory, difficulties
             </option>
           ))}
         </select>
-        
+
         <select
           value={answerChoiceCount}
           onChange={(e) => setAnswerChoiceCount(e.target.value)}
@@ -134,24 +146,47 @@ const ModalContent = ({ title, children, path, setSelectedCategory, difficulties
           <option value="2">2 choix</option>
           <option value="4">4 choix</option>
         </select>
-        
+
         <p className="text-xs text-gray-500 mt-1">
-          Gagnez {coinsWon} <img src={coin} alt="coin" className="inline w-4 h-4" /> par bonne réponse et perdez {coinsLost} <img src={coin} alt="coin" className="inline w-4 h-4" /> pour chaque erreur !
+          Gagnez {coinsWon}{' '}
+          <img src={coin} alt="coin" className="inline w-4 h-4" /> par bonne
+          réponse et perdez {coinsLost}{' '}
+          <img src={coin} alt="coin" className="inline w-4 h-4" /> pour chaque
+          erreur !
         </p>
-        
-        <a
-          className="bg-purple-600 text-white py-2 px-4 rounded-full block w-full text-center hover:bg-purple-700 transition duration-200 font-semibold"
-          href={`${path}?difficulty=${selectedDifficulty}&answerChoiceCount=${answerChoiceCount}`}
+
+        <button
+          disabled={!selectedDifficulty || !answerChoiceCount}
+          className={cn('w-full', {
+            'pointer-events-none opacity-50':
+              !selectedDifficulty || !answerChoiceCount,
+          })}
         >
-          Lancer le quizz !
-        </a>
+          <a
+            className="bg-purple-600 text-white py-2 px-4 rounded-full block w-full text-center hover:bg-purple-700 transition duration-200 font-semibold"
+            href={`${path}?difficulty=${selectedDifficulty}&answerChoiceCount=${answerChoiceCount}`}
+          >
+            Lancer le quizz !
+          </a>
+        </button>
 
         <button
           onClick={() => setSelectedCategory(null)}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 bg-white rounded-full p-1 shadow-md transition duration-200 hover:bg-gray-100"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>
