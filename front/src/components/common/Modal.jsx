@@ -31,7 +31,7 @@ export const Modal = ({ title, children, path, setSelectedCategory }) => {
   useEffect(() => {
     const fetchDifficulties = async () => {
       try {
-        const response = await axios.get('http://localhost:3002/list/levels');
+        const response = await axios.get('http://localhost:3002/api/levels/list');
         setDifficulties(response.data);
       } catch (error) {
         console.error('Error fetching difficulties:', error);
@@ -68,19 +68,21 @@ const ModalContent = ({ title, children, path, setSelectedCategory, difficulties
 
   useEffect(() => {
     const calculateCoins = () => {
-      const difficulty = difficulties.find(d => d.id === selectedDifficulty);
-      const difficultyLevel = difficulty ? difficulty.Difficulty : '';
+ 
+      const { difficulty } = difficulties.find(d => String(d.id) === selectedDifficulty);
+
       
       let newCoinsWon = 3;
       let newCoinsLost = 2;
 
-      if (difficultyLevel === 'débutant') {
+
+      if (difficulty === 'Débutant') {
         newCoinsWon = answerChoiceCount === '2' ? 2 : 3;
         newCoinsLost = 1;
-      } else if (difficultyLevel === 'confirmé') {
+      } else if (difficulty === 'Confirmé') {
         newCoinsWon = answerChoiceCount === '2' ? 3 : 4;
         newCoinsLost = 2;
-      } else if (difficultyLevel === 'expert') {
+      } else if (difficulty === 'Expert') {
         newCoinsWon = answerChoiceCount === '2' ? 4 : 5;
         newCoinsLost = 3;
       }
@@ -118,7 +120,7 @@ const ModalContent = ({ title, children, path, setSelectedCategory, difficulties
           <option value="">Sélectionnez une difficulté</option>
           {difficulties.map((difficulty) => (
             <option key={difficulty.id} value={difficulty.id}>
-              {difficulty.Difficulty}
+              {difficulty.difficulty}
             </option>
           ))}
         </select>

@@ -1,5 +1,6 @@
 import {
   FaBook,
+  FaBookOpen,
   FaCalendarDay,
   FaFilm,
   FaFlag,
@@ -27,21 +28,21 @@ export const getCategoryIcon = (name) => {
   switch (name.toLowerCase()) {
     case 'animaux':
       return <FaPaw className="text-5xl text-brown-500" />;
-    case 'archeologie':
+    case 'archéologie':
       return <FaSkull className="text-5xl text-sand-500" />;
     case 'arts':
       return <FaPalette className="text-5xl text-pink-500" />;
     case 'bd':
       return <FaBook className="text-5xl text-orange-500" />;
-    case 'celebrites':
+    case 'célébrités':
       return <FaStar className="text-5xl text-yellow-500" />;
-    case 'cinema':
+    case 'cinéma':
       return <FaFilm className="text-5xl text-red-500" />;
     case 'culture':
       return <FaTheaterMasks className="text-5xl text-purple-500" />;
     case 'gastronomie':
       return <FaUtensils className="text-5xl text-green-500" />;
-    case 'geographie':
+    case 'géographie':
       return <FaGlobeAmericas className="text-5xl text-blue-500" />;
     case 'histoire':
       return <FaLandmark className="text-5xl text-gray-700" />;
@@ -49,7 +50,7 @@ export const getCategoryIcon = (name) => {
       return <FaLaptopCode className="text-5xl text-blue-600" />;
     case 'internet':
       return <FaGlobe className="text-5xl text-blue-400" />;
-    case 'litterature':
+    case 'littérature':
       return <FaBook className="text-5xl text-indigo-500" />;
     case 'loisirs':
       return <FaGamepad className="text-5xl text-pink-600" />;
@@ -65,10 +66,12 @@ export const getCategoryIcon = (name) => {
       return <FaFlask className="text-5xl text-green-500" />;
     case 'sports':
       return <FaFutbol className="text-5xl text-blue-500" />;
-    case 'television':
+    case 'télévision':
       return <FaTv className="text-5xl text-gray-600" />;
     case 'tourisme':
       return <FaPlane className="text-5xl text-cyan-500" />;
+    case 'légendes':
+      return <FaBookOpen className="text-5xl text-cyan-500" />;
     default:
       return <FaQuestionCircle className="text-5xl text-gray-500" />;
   }

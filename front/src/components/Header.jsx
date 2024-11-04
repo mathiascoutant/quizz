@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { FaCoins, FaUser } from 'react-icons/fa';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useRef, useState } from 'react';
+import { FaChevronDown, FaCoins, FaUser } from 'react-icons/fa';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { MENU_ITEMS_LINKS } from '../constants/menu.items.constants';
 import { useSessionStore } from '../store/session.store';
 import { Button } from './common/Button';
@@ -9,10 +9,19 @@ import coinIcon from '../assets/coin.png'; // Assurez-vous que le chemin est cor
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { session, sessionLogOut } = useSessionStore();
+  const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const [userData, setUserData] = useState(null);
+  const [cartCount, setCartCount] = useState(0);
+  const [coins, setCoins] = useState(0);
 
-
-  const toggleMenu = () => {
+  const toggleMenu = () => {  
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
   
   return (
@@ -68,25 +77,14 @@ function Header() {
         {/* User icons and login/register buttons */}
         <div className="hidden lg:flex items-center space-x-4">
           {session ? (
-            <>
-              <Link
-                to="/profile"
-                className="text-gray-700 hover:text-purple-500"
-              >
-                <FaUser className="text-xl" />
-              </Link>
-              <Link
-                to="/wallet"
-                className="text-gray-700 hover:text-purple-500"
-              >
-                <FaCoins className="text-xl" />
-              </Link>
+            <div>
+    
               <button
-                onClick={sessionLogOut}
-                className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-3xl transition duration-300"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className=" items-center flex gap-4 font-bold py-2 px-4 rounded-3xl transition duration-300"
               >
                 <FaUser className="text-xl" />
-                <span className="font-medium">{userData.pseudo}</span>
+                <span className="font-medium">{session.user.pseudo}</span>
                 <FaChevronDown className={`text-sm transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
               {isDropdownOpen && (
@@ -96,7 +94,7 @@ function Header() {
                       <span className="text-sm font-medium text-gray-700">Mes Miams</span>
                       <div className="flex items-center space-x-1">
                         <img src={coinIcon} alt="Miam" className="w-4 h-4" />
-                        <span className="text-sm font-bold text-purple-600">{userData.id}</span>
+                        <span className="text-sm font-bold text-purple-600">{session.user.id}</span>
                       </div>
                     </div>
                   </div>
@@ -114,7 +112,7 @@ function Header() {
                   </Link>
                   <div className="px-4 pt-2">
                     <button
-                      onClick={handleLogout}
+                      onClick={sessionLogOut}
                       className="block w-full text-center px-4 py-2 text-sm text-white bg-purple-500 hover:bg-purple-600 rounded-md transition-colors duration-300"
                     >
                       Se déconnecter
