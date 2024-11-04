@@ -6,6 +6,8 @@ import formRoutes from '../back/src/routes/formRoutes.js';
 import userAnswerRoutes from '../back/src/routes/userAnswerRoutes.js';
 import couponRoutes from '../back/src/routes/couponRoutes.js';
 import userCouponRoutes from '../back/src/routes/userCouponRoutes.js';
+import difficultyRoutes from '../back/src/routes/difficultyRoutes.js';
+import categoryRoutes from '../back/src/routes/categoryRoutes.js';
 
 const app = express();
 
@@ -25,6 +27,8 @@ app.use('/api/quizz', formRoutes);
 app.use('/api/useranswers', userAnswerRoutes);
 app.use('/api/coupons', couponRoutes);
 app.use('/api/user-coupons', userCouponRoutes);
+app.use('/api/levels', difficultyRoutes);
+app.use('/api/categories', categoryRoutes);
 // app.use('/users', userRoutes);
 
 // Gestion des erreurs 404
