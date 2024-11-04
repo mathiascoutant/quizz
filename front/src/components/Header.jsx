@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaCoins, FaUser, FaChevronDown } from 'react-icons/fa';
+import { FaCoins, FaUser, FaChevronDown, FaShoppingCart } from 'react-icons/fa';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { MENU_ITEMS_LINKS } from '../constants/menu.items.constants';
 import TokenService from '../services/token.service';
@@ -15,6 +15,7 @@ function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [userData, setUserData] = useState(null);
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -38,6 +39,14 @@ function Header() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+  }, []);
+
+  useEffect(() => {
+    const savedCart = document.cookie.split("; ").find((row) => row.startsWith("cart="))?.split("=")[1];
+    if (savedCart) {
+      const cartItems = JSON.parse(savedCart);
+      setCartCount(cartItems.length);
+    }
   }, []);
 
   const toggleMenu = () => {
@@ -108,7 +117,7 @@ function Header() {
         {/* User icons and login/register buttons */}
         <div className="hidden lg:flex items-center space-x-4">
           {isLoggedIn && userData ? (
-            <div className="relative" ref={dropdownRef}>
+            <div className="relative flex items-center" ref={dropdownRef}>
               <button
                 onClick={toggleDropdown}
                 className="flex items-center space-x-2 text-gray-700 hover:text-purple-500 transition-colors duration-300"
@@ -150,6 +159,14 @@ function Header() {
                   </div>
                 </div>
               )}
+              <Link to="/cart" className="flex items-center relative ml-4">
+                <FaShoppingCart className="text-xl text-gray-700 hover:text-purple-500 transition-colors duration-300" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
             </div>
           ) : (
             <>
