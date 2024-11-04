@@ -1,33 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { FaCoins, FaUser, FaChevronDown, FaShoppingCart } from 'react-icons/fa';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { MENU_ITEMS_LINKS } from '../constants/menu.items.constants';
-import TokenService from '../services/token.service';
+import { useSessionStore } from '../store/session.store';
 import { Button } from './common/Button';
 import coinIcon from '../assets/coin.png'; // Assurez-vous que le chemin est correct
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return !!localStorage.getItem('token');
-  });
+  const { session, sessionLogOut } = useSessionStore();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [userData, setUserData] = useState(null);
   const [cartCount, setCartCount] = useState(0);
   const [coins, setCoins] = useState(0);
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token);
-    if (token) {
-      const userDataString = localStorage.getItem('userData');
-      if (userDataString) {
-        setUserData(JSON.parse(userDataString));
-      }
-    }
-  }, []);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -73,17 +60,10 @@ function Header() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleLogout = () => {
-    TokenService.handleLogout();
-    setIsLoggedIn(false);
-    setUserData(null);
-    navigate('/');
-  };
-
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
-
+  
   return (
     <header className="fixed top-0 left-0 right-0 bg-white z-50">
       <div className="container relative mx-auto px-4 sm:px-6 lg:px-12 py-4 flex justify-between items-center">
@@ -136,14 +116,14 @@ function Header() {
 
         {/* User icons and login/register buttons */}
         <div className="hidden lg:flex items-center space-x-4">
-          {isLoggedIn && userData ? (
+          {session && session.user ? (
             <div className="relative flex items-start" ref={dropdownRef}>
               <button
-                onClick={toggleDropdown}
-                className="flex items-center space-x-2 text-gray-700 hover:text-purple-500 transition-colors duration-300"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className=" items-center flex gap-4 font-bold py-2 px-4 rounded-3xl transition duration-300"
               >
                 <FaUser className="text-xl" />
-                <span className="font-medium">{userData.pseudo}</span>
+                <span className="font-medium">{session.user.pseudo}</span>
                 <FaChevronDown className={`text-sm transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
               {isDropdownOpen && (
@@ -171,7 +151,7 @@ function Header() {
                   </Link>
                   <div className="px-4 pt-2">
                     <button
-                      onClick={handleLogout}
+                      onClick={sessionLogOut}
                       className="block w-full text-center px-4 py-2 text-sm text-white bg-purple-500 hover:bg-purple-600 rounded-md transition-colors duration-300"
                     >
                       Se déconnecter
@@ -201,7 +181,7 @@ function Header() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <MobileMenu isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+        <MobileMenu isLoggedIn={session} handleLogout={sessionLogOut} />
       )}
     </header>
   );

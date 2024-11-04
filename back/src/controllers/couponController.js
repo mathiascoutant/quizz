@@ -1,4 +1,6 @@
 import Coupon from '../models/couponModel.js';
+import { User }  from '../models/userModel.js'; 
+import UserCoupon from '../models/userCouponModel.js';
 
 
 // ------------------------
@@ -113,5 +115,42 @@ export const getCouponsByBrand = async (req, res) => {
     res.status(200).json(coupons); // Retourner la liste des coupons
   } catch (error) {
     res.status(500).json({ message: 'Erreur lors de la récupération des coupons.', error: error.message });
+  }
+};
+
+export const payCoupon = async (req, res) => {
+  const { userId, couponId } = req.body;
+
+  try {
+    const coupon = await Coupon.findByPk(couponId);
+    const user = await User.findByPk(userId);
+
+    // Vérification de l'existence du coupon et de l'utilisateur
+    if (!coupon) {
+      return res.status(404).json({ message: 'Coupon non trouvé.' });
+    }
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé.' });
+    }
+
+    // Calcul du code de réduction et des coins restants
+    const discountCode = `${coupon.brand}_${coupon.id}`;
+    const cost = coupon.coinCost;
+    const newCoinBalance = user.coins - cost;
+    // Vérifier que l'utilisateur a suffisamment de coins
+    if (newCoinBalance < 0) {
+      return res.status(400).json({ message: 'Solde insuffisant.' });
+    }
+
+    // Créer l'entrée dans UserCoupon
+    await UserCoupon.create({ userId, couponId, discountCode });
+
+    // Mettre à jour le solde des coins de l'utilisateur
+    await user.update({ coins: newCoinBalance });
+
+
+    res.status(200).json({ message: 'Coupon appliqué à l user avec succès'});
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur lors de l\'application du coupon.', error });
   }
 };

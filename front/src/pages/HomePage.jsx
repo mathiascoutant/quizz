@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import {
   FaArrowAltCircleDown,
   FaArrowAltCircleLeft,
@@ -88,6 +88,8 @@ function HomePage() {
 
   const [displayedCategories, setDisplayedCategories] = useState(6);
   const [showAllCategories, setShowAllCategories] = useState(false);
+
+  
 
   const toggleCategoriesDisplay = () => {
     if (showAllCategories) {
@@ -191,9 +193,8 @@ function HomePage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {categories.slice(0, displayedCategories).map((category, index) => (
-              <>
+              <Fragment>
                 <CategoryCard
-                  key={index}
                   icon={category.icon}
                   title={category.title}
                   description={category.description}
@@ -205,12 +206,12 @@ function HomePage() {
                   <Modal
                     setSelectedCategory={setSelectedCategory}
                     title={category.title}
-                    path={`/quizz?category=${category.title}`}
+                    path={`/categories/${category.title}/quizz`}
                   >
                     <p>{category.description}</p>
                   </Modal>
                 )}
-              </>
+              </Fragment>
             ))}
           </div>
           <div className="text-center">

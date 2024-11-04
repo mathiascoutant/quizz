@@ -68,19 +68,21 @@ const ModalContent = ({ title, children, path, setSelectedCategory, difficulties
 
   useEffect(() => {
     const calculateCoins = () => {
-      const difficulty = difficulties.find(d => d.id === selectedDifficulty);
-      const difficultyLevel = difficulty ? difficulty.Difficulty : '';
+ 
+      const { difficulty } = difficulties.find(d => String(d.id) === selectedDifficulty);
+
       
       let newCoinsWon = 3;
       let newCoinsLost = 2;
 
-      if (difficultyLevel === 'débutant') {
+
+      if (difficulty === 'Débutant') {
         newCoinsWon = answerChoiceCount === '2' ? 2 : 3;
         newCoinsLost = 1;
-      } else if (difficultyLevel === 'confirmé') {
+      } else if (difficulty === 'Confirmé') {
         newCoinsWon = answerChoiceCount === '2' ? 3 : 4;
         newCoinsLost = 2;
-      } else if (difficultyLevel === 'expert') {
+      } else if (difficulty === 'Expert') {
         newCoinsWon = answerChoiceCount === '2' ? 4 : 5;
         newCoinsLost = 3;
       }

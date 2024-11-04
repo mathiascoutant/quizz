@@ -1,13 +1,20 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import Header from './components/Header';
+import {
+  Route,
+  BrowserRouter as Router,
+  Routes,
+  useLocation,
+} from 'react-router-dom';
 import Footer from './components/Footer';
+import Header from './components/Header';
+import './index.css';
+import { CategoriesPage } from './pages/CategoriesPage';
 import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
 import QuizzPage from './pages/QuizzPage';
 import RegisterPage from './pages/RegisterPage';
-import LoginPage from './pages/LoginPage';
+import { ProtectedRoute } from './router/ProtectedRoutes';
 import DiscountPage from './pages/DiscountPage';
-import './index.css';
 
 function App() {
   return (
@@ -19,8 +26,8 @@ function App() {
 
 function AppContent() {
   const location = useLocation();
-  const hideHeaderFooter = ['/quizz', '/login', '/register'].some(path => 
-    location.pathname.startsWith(path)
+  const hideHeaderFooter = ['/categories/', '/login', '/register'].some(
+    (path) => location.pathname.startsWith(path)
   );
 
   return (
@@ -29,7 +36,22 @@ function AppContent() {
       <div className={`flex-grow ${!hideHeaderFooter ? 'pt-16' : ''}`}>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/quizz" element={<QuizzPage />} />
+          <Route
+            path="/categories"
+            element={
+              <ProtectedRoute>
+                <CategoriesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/categories/:category/quizz"
+            element={
+              <ProtectedRoute>
+                <QuizzPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/discount" element={<DiscountPage />} />
