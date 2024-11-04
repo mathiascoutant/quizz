@@ -1,6 +1,6 @@
 export const renderQuizzBackground = (category) => {
   switch (category) {
-    case 'Sciences':
+    case 'animaux':
       return '/assets/images/sport-bg.png';
 
     default:

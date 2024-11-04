@@ -8,6 +8,7 @@ import {
 import Footer from './components/Footer';
 import Header from './components/Header';
 import './index.css';
+import { CategoriesPage } from './pages/CategoriesPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import QuizzPage from './pages/QuizzPage';
@@ -24,8 +25,8 @@ function App() {
 
 function AppContent() {
   const location = useLocation();
-  const hideHeaderFooter = ['/quizz', '/login', '/register'].some((path) =>
-    location.pathname.startsWith(path)
+  const hideHeaderFooter = ['/categories/', '/login', '/register'].some(
+    (path) => location.pathname.startsWith(path)
   );
 
   return (
@@ -35,7 +36,15 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route
-            path="/quizz"
+            path="/categories"
+            element={
+              <ProtectedRoute>
+                <CategoriesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/categories/:category/quizz"
             element={
               <ProtectedRoute>
                 <QuizzPage />

@@ -5,7 +5,7 @@ export const MENU_ITEMS_LINKS = [
   },
   {
     label: 'Quizz',
-    href: '/quizz',
+    href: '/categories',
   },
   {
     label: 'Bon de réduction',

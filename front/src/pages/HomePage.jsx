@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import {
   FaArrowAltCircleDown,
   FaArrowAltCircleLeft,
@@ -44,7 +44,7 @@ function HomePage() {
       text: "QuizzGo est devenu ma pause préférée au travail. C'est amusant, éducatif et récompensant à la fois.",
     },
     {
-      name: 'Willial Fort',
+      name: 'William Fort',
       text: "Grâce à QuizzGo, j'apprends quelque chose de nouveau chaque jour. C'est une façon ludique et motivante d'enrichir sa culture générale.",
     },
   ];
@@ -205,9 +205,8 @@ function HomePage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {categories.map((category, index) => (
-              <>
+              <Fragment key={index}>
                 <CategoryCard
-                  key={index}
                   icon={category.icon}
                   title={category.title}
                   description={category.description}
@@ -219,12 +218,12 @@ function HomePage() {
                   <Modal
                     setSelectedCategory={setSelectedCategory}
                     title={category.title}
-                    path={`/quizz?category=${category.title}`}
+                    path={`/quizz/${category.title}`}
                   >
                     <p>{category.description}</p>
                   </Modal>
                 )}
-              </>
+              </Fragment>
             ))}
           </div>
           <div className="text-center">

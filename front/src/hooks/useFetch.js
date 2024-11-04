@@ -15,7 +15,7 @@ export const useFetch = (url) => {
       .get(url)
       .then((res) => {
         setLoading(false);
-        console.log(res.data.results);
+
         res.data.results && setData(res.data.results);
       })
       .catch((err) => {
