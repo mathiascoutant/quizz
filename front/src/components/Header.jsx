@@ -117,7 +117,7 @@ function Header() {
         {/* User icons and login/register buttons */}
         <div className="hidden lg:flex items-center space-x-4">
           {isLoggedIn && userData ? (
-            <div className="relative flex items-center" ref={dropdownRef}>
+            <div className="relative flex items-start" ref={dropdownRef}>
               <button
                 onClick={toggleDropdown}
                 className="flex items-center space-x-2 text-gray-700 hover:text-purple-500 transition-colors duration-300"
