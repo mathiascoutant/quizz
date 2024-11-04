@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import RegisterPage from "./RegisterPage";
 import { useSessionStore } from "../store/session.store";
 function ProfilePage() {
@@ -10,22 +10,23 @@ function ProfilePage() {
   const [password, setPassword] = useState("mdp012345");*/
   
   const session = useSessionStore((state) => state.session);
-  
   const [newData, setNewData] = useState({
-    firstName: session.user.firstName,
-    lastName: session.user.lastName,
+    firstname: session.user.firstname,
+    lastname: session.user.lastname,
     username: session.user.pseudo,
     mail: session.user.mail,
     password: session.user.password,
     coin: session.user.coin,
   })
 
-
   //console.log(session.user)
 
   // create function that will fetch using post the api.
 
   // const user = useContext(RegisterPage);
+  
+  console.log("sessiondata", session)
+  console.log("newdata", newData)
  
 
   return (
@@ -46,25 +47,25 @@ function ProfilePage() {
           First name:{""}
           {isEditing ? (
             <input
-              value={session.user.firstName}
+              value={session.user.firstname}
               onChange={(e) => {
                 setNewData((prevState) => {
                   return {
                     ...prevState,
-                    firstName: e.target.value,
+                    firstname: e.target.value,
                   }
                 })
               }}
             ></input>
           ) : (
-            <b>{session.user.firstName}</b>
+            <b>{session.user.firstname}</b>
           )}<br></br>
         </label>
         <label>
           Last name:{""}
           {isEditing ? (
             <input
-              value={session.user.lastName}
+              value={session.user.lastname}
               onChange={(e) => {
                 setNewData((prevState) => {
                   return {
@@ -75,7 +76,7 @@ function ProfilePage() {
               }}
             ></input>
           ) : (
-            <b>{session.user.lastName}</b>
+            <b>{session.user.lastname}</b>
           )}<br></br>
         </label>
         <label>
@@ -130,12 +131,12 @@ function ProfilePage() {
         <label>
           Number of coin:{""}
             <b>{session.user.coin}</b>
-          <br></br>
+          <br>{session.user.coin}</br>
         </label>
         <button type="submit">{isEditing ? "Save" : "Edit"} Profile</button>
         <p>
           <i>
-            Hey, {session.user.firstName} {session.user.lastName}
+            Hey, {session.user.firstname} {session.user.lastname}
           </i>
         </p>
       </form>
