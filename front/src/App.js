@@ -15,6 +15,7 @@ import QuizzPage from "./pages/QuizzPage";
 import RegisterPage from "./pages/RegisterPage";
 import { ProtectedRoute } from "./router/ProtectedRoutes";
 import DiscountPage from "./pages/DiscountPage";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (

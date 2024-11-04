@@ -1,14 +1,31 @@
 import { useContext, useState } from "react";
 import RegisterPage from "./RegisterPage";
+import { useSessionStore } from "../store/session.store";
 function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
-  const [firstName, setFirstName] = useState("idryss");
+  /*onst [firstName, setFirstName] = useState("idryss");
   const [lastName, setLastName] = useState("judéaux");
   const [mail, setMail] = useState("idryss@ynov.com");
   const [pseudo, setPseudo] = useState("Black Jesus");
-  const [password, setPassword] = useState("mdp012345");
+  const [password, setPassword] = useState("mdp012345");*/
+  
+  const session = useSessionStore((state) => state.session);
+  
+  const [newData, setNewData] = useState({
+    firstName: session.user.firstName,
+    lastName: session.user.lastName,
+    username: session.user.pseudo,
+    mail: session.user.mail,
+    password: session.user.password,
+    coin: session.user.coin,
+  })
 
-  const user = useContext(RegisterPage);
+
+  //console.log(session.user)
+
+  // create function that will fetch using post the api.
+
+  // const user = useContext(RegisterPage);
  
 
   return (
@@ -29,71 +46,96 @@ function ProfilePage() {
           First name:{""}
           {isEditing ? (
             <input
-              value={user.firstName}
+              value={session.user.firstName}
               onChange={(e) => {
-                setFirstName(e.target.value);
+                setNewData((prevState) => {
+                  return {
+                    ...prevState,
+                    firstName: e.target.value,
+                  }
+                })
               }}
             ></input>
           ) : (
-            <b>{firstName}</b>
+            <b>{session.user.firstName}</b>
           )}<br></br>
         </label>
         <label>
           Last name:{""}
           {isEditing ? (
             <input
-              value={lastName}
+              value={session.user.lastName}
               onChange={(e) => {
-                setLastName(e.target.value);
+                setNewData((prevState) => {
+                  return {
+                    ...prevState,
+                    lastName: e.target.value,
+                  }
+                })
               }}
             ></input>
           ) : (
-            <b>{lastName}</b>
+            <b>{session.user.lastName}</b>
           )}<br></br>
         </label>
         <label>
           Mail:{""}
           {isEditing ? (
             <input
-              value={mail}
+              value={session.user.mail}
               onChange={(e) => {
-                setMail(e.target.value);
+                setNewData((prevState) => {
+                  return {
+                    ...prevState,
+                    mail: e.target.value,
+                  }
+                })
               }}
             ></input>
           ) : (
-            <b>{mail}</b>
+            <b>{session.user.mail}</b>
           )}<br></br>
         </label>
         <label>
           Password:{""}
           {isEditing ? (
             <input
-              value={password}
+              value={session.user.password}
               onChange={(e) => {
-                setPassword(e.target.value);
+                setNewData((prevState) => {
+                  return {
+                    ...prevState,
+                    password: e.target.value,
+                  }
+                })
               }}
             ></input>
           ) : (
-            <b>{password}</b>
+            <b>{session.user.password}</b>
           )}<br></br>
         </label>
         <label>
-          Pseudo:{""}
+          Username:{""}
           {isEditing ? (
             <input
-              value={pseudo}
+              value={session.user.pseudo}
               onChange={(e) => {
-                setPseudo(e.target.value);
+                setNewData(e.target.value);
               }}
             ></input>
           ) : (
-            <b>{pseudo}</b>
+            <b>{session.user.pseudo}</b>
           )}<br></br>
+        </label>
+        <label>
+          Number of coin:{""}
+            <b>{session.user.coin}</b>
+          <br></br>
         </label>
         <button type="submit">{isEditing ? "Save" : "Edit"} Profile</button>
         <p>
           <i>
-            Hey, {firstName} {lastName}
+            Hey, {session.user.firstName} {session.user.lastName}
           </i>
         </p>
       </form>

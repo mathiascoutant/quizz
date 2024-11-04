@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import {
   FaArrowAltCircleDown,
   FaArrowAltCircleLeft,
@@ -52,7 +52,7 @@ function HomePage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:3002/list/categories');
+      const response = await fetch('http://localhost:3002/api/categories');
       const data = await response.json();
       const processedCategories = processCategories(data);
       setCategories(processedCategories);
@@ -88,6 +88,8 @@ function HomePage() {
 
   const [displayedCategories, setDisplayedCategories] = useState(6);
   const [showAllCategories, setShowAllCategories] = useState(false);
+
+  
 
   const toggleCategoriesDisplay = () => {
     if (showAllCategories) {
@@ -192,7 +194,7 @@ function HomePage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {categories.slice(0, displayedCategories).map((category, index) => (
-              <>
+              <Fragment>
                 <CategoryCard
                   icon={category.icon}
                   title={category.title}
@@ -205,7 +207,7 @@ function HomePage() {
                   <Modal
                     setSelectedCategory={setSelectedCategory}
                     title={category.title}
-                    path={`/quizz/${category.title}`}
+                    path={`/categories/${category.title}/quizz`}
                   >
                     <p>{category.description}</p>
                   </Modal>
