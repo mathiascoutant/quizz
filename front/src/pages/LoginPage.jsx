@@ -1,9 +1,11 @@
+import axios from 'axios';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import loginImage from '../assets/inscription.jpg';
-import axios from 'axios';
+import { useSessionStore } from '../store/session.store';
 
 function LoginPage() {
+  const sessionLogIn = useSessionStore((state) => state.sessionLogIn);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -14,21 +16,31 @@ function LoginPage() {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    const value =
+      e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     setFormData({ ...formData, [e.target.name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Réinitialiser l'erreur à chaque soumission
+
     try {
-      const response = await axios.post('http://localhost:3002/auth/login', formData);
-      console.log('Réponse du serveur:', response.data);
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('userData', JSON.stringify(response.data.user));
+      const { data } = await axios.post(
+        'http://localhost:3002/auth/login',
+        formData
+      );
+
+      const { token, user } = data;
+
+      console.log('Réponse du serveur:', { token, user });
+
+      sessionLogIn({ token, user });
       navigate('/');
     } catch (error) {
-      console.error('Erreur de connexion:', error.response?.data?.message || error.message);
+      console.error(
+        'Erreur de connexion:',
+        error.response?.data?.message || error.message
+      );
       if (error.response && error.response.status === 400) {
         setError('Adresse e-mail ou mot de passe invalide');
       } else {
@@ -41,7 +53,11 @@ function LoginPage() {
     <div className="flex h-screen">
       {/* Image à gauche */}
       <div className="w-1/2">
-        <img src={loginImage} alt="login" className="w-full h-full object-cover" />
+        <img
+          src={loginImage}
+          alt="login"
+          className="w-full h-full object-cover"
+        />
       </div>
 
       {/* Formulaire à droite */}
@@ -89,20 +105,28 @@ function LoginPage() {
                   onChange={handleChange}
                   className="mr-2"
                 />
-                <label htmlFor="rememberMe" className="text-sm text-gray-600">Se souvenir de moi</label>
+                <label htmlFor="rememberMe" className="text-sm text-gray-600">
+                  Se souvenir de moi
+                </label>
               </div>
-              <Link to="/forgot-password" className="text-sm text-purple-600 hover:text-purple-800 transition-colors">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-purple-600 hover:text-purple-800 transition-colors"
+              >
                 Mot de passe oublié ?
               </Link>
             </div>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-colors"
             >
               Se connecter
             </button>
             <div className="text-center mt-6">
-              <Link to="/register" className="text-purple-600 hover:text-purple-800 transition-colors">
+              <Link
+                to="/register"
+                className="text-purple-600 hover:text-purple-800 transition-colors"
+              >
                 Pas encore inscrit ? S'inscrire
               </Link>
             </div>

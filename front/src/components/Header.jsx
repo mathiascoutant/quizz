@@ -1,60 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { FaCoins, FaUser, FaChevronDown } from 'react-icons/fa';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { FaCoins, FaUser } from 'react-icons/fa';
+import { Link, NavLink } from 'react-router-dom';
 import { MENU_ITEMS_LINKS } from '../constants/menu.items.constants';
-import TokenService from '../services/token.service';
+import { useSessionStore } from '../store/session.store';
 import { Button } from './common/Button';
 import coinIcon from '../assets/coin.png'; // Assurez-vous que le chemin est correct
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return !!localStorage.getItem('token');
-  });
-  const navigate = useNavigate();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
-  const [userData, setUserData] = useState(null);
+  const { session, sessionLogOut } = useSessionStore();
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token);
-    if (token) {
-      const userDataString = localStorage.getItem('userData');
-      if (userDataString) {
-        setUserData(JSON.parse(userDataString));
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-
-  const handleLogout = () => {
-    TokenService.handleLogout();
-    setIsLoggedIn(false);
-    setUserData(null);
-    navigate('/');
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
+  
   return (
     <header className="fixed top-0 left-0 right-0 bg-white z-50">
       <div className="container relative mx-auto px-4 sm:px-6 lg:px-12 py-4 flex justify-between items-center">
@@ -107,11 +67,23 @@ function Header() {
 
         {/* User icons and login/register buttons */}
         <div className="hidden lg:flex items-center space-x-4">
-          {isLoggedIn && userData ? (
-            <div className="relative" ref={dropdownRef}>
+          {session ? (
+            <>
+              <Link
+                to="/profile"
+                className="text-gray-700 hover:text-purple-500"
+              >
+                <FaUser className="text-xl" />
+              </Link>
+              <Link
+                to="/wallet"
+                className="text-gray-700 hover:text-purple-500"
+              >
+                <FaCoins className="text-xl" />
+              </Link>
               <button
-                onClick={toggleDropdown}
-                className="flex items-center space-x-2 text-gray-700 hover:text-purple-500 transition-colors duration-300"
+                onClick={sessionLogOut}
+                className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-3xl transition duration-300"
               >
                 <FaUser className="text-xl" />
                 <span className="font-medium">{userData.pseudo}</span>
@@ -164,7 +136,7 @@ function Header() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <MobileMenu isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+        <MobileMenu isLoggedIn={session} handleLogout={sessionLogOut} />
       )}
     </header>
   );
