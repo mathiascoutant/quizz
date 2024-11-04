@@ -8,7 +8,7 @@ router.get('/', getForms);
 router.get('/:id', getFormById);       
 router.put('/update/:id', updateForm);        
 router.delete('/delete/:id', deleteForm);    
-router.get('/:userId/:difficultyId/:categoryId', getRandomQuizByDifficultyAndCategory);
+router.get('/:userId/:difficultyId/:categoryId/:numberOfAnswers', getRandomQuizByDifficultyAndCategory);
 
 
 export default router;

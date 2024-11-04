@@ -157,11 +157,12 @@ export const deleteForm = async (req, res) => {
 
 export const getRandomQuizByDifficultyAndCategory = async (req, res) => {
   try {
-    const { userId, difficultyId, categoryId } = req.params; // Récupérer les paramètres
+    const { userId, difficultyId, categoryId, numberOfAnswers} = req.params; // Récupérer les paramètres
     const quizzes = await Form.findAll({
       where: {
         difficultyId: difficultyId,
-        categoryId: categoryId
+        categoryId: categoryId,
+        numberOfAnswers: numberOfAnswers
       },
       include: [
         { model: Coin, as: 'difficulty' },
