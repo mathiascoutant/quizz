@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FaCoins, FaUser, FaChevronDown, FaShoppingCart } from 'react-icons/fa';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { MENU_ITEMS_LINKS } from '../constants/menu.items.constants';
@@ -36,25 +36,6 @@ function Header() {
       setCartCount(cartItems.length);
     }
   }, []);
-
-  useEffect(() => {
-    const fetchCoins = async () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          const response = await fetch(`http://localhost:3002/profile/coins?token=${token}`, {
-            method: 'GET',
-          });
-          const data = await response.json();
-          setCoins(data.coins);
-        } catch (error) {
-          console.error('Erreur lors de la récupération des miams:', error);
-        }
-      }
-    };
-
-    fetchCoins();
-  }, [isLoggedIn]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -133,7 +114,7 @@ function Header() {
                       <span className="text-sm font-medium text-gray-700">Mes Miams</span>
                       <div className="flex items-center space-x-1">
                         <img src={coinIcon} alt="Miam" className="w-4 h-4" />
-                        <span className="text-sm font-bold text-purple-600">{coins}</span>
+                        <span className="text-sm font-bold text-purple-600">{session.user.coins}</span>
                       </div>
                     </div>
                   </div>

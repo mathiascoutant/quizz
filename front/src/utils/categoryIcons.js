@@ -1,6 +1,5 @@
 import {
   FaBook,
-  FaBookOpen,
   FaCalendarDay,
   FaFilm,
   FaFlag,
