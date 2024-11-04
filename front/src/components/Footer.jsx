@@ -61,7 +61,7 @@ const Footer = () => {
         </div>
         
         <div className="mt-8 pt-8 border-t border-gray-700 text-center">
-          <p>&copy; 2023 QuizzGo. Tous droits réservés.</p>
+          <p>&copy; 2024 QuizzGo. Tous droits réservés.</p>
         </div>
       </div>
     </footer>

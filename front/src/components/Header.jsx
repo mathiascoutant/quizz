@@ -117,7 +117,7 @@ function Header() {
         {/* User icons and login/register buttons */}
         <div className="hidden lg:flex items-center space-x-4">
           {isLoggedIn && userData ? (
-            <div className="relative flex items-center" ref={dropdownRef}>
+            <div className="relative flex items-start" ref={dropdownRef}>
               <button
                 onClick={toggleDropdown}
                 className="flex items-center space-x-2 text-gray-700 hover:text-purple-500 transition-colors duration-300"
@@ -127,7 +127,7 @@ function Header() {
                 <FaChevronDown className={`text-sm transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-md py-2 z-10 border border-gray-200">
+                <div className="absolute right-0 mt-7 w-56 bg-white rounded-lg shadow-md py-2 z-10 border border-gray-200">
                   <div className="px-4 py-2 border-b border-gray-200">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-gray-700">Mes Miams</span>
