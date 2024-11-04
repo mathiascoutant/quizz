@@ -4,6 +4,7 @@ const router = express.Router();
 
 // Route pour l'inscription
 router.get('/', userController.getUserProfile);
+router.get('/coins', userController.getUserCoins);
 
 router.get('/some-route', (req, res) => {
     // Ajoutez ici la logique de votre route
