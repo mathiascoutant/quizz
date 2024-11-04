@@ -91,14 +91,17 @@ export const getUserProfile = async (req, res) => {
 
 export const getUserCoins = async (req, res) => {
   try {
-    const { token } = req.body;
+    // Récupérer le token depuis les paramètres de l'URL
+    const token = req.query.token; 
     
+    // Vérifier si le token est présent
     if (!token) {
       return res.status(400).json({ message: "Token manquant" });
     }
     
     console.log("Token reçu:", token);
 
+    // Vérifier et décoder le token
     const decodedToken = jwt.verify(token, "c54bb676c70ec4708074f3e81adc224c87ce60c7ebd9954c0626045f61b6d7c7b9dd67cdcfa9b74314806c9288caef228ccb0ca0a8465733d0cef3afc78d82d2");
     
     console.log("Token décodé:", decodedToken);
@@ -112,6 +115,7 @@ export const getUserCoins = async (req, res) => {
 
     console.log("ID utilisateur:", userId);
 
+    // Chercher l'utilisateur dans la collection UserCoins
     const user = await UserCoins.findById(userId);
     
     if (!user) {
