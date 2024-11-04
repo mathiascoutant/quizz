@@ -1,42 +1,67 @@
-import backgroundImage from '../assets/background.jpg';
-import coinIcon from '../assets/coin.png';
-import userIcon from '../assets/user.png';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { QuizzLayout } from '../components/quizz/QuizzLayout';
+import { useFetchQuestion } from '../hooks/useFetchQuestion';
+import { renderQuizzBackground } from '../utils/renderQuizzBackground';
 
 function QuizzPage() {
+  const { category } = useParams();
+  const { questionData, isLoading, fetchQuestion } = useFetchQuestion(category);
+  const [isEntracte, setIsEntracte] = useState(null);
+
   return (
     <div
-      className="bg-black bg-cover bg-no-repeat bg-center h-screen w-screen flex flex-col justify-between px-5 pr-10 relative text-white overflow-hidden"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
+      className="max-h-screen w-full text-white relative min-h-screen bg-cover bg-no-repeat bg-center"
+      style={{
+        backgroundImage: `url(${renderQuizzBackground(category)})`,
+      }}
     >
-      <div className="absolute inset-0 bg-black opacity-50 z-0"></div>
+      <div className="inset-0 bg-black/40 w-full h-full absolute"></div>
 
-      <h1 className="text-center text-4xl mt-5 z-10 relative">
-        En quelle année s'est déroulé la première guerre mondiale ?
-      </h1>
-
-      <div className="relative flex-grow flex justify-center items-center z-10">
-        <div className="absolute h-0.5 bg-white transform -rotate-45 w-2/5"></div>
-        <button className="absolute left-1/2 -translate-x-[calc(50%+150px)] py-2 px-5 border-2 border-white rounded bg-transparent text-white cursor-pointer text-lg transition-all duration-300 ease-in-out hover:bg-white hover:bg-opacity-20">
-          1942
-        </button>
-        <button className="absolute right-1/2 translate-x-[calc(50%+150px)] py-2 px-5 border-2 border-white rounded bg-transparent text-white cursor-pointer text-lg transition-all duration-300 ease-in-out hover:bg-white hover:bg-opacity-20">
-          1927
-        </button>
-      </div>
-
-      <div className="flex justify-between items-end w-full py-2.5 z-10 relative">
-        <div className="flex items-center">
-          <span className="text-lg">John Doe</span>
-          <img src={userIcon} alt="User" className="w-7 h-7 ml-1" />
-        </div>
-
-        <div className="flex flex-col items-center">
-          <img src={coinIcon} alt="Coin" className="w-7 h-7" />
-          <span className="text-lg">100</span>
-        </div>
-      </div>
+      {isLoading ? (
+        <QuizzLoader />
+      ) : (
+        <>
+          <QuizzLayout>
+            <QuizzLayout.Question question={questionData.question} />
+            <QuizzLayout.Interactive
+              options={questionData.options}
+              fetchQuestion={fetchQuestion}
+              isEntracte={isEntracte}
+              setIsEntracte={setIsEntracte}
+            />
+            <QuizzLayout.BottomBar />
+          </QuizzLayout>
+        </>
+      )}
     </div>
   );
 }
+
+const QuizzLoader = () => {
+  return (
+    <div className="flex min-h-screen justify-center items-center relative z-50 w-full">
+      <div role="status">
+        <svg
+          aria-hidden="true"
+          className="size-14 text-gray-200 animate-spin dark:text-gray-600 fill-indigo-500"
+          viewBox="0 0 100 101"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+            fill="currentColor"
+          />
+          <path
+            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+            fill="currentFill"
+          />
+        </svg>
+        <span className="sr-only">Loading...</span>
+      </div>
+    </div>
+  );
+};
 
 export default QuizzPage;

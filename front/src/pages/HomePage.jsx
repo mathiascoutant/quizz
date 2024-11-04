@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { Fragment, useState } from 'react';
 import {
   FaArrowAltCircleDown,
   FaArrowAltCircleLeft,
@@ -194,7 +194,6 @@ function HomePage() {
             {categories.slice(0, displayedCategories).map((category, index) => (
               <>
                 <CategoryCard
-                  key={index}
                   icon={category.icon}
                   title={category.title}
                   description={category.description}
@@ -206,12 +205,12 @@ function HomePage() {
                   <Modal
                     setSelectedCategory={setSelectedCategory}
                     title={category.title}
-                    path={`/quizz?category=${category.title}`}
+                    path={`/quizz/${category.title}`}
                   >
                     <p>{category.description}</p>
                   </Modal>
                 )}
-              </>
+              </Fragment>
             ))}
           </div>
           <div className="text-center">
