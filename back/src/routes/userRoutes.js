@@ -1,15 +1,14 @@
-const express = require('express');
+import express from 'express';
+import * as userController from '../controllers/userController.js';
 const router = express.Router();
-const authController = require('../controllers/authController');
-const userController = require('../controllers/userController');
 
-// Middleware d'authentification
-const protect = authController.protect;
+// Route pour l'inscription
+router.get('/', userController.getUserProfile);
 
-// Routes utilisateur
-router.put('/profile', protect, userController.updateProfile);
-router.get('/:id', protect, userController.getUser);
-router.put('/:id', protect, userController.updateUser);
-router.delete('/:id', protect, userController.deleteUser);
+router.get('/some-route', (req, res) => {
+    // Ajoutez ici la logique de votre route
+    res.send('Réponse de la route GET');
+  });
 
-module.exports = router;
+
+export default router;
