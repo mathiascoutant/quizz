@@ -111,6 +111,7 @@ function HomePage() {
               Transformez votre savoir en récompenses délicieuses.
             </p>
             <Button href={'/register'}>Commencer l'aventure</Button>
+            <Button href={'/profile'}>Page de profile</Button>
           </div>
           <div className="md:w-1/2 flex justify-center items-center">
             <img
