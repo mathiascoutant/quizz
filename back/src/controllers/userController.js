@@ -58,11 +58,11 @@ export const getUserProfile = async (req, res) => {
       return res.status(400).json({ message: "Token manquant" });
     }
     
-    console.log("Token reçu:", token);
+    //console.log("Token reçu:", token);
 
     const decodedToken = jwt.verify(token, "c54bb676c70ec4708074f3e81adc224c87ce60c7ebd9954c0626045f61b6d7c7b9dd67cdcfa9b74314806c9288caef228ccb0ca0a8465733d0cef3afc78d82d2");
     
-    console.log("Token décodé:", decodedToken);
+    //console.log("Token décodé:", decodedToken);
 
     // Vérifier si l'ID de l'utilisateur est présent dans le token
     if (!decodedToken.id && !decodedToken.userId) {
@@ -71,7 +71,7 @@ export const getUserProfile = async (req, res) => {
 
     const userId = decodedToken.id || decodedToken.userId;
 
-    console.log("ID utilisateur:", userId);
+    //console.log("ID utilisateur:", userId);
 
     const user = await User.findById(userId);
     

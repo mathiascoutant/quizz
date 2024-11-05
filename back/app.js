@@ -21,8 +21,8 @@ app.use(cors({
 app.use(express.json());
 
 // Utilisation des routes d'authentification
-app.use('/auth', authRoutes);
-app.use('/profile', userRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/profile', userRoutes);
 app.use('/api/quizz', formRoutes);
 app.use('/api/useranswers', userAnswerRoutes);
 app.use('/api/coupons', couponRoutes);
