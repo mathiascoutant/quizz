@@ -1,21 +1,22 @@
-import React from 'react';
+import React from "react";
 import {
   Route,
   BrowserRouter as Router,
   Routes,
   useLocation,
-} from 'react-router-dom';
-import Footer from './components/Footer';
-import Header from './components/Header';
-import './index.css';
-import { CategoriesPage } from './pages/CategoriesPage';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import QuizzPage from './pages/QuizzPage';
-import RegisterPage from './pages/RegisterPage';
-import { ProtectedRoute } from './router/ProtectedRoutes';
-import DiscountPage from './pages/DiscountPage';
-import CartPage from './pages/CartPage';
+} from "react-router-dom";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import "./index.css";
+import { CategoriesPage } from "./pages/CategoriesPage";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import QuizzPage from "./pages/QuizzPage";
+import RegisterPage from "./pages/RegisterPage";
+import { ProtectedRoute } from "./router/ProtectedRoutes";
+import DiscountPage from "./pages/DiscountPage";
+import ProfilePage from "./pages/ProfilePage";
+import CartPage from "./pages/CartPage";
 
 function App() {
   return (
@@ -27,14 +28,14 @@ function App() {
 
 function AppContent() {
   const location = useLocation();
-  const hideHeaderFooter = ['/categories/', '/login', '/register'].some(
+  const hideHeaderFooter = ["/categories/", "/login", "/register"].some(
     (path) => location.pathname.startsWith(path)
   );
 
   return (
     <div className="App flex flex-col min-h-screen">
       {!hideHeaderFooter && <Header />}
-      <div className={`flex-grow ${!hideHeaderFooter ? 'pt-16' : ''}`}>
+      <div className={`flex-grow ${!hideHeaderFooter ? "pt-16" : ""}`}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route
@@ -57,6 +58,7 @@ function AppContent() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/discount" element={<DiscountPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </div>
       {!hideHeaderFooter && <Footer />}
