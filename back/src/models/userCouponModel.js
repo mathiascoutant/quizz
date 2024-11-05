@@ -1,40 +1,43 @@
 import { DataTypes } from 'sequelize';
-import { sequelize } from '../config/database.js';
-import Coupon from './couponModel.js'; 
-import { User }  from './userModel.js';  
+import { sequelize }from '../config/database.js'
+import { User } from './userModel.js';
+import Coupon from './couponModel.js';
 
-const UserCoupon = sequelize.define('UserCoupon', {
-    userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'Users',  // Référence à la table Users
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+const UserCoupons = sequelize.define('UserCoupons', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    allowNull: false,
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Users', // Nom de la table référencée
+      key: 'id',      // Clé de référence
     },
-    couponId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'Coupons',  // Référence à la table Coupons
-            key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+  },
+  couponId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Coupons', // Nom de la table référencée
+      key: 'id',        // Clé de référence
     },
-    discountCode: {
-        type: DataTypes.STRING(30),
-        allowNull: true
-    }
+  },
+  discountCode: {
+    type: DataTypes.STRING(30),
+    allowNull: true,
+    defaultValue: null,
+  },
 }, {
-    tableName: 'UserCoupons',
-    timestamps: false
+  tableName: 'UserCoupons',
+  timestamps: false, // Si vous n'utilisez pas les colonnes createdAt et updatedAt
 });
 
+UserCoupons.hasOne(User, { as: 'user', foreignKey: 'id' });
+UserCoupons.hasOne(Coupon, { as: 'coupon', foreignKey: 'id' });
 
-User.belongsToMany(Coupon, { through: UserCoupon, as: 'coupons', foreignKey: 'userId' });
-Coupon.belongsToMany(User, { through: UserCoupon, as: 'users', foreignKey: 'couponId' });
-
-export default UserCoupon;
+// Export par défaut
+export default UserCoupons; // Utilisez export default ici pour une exportation par défaut
