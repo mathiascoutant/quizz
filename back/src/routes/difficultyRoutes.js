@@ -1,10 +1,10 @@
 import express from 'express';
 import {
     getLevels
-} from '../controllers/listDifficulty.js';
+} from '../controllers/listDifficultyController.js';
 
 const router = express.Router();
 
-router.get('/list', getLevels);
+router.get('/', getLevels);
 
 export default router;
