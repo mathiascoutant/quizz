@@ -19,6 +19,7 @@ import { Modal } from '../components/common/Modal';
 import { cn } from '../utils/utils';
 import './HomePage.css';
 import { getCategoryIcon } from '../utils/categoryIcons';
+import { useSessionStore } from '../store/session.store';
 
 function HomePage() {
   const testimonials = [
@@ -88,8 +89,7 @@ function HomePage() {
 
   const [displayedCategories, setDisplayedCategories] = useState(6);
   const [showAllCategories, setShowAllCategories] = useState(false);
-
-  
+  const session = useSessionStore((state) => state.session);
 
   const toggleCategoriesDisplay = () => {
     if (showAllCategories) {
@@ -193,13 +193,14 @@ function HomePage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {categories.slice(0, displayedCategories).map((category, index) => (
-              <Fragment>
+              <Fragment key={index}>
                 <CategoryCard
                   icon={category.icon}
                   title={category.title}
                   description={category.description}
                   onClick={() => handleCategoryClick(category)}
                   setSelectedCategory={setSelectedCategory}
+                  className={session ? '' : 'opacity-50 pointer-events-none'}
                 />
 
                 {selectedCategory === category.title && (
@@ -230,20 +231,22 @@ function HomePage() {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-purple-600 text-white py-16">
-        <div className="container mx-auto px-4 md:px-8 lg:px-16 text-center">
-          <h2 className="text-3xl font-bold mb-6">
-            Prêt à vous régaler de connaissances ?
-          </h2>
-          <p className="text-xl mb-8">
-            Rejoignez QuizzGo dès maintenant et commencez à accumuler des Miams
-            !
-          </p>
-          <button className="bg-white text-purple-600 font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition duration-300">
-            S'inscrire gratuitement
-          </button>
+      {session ? null : (
+        <div className="bg-purple-600 text-white py-16">
+          <div className="container mx-auto px-4 md:px-8 lg:px-16 text-center">
+            <h2 className="text-3xl font-bold mb-6">
+              Prêt à vous régaler de connaissances ?
+            </h2>
+            <p className="text-xl mb-8">
+              Rejoignez QuizzGo dès maintenant et commencez à accumuler des Miams
+              !
+            </p>
+            <button className="bg-white text-purple-600 font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition duration-300">
+              S'inscrire gratuitement
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -263,11 +266,14 @@ function FeatureCard({ icon, title, description, className }) {
   );
 }
 
-function CategoryCard({ icon, title, description, setSelectedCategory }) {
+function CategoryCard({ icon, title, description, setSelectedCategory, className }) {
   return (
     <div
       onClick={() => setSelectedCategory(title)}
-      className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center text-center cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-purple-50"
+      className={cn(
+        'bg-white rounded-lg shadow-md p-6 flex flex-col items-center text-center cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-purple-50',
+        className
+      )}
     >
       <div className="mb-4">{icon}</div>
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
