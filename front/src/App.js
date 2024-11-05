@@ -16,6 +16,8 @@ import RegisterPage from "./pages/RegisterPage";
 import { ProtectedRoute } from "./router/ProtectedRoutes";
 import DiscountPage from "./pages/DiscountPage";
 import ProfilePage from "./pages/ProfilePage";
+import CartPage from "./pages/CartPage";
+import CartPage from "./pages/CartPage";
 
 function App() {
   return (
@@ -54,6 +56,7 @@ function AppContent() {
             }
           />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/cart" element={<CartPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/discount" element={<DiscountPage />} />
           <Route path="/profile" element={<ProfilePage />} />

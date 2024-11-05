@@ -33,7 +33,8 @@ function Header() {
     const savedCart = document.cookie.split("; ").find((row) => row.startsWith("cart="))?.split("=")[1];
     if (savedCart) {
       const cartItems = JSON.parse(savedCart);
-      setCartCount(cartItems.length);
+      const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
+      setCartCount(totalQuantity);
     }
   }, []);
 
