@@ -14,12 +14,12 @@ function ProfilePage() {
     firstname: session.user.firstname,
     lastname: session.user.lastname,
     username: session.user.pseudo,
-    mail: session.user.mail,
+    email: session.user.email,
     password: session.user.password,
-    coin: session.user.coin,
+    coins: session.user.coins,
   })
 
-  //console.log(session.user)
+  console.log(session.user)
 
   // create function that will fetch using post the api.
 
@@ -83,18 +83,18 @@ function ProfilePage() {
           Mail:{""}
           {isEditing ? (
             <input
-              value={session.user.mail}
+              value={session.user.email}
               onChange={(e) => {
                 setNewData((prevState) => {
                   return {
                     ...prevState,
-                    mail: e.target.value,
+                    email: e.target.value,
                   }
                 })
               }}
             ></input>
           ) : (
-            <b>{session.user.mail}</b>
+            <b>{session.user.email}</b>
           )}<br></br>
         </label>
         <label>
@@ -130,8 +130,8 @@ function ProfilePage() {
         </label>
         <label>
           Number of coin:{""}
-            <b>{session.user.coin}</b>
-          <br>{session.user.coin}</br>
+            <b>{session.user.coins}</b>
+          <br></br>
         </label>
         <button type="submit">{isEditing ? "Save" : "Edit"} Profile</button>
         <p>

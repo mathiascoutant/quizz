@@ -17,7 +17,6 @@ import { ProtectedRoute } from "./router/ProtectedRoutes";
 import DiscountPage from "./pages/DiscountPage";
 import ProfilePage from "./pages/ProfilePage";
 import CartPage from "./pages/CartPage";
-import CartPage from "./pages/CartPage";
 
 function App() {
   return (

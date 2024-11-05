@@ -42,6 +42,7 @@ export const deleteUser = async (req, res) => {
 export const getUserProfile = async (req, res) => {
   try {
     const { token } = req.body;
+
     if (!token) return res.status(400).json({ message: "Token manquant" });
 
     const user = await UserService.getUserProfile(token);
