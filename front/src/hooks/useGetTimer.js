@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 
 export const useGetTimer = () => {
   const [time, setTime] = useState(20);
