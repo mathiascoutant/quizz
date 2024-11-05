@@ -15,7 +15,7 @@ const router = express.Router();
 router.post('/', createUserCoupon);
 router.get('/', getAllUserCoupons);
 router.get('/:userId/:couponId', getUserCouponById);
-router.get('/user/:userId', getUserCouponsByUserId);
+router.get('/:userId', getUserCouponsByUserId);
 router.put('/:userId/:couponId', updateUserCoupon);
 router.delete('/:userId/:couponId', deleteUserCoupon);
 
