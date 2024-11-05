@@ -7,8 +7,7 @@ import {
   FaBrain,
   FaCoins,
   FaGift,
-  FaLongArrowAltRight,
-  FaQuestionCircle
+  FaQuestionCircle,
 } from 'react-icons/fa';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick-theme.css';
@@ -16,10 +15,11 @@ import 'slick-carousel/slick/slick.css';
 import quizImage from '../assets/quizz-image.png';
 import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
+import api from '../services/api.service';
+import { useSessionStore } from '../store/session.store';
+import { getCategoryIcon } from '../utils/categoryIcons';
 import { cn } from '../utils/utils';
 import './HomePage.css';
-import { getCategoryIcon } from '../utils/categoryIcons';
-import { useSessionStore } from '../store/session.store';
 
 function HomePage() {
   const testimonials = [
@@ -53,10 +53,8 @@ function HomePage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:3002/api/categories');
-      const data = await response.json();
-      const processedCategories = processCategories(data);
-      setCategories(processedCategories);
+      const response = await api.get('/categories');
+      setCategories(processCategories(response.data));
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
@@ -86,7 +84,6 @@ function HomePage() {
   };
 
   const [selectedCategory, setSelectedCategory] = useState(null);
-
   const [displayedCategories, setDisplayedCategories] = useState(6);
   const [showAllCategories, setShowAllCategories] = useState(false);
   const session = useSessionStore((state) => state.session);
@@ -195,23 +192,22 @@ function HomePage() {
             {categories.slice(0, displayedCategories).map((category, index) => (
               <Fragment key={index}>
                 <CategoryCard
-                  icon={category.icon}
-                  title={category.title}
-                  description={category.description}
-                  onClick={() => handleCategoryClick(category)}
+                  category={category}
                   setSelectedCategory={setSelectedCategory}
                   className={session ? '' : 'opacity-50 pointer-events-none'}
                 />
 
-                {selectedCategory === category.title && (
-                  <Modal
-                    setSelectedCategory={setSelectedCategory}
-                    title={category.title}
-                    path={`/categories/${category.title}/quizz`}
-                  >
-                    <p>{category.description}</p>
-                  </Modal>
-                )}
+                {selectedCategory &&
+                  selectedCategory.name === category.name && (
+                    <Modal
+                      selectedCategory={selectedCategory}
+                      setSelectedCategory={setSelectedCategory}
+                      title={category.name}
+                      path={`/categories/${category.name}/quizz`}
+                    >
+                      <p>{category.longDescription}</p>
+                    </Modal>
+                  )}
               </Fragment>
             ))}
           </div>
@@ -238,8 +234,8 @@ function HomePage() {
               Prêt à vous régaler de connaissances ?
             </h2>
             <p className="text-xl mb-8">
-              Rejoignez QuizzGo dès maintenant et commencez à accumuler des Miams
-              !
+              Rejoignez QuizzGo dès maintenant et commencez à accumuler des
+              Miams !
             </p>
             <button className="bg-white text-purple-600 font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition duration-300">
               S'inscrire gratuitement
@@ -266,33 +262,26 @@ function FeatureCard({ icon, title, description, className }) {
   );
 }
 
-function CategoryCard({ icon, title, description, setSelectedCategory, className }) {
+function CategoryCard({ category, setSelectedCategory }) {
   return (
     <div
-      onClick={() => setSelectedCategory(title)}
-      className={cn(
-        'bg-white rounded-lg shadow-md p-6 flex flex-col items-center text-center cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-purple-50',
-        className
-      )}
+      onClick={() => setSelectedCategory(category)}
+      className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center text-center cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-purple-50"
     >
-      <div className="mb-4">{icon}</div>
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-sm">{description}</p>
+      <div className="mb-4">{category.icon}</div>
+      <h3 className="text-xl font-semibold mb-2">{category.name}</h3>
+      <p className="text-sm">{category.shortDescription}</p>
     </div>
   );
 }
 
-const handleCategoryClick = (category) => {
-  console.log(`Clicked on category: ${category.title}`);
-};
-
 const processCategories = (categories) => {
-  const description = "Explorez cette catégorie passionnante et testez vos connaissances !";
-  
-  return categories.map(category => ({
+  return categories.map((category) => ({
+    id: category.id,
     icon: getCategoryIcon(category.name),
-    title: category.name,
-    description: description
+    name: category.name,
+    shortDescription: category.shortDescription,
+    longDescription: category.longDescription,
   }));
 };
 

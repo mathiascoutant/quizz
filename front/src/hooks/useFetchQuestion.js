@@ -1,29 +1,23 @@
 import { useCallback, useEffect, useState } from 'react';
+import api from '../services/api.service';
+import { useSessionStore } from '../store/session.store';
 
-export const useFetchQuestion = (category) => {
+export const useFetchQuestion = ({
+  difficultyId,
+  categoryId,
+  numberOfAnswers,
+}) => {
   const [questionData, setQuestionData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const session = useSessionStore((s) => s.session);
 
   const fetchQuestion = useCallback(async () => {
-    const questionsFixture = [
-      {
-        question: 'Question',
-        answer: 'Option 1',
-        options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
-        category: category,
-      },
-      {
-        question: 'Question 2',
-        answer: 'Option A',
-        options: ['Option A', 'Option B', 'Option C', 'Option D'],
-        category: category,
-      },
-    ];
-
-    const random = Math.floor(Math.random() * questionsFixture.length);
-    setQuestionData(questionsFixture[random]);
+    const response = await api.get(
+      `/quizz/${session.user.id}/${difficultyId}/${categoryId}/${numberOfAnswers}`
+    );
+    setQuestionData(response.data);
     setIsLoading(false);
-  }, [category]);
+  }, [categoryId, difficultyId, session.user, numberOfAnswers]);
 
   useEffect(() => {
     fetchQuestion();

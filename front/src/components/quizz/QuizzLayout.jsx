@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useGetTimer } from '../../hooks/useGetTimer';
 import { usePostAnswer } from '../../hooks/usePostAnswer';
 import { useSessionStore } from '../../store/session.store';
+import { cn } from '../../utils/utils';
 
 export const QuizzLayout = ({ children }) => {
   return (
@@ -15,7 +16,7 @@ export const QuizzLayout = ({ children }) => {
 
 const Interactive = ({ options, fetchQuestion, isEntracte, setIsEntracte }) => {
   const { time, resetTimer, setTime, startTimer } = useGetTimer();
-  const { postAnswer, isGoodAnswer } = usePostAnswer();
+  const { postAnswer, goodAnswer } = usePostAnswer({});
 
   const handleSelectResponse = async (option) => {
     await postAnswer(option);
@@ -45,7 +46,16 @@ const Interactive = ({ options, fetchQuestion, isEntracte, setIsEntracte }) => {
             key={index}
             onClick={() => handleSelectResponse(option)}
             disabled={isEntracte}
-            className="flex flex-col gap-4 ring select-none ring-indigo-800 bg-indigo-500 py-6 px-12 cursor-pointer transition ease-in-out duration-300 hover:scale-105 active:translate-y-1 rounded-lg"
+            className={cn(
+              'flex flex-col gap-4 ring select-none ring-indigo-800 bg-indigo-500 py-6 px-12 cursor-pointer transition ease-in-out duration-300 hover:scale-105 active:translate-y-1 rounded-lg',
+              {
+                'bg-green-700':
+                  goodAnswer &&
+                  goodAnswer.isGoodAnswer &&
+                  option === goodAnswer.option,
+                'bg-red-700': goodAnswer && !goodAnswer.isGoodAnswer,
+              }
+            )}
           >
             <span className="text-white text-2xl">{option}</span>
           </button>
@@ -91,7 +101,7 @@ const BottomBar = () => {
     <div className=" bottom-0 left-0 z-50 flex p-4 justify-between w-full">
       <div className="flex items-center gap-3">
         <div className="size-5 bg-purple-500"></div>
-        <span>{session.user?.username ?? 'Anonymous'}</span>
+        <span>{session.user.pseudo ?? 'Anonymous'}</span>
       </div>
 
       <div className="flex flex-col gap-1">
@@ -115,7 +125,7 @@ const BottomBar = () => {
             transition: { duration: 0.3 },
           }}
         >
-          {session.user?.coins ?? 0}
+          {session.user.coins ?? 0}
         </motion.span>
       </div>
     </div>
