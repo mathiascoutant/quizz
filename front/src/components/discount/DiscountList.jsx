@@ -56,7 +56,21 @@ export const DiscountList = ({ discounts }) => {
   }, []);
 
   const addToCart = (discount) => {
-    const newCart = [...cart, discount.brand];
+    const existingItem = cart.find(item => item.brand === discount.brand);
+    let newCart;
+
+    if (existingItem) {
+      // Si l'article existe déjà, on augmente la quantité
+      newCart = cart.map(item => 
+        item.brand === discount.brand 
+          ? { ...item, quantity: item.quantity + 1 } 
+          : item
+      );
+    } else {
+      // Sinon, on l'ajoute avec une quantité de 1
+      newCart = [...cart, { brand: discount.brand, quantity: 1 }];
+    }
+
     setCart(newCart);
     document.cookie = `cart=${JSON.stringify(newCart)}; expires=${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString()}; SameSite=None; Secure`;
   };
