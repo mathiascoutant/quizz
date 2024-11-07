@@ -1,5 +1,6 @@
 import { UserAnswerRepository } from '../repositories/userAnswerRepository.js';
 import { CategoryRepository } from '../repositories/categoryRepository.js';
+import { UserRepository } from '../repositories/userRepository.js';
 
 export const UserAnswerService = {
   async createUserAnswer({ formId, userId, userAnswer }) {
@@ -8,13 +9,21 @@ export const UserAnswerService = {
 
     const isCorrect = userAnswer === form.correctAnswer;
     let coinValue = 0;
-
+    console.log('isCorrect', isCorrect);
     if (isCorrect) {
       const coin = await UserAnswerRepository.findCoinByDifficultyId(form.difficultyId);
       if (coin) coinValue = coin.coinValue;
+      console.log('coin', coinValue);
+      
     }
 
-    return await UserAnswerRepository.createUserAnswer({ formId, userId, userAnswer, isCorrect, coinValue });
+    const userAnswerData = await UserAnswerRepository.createUserAnswer({ formId, userId, userAnswer, isCorrect, coinValue });
+    const newCoinBalance = await UserRepository.updateCoins(userId, coinValue);
+
+    return {
+      userAnswerData,
+      newCoinBalance
+    };
   },
 
   async getAllUserAnswers() {
