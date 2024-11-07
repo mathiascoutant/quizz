@@ -24,7 +24,7 @@ function RegisterPage() {
     setError('');
     setSuccess('');
     try {
-      const response = await axios.post('http://localhost:3002/auth/register', formData);
+      const response = await axios.post('http://localhost:3002/api/auth/register', formData);
       setSuccess('Inscription réussie ! Vous pouvez maintenant vous ');
       console.log('Réponse du serveur:', response.data);
       // Clear the form after successful registration

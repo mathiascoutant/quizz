@@ -26,7 +26,7 @@ function LoginPage() {
 
     try {
       const { data } = await axios.post(
-        'http://localhost:3002/auth/login',
+        'http://localhost:3002/api/auth/login',
         formData
       );
 
