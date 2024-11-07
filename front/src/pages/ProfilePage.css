@@ -7,13 +7,27 @@
 }
 
 .left-content {
-    
+    text-align:center;
     height: 100%;
     width: 50%;
+    margin-left: 5%;
+    margin-bottom: 5%;
 }
 
 .right-content {
 
+}
+
+.title-form  {
+    text-align:center;
+}
+
+#lign {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-top : 2px solid #000;
+    width : 100%;
+    border-radius: 5px;
 }
 
 .edit-profile {
@@ -57,4 +71,26 @@ label {
     display: block;
     padding-bottom: 10px;
     
+}
+
+#input-form {
+    border-width: 1px;
+    border-radius: 5px;
+    border-color: white;
+    background-color: rgba(147,51,234,0.3);
+    width: 50%;
+    height: 50%;
+}
+
+#text-form {
+    border-width: 1px;
+    border-radius: 5px;
+    border-color: grey;
+    width: 50%;
+    height: 50%;
+    margin-left: 25%;
+}
+
+#title-text {
+    color: black;
 }
