@@ -71,7 +71,7 @@ export const login = async (req, res) => {
         userId: user.id  // Inclure l'ID de l'utilisateur dans le payload
       },
       JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '24h' }
     );
 
     // Envoyer le token et les informations de l'utilisateur au client

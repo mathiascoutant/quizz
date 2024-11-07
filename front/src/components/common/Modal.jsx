@@ -1,12 +1,18 @@
-import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import coin from '../../assets/coin.png';
+import api from '../../services/api.service';
 import { getCategoryIcon } from '../../utils/categoryIcons';
 import { cn } from '../../utils/utils';
 
-export const Modal = ({ title, children, path, setSelectedCategory }) => {
+export const Modal = ({
+  title,
+  children,
+  path,
+  setSelectedCategory,
+  selectedCategory,
+}) => {
   const [difficulties, setDifficulties] = useState([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState('');
 
@@ -32,9 +38,7 @@ export const Modal = ({ title, children, path, setSelectedCategory }) => {
   useEffect(() => {
     const fetchDifficulties = async () => {
       try {
-        const response = await axios.get(
-          'http://localhost:3002/api/levels/list'
-        );
+        const response = await api.get('/levels');
         setDifficulties(response.data);
       } catch (error) {
         console.error('Error fetching difficulties:', error);
@@ -54,6 +58,7 @@ export const Modal = ({ title, children, path, setSelectedCategory }) => {
         title={title}
         children={children}
         path={path}
+        selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
         difficulties={difficulties}
         selectedDifficulty={selectedDifficulty}
@@ -68,6 +73,7 @@ const ModalContent = ({
   title,
   children,
   path,
+  selectedCategory,
   setSelectedCategory,
   difficulties,
   selectedDifficulty,
@@ -164,7 +170,7 @@ const ModalContent = ({
         >
           <a
             className="bg-purple-600 text-white py-2 px-4 rounded-full block w-full text-center hover:bg-purple-700 transition duration-200 font-semibold"
-            href={`${path}?difficulty=${selectedDifficulty}&answerChoiceCount=${answerChoiceCount}`}
+            href={`${path}?categoryId=${selectedCategory.id}&difficultyId=${selectedDifficulty}&answerChoiceCount=${answerChoiceCount}`}
           >
             Lancer le quizz !
           </a>

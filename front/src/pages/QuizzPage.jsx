@@ -1,12 +1,20 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { QuizzLayout } from '../components/quizz/QuizzLayout';
 import { useFetchQuestion } from '../hooks/useFetchQuestion';
 import { renderQuizzBackground } from '../utils/renderQuizzBackground';
 
 function QuizzPage() {
   const { category } = useParams();
-  const { questionData, isLoading, fetchQuestion } = useFetchQuestion(category);
+  const [searchParams, _] = useSearchParams();
+  const difficultyId = searchParams.get('difficultyId');
+  const categoryId = searchParams.get('categoryId');
+  const numberOfAnswers = searchParams.get('answerChoiceCount');
+  const { questionData, isLoading, fetchQuestion } = useFetchQuestion({
+    difficultyId,
+    categoryId,
+    numberOfAnswers,
+  });
   const [isEntracte, setIsEntracte] = useState(null);
 
   return (
@@ -23,9 +31,9 @@ function QuizzPage() {
       ) : (
         <>
           <QuizzLayout>
-            <QuizzLayout.Question question={questionData.question} />
+            <QuizzLayout.Question question={questionData.content} />
             <QuizzLayout.Interactive
-              options={questionData.options}
+              options={questionData.possibleAnswers}
               fetchQuestion={fetchQuestion}
               isEntracte={isEntracte}
               setIsEntracte={setIsEntracte}
