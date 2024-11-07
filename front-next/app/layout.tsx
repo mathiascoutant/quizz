@@ -1,6 +1,14 @@
 import TanstackQueryProvider from '@/providers/TanstackQueryProvider';
 import { Metadata } from 'next';
+import { Montserrat } from 'next/font/google';
 import './globals.css';
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  display: 'swap',
+  variable: '--font-montserrat',
+});
 
 export const medatata: Metadata = {
   title: 'QuizzGo - Quiz pour apprendre et gagner des Miams',
@@ -15,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" suppressHydrationWarning>
-      <body className="">
+      <body className={montserrat.className}>
         <TanstackQueryProvider>{children}</TanstackQueryProvider>
       </body>
     </html>

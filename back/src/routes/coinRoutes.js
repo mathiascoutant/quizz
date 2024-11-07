@@ -1,7 +1,7 @@
 import express from 'express';
 import {
     getLevels
-} from '../controllers/listDifficultyController.js';
+} from '../controllers/coinController.js';
 
 const router = express.Router();
 

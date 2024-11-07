@@ -131,7 +131,7 @@ const ModalContent = ({
     >
       {/* Partie gauche avec l'icône */}
       <div className="w-1/3 bg-gray-100 p-6 flex items-center justify-center">
-        {getCategoryIcon(title)}
+        {getCategoryIcon(title).icon}
       </div>
 
       {/* Partie droite avec les informations et le bouton */}

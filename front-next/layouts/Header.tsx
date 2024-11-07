@@ -4,6 +4,7 @@ import { ButtonLink } from '@/components/common/Button';
 import { MENU_ITEMS_LINKS } from '@/constants/menu.items.constants';
 import { useCartStore } from '@/store/cart.store';
 import { cn } from '@/utils/utils';
+import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -12,9 +13,9 @@ import { FaChevronDown, FaShoppingCart, FaUser } from 'react-icons/fa';
 import { useSessionStore } from '../store/session.store';
 
 function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const { session, sessionLogOut } = useSessionStore();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useRef(null);
   const pathname = usePathname();
   const cart = useCartStore((state) => state.cart);
@@ -96,7 +97,7 @@ function Header() {
         {/* User icons and login/register buttons */}
         <div className="hidden lg:flex items-center space-x-4">
           {session && session.user ? (
-            <div className="relative flex items-start" ref={dropdownRef}>
+            <div className="relative flex items-center" ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className=" items-center flex gap-4 font-bold py-2 px-4 rounded-3xl transition duration-300"
@@ -109,48 +110,60 @@ function Header() {
                   }`}
                 />
               </button>
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-7 w-56 bg-white rounded-lg shadow-md py-2 z-10 border border-gray-200">
-                  <div className="px-4 py-2 border-b border-gray-200">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-700">
-                        Mes Miams
-                      </span>
-                      <div className="flex items-center space-x-1">
-                        <Image
-                          alt="Miam icon"
-                          src="/assets/coin.png"
-                          width={20}
-                          height={20}
-                        />
-                        <span className="text-sm font-bold text-purple-600">
-                          {session.user.coins}
+              <AnimatePresence>
+                {isDropdownOpen && (
+                  <motion.div
+                    variants={{
+                      initial: { opacity: 0, y: -10, scale: 0.9 },
+                      animate: { opacity: 1, y: 0, scale: 1 },
+                      exit: { opacity: 0, y: -10, scale: 0.9 },
+                    }}
+                    animate="animate"
+                    exit="exit"
+                    initial="initial"
+                    className="absolute inset-0 top-10 h-fit w-56 bg-white rounded-lg shadow-md py-2 z-10 border border-gray-200"
+                  >
+                    <div className="px-4 py-2 border-b border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-gray-700">
+                          Mes Miams
                         </span>
+                        <div className="flex items-center space-x-1">
+                          <Image
+                            alt="Miam icon"
+                            src="/assets/coin.png"
+                            width={20}
+                            height={20}
+                          />
+                          <span className="text-sm font-bold text-purple-600">
+                            {session.user.coins}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <Link
-                    href="/profile"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100 transition-colors duration-300"
-                  >
-                    Mon profil
-                  </Link>
-                  <Link
-                    href="/coupons"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100 transition-colors duration-300"
-                  >
-                    Mes coupons
-                  </Link>
-                  <div className="px-4 pt-2">
-                    <button
-                      onClick={sessionLogOut}
-                      className="block w-full text-center px-4 py-2 text-sm text-white bg-purple-500 hover:bg-purple-600 rounded-md transition-colors duration-300"
+                    <Link
+                      href="/profile"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100 transition-colors duration-300"
                     >
-                      Se déconnecter
-                    </button>
-                  </div>
-                </div>
-              )}
+                      Mon profil
+                    </Link>
+                    <Link
+                      href="/coupons"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100 transition-colors duration-300"
+                    >
+                      Mes coupons
+                    </Link>
+                    <div className="px-4 pt-2">
+                      <button
+                        onClick={sessionLogOut}
+                        className="block w-full text-center px-4 py-2 text-sm text-white bg-purple-500 hover:bg-purple-600 rounded-md transition-colors duration-300"
+                      >
+                        Se déconnecter
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <Link href="/cart" className="flex items-center relative ml-4">
                 <FaShoppingCart className="text-xl text-gray-700 hover:text-purple-500 transition-colors duration-300" />
                 {couponsCount ? (

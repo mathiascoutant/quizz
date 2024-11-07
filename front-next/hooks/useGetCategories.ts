@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 const processCategories = (categories: Category[]) => {
   return categories.map((category) => ({
     id: category.id,
-    icon: getCategoryIcon(category.name),
+    icon: getCategoryIcon(category.name).icon,
     name: category.name,
     shortDescription: category.shortDescription,
     longDescription: category.longDescription,

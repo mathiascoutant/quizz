@@ -1,13 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import RegisterPage from "./RegisterPage";
 import { useSessionStore } from "../store/session.store";
+import "./ProfilePage.css";
 function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
-  /*onst [firstName, setFirstName] = useState("idryss");
-  const [lastName, setLastName] = useState("judéaux");
-  const [mail, setMail] = useState("idryss@ynov.com");
-  const [pseudo, setPseudo] = useState("Black Jesus");
-  const [password, setPassword] = useState("mdp012345");*/
   
   const session = useSessionStore((state) => state.session);
   const [newData, setNewData] = useState({
@@ -17,129 +13,80 @@ function ProfilePage() {
     email: session.user.email,
     password: session.user.password,
     coins: session.user.coins,
-  })
-
-  console.log(session.user)
+  });
+  const dataKeys = Object.keys(newData).filter(value=> (value!=="coins"))
+  const fieledLabels = {
+    firstname: "Prénom",
+    lastname: "Nom",
+    username: "Pseudo",
+    email: "Email",
+    password: "Mot de passe"
+  }
+  console.log(session.user);
 
   // create function that will fetch using post the api.
-
   // const user = useContext(RegisterPage);
-  
-  console.log("sessiondata", session)
-  console.log("newdata", newData)
- 
+
+  console.log("sessiondata", session);
+  console.log("newdata", newData);
+
+const renderField = (name) => {
+  console.log(name);
+  return (<label>
+    {fieledLabels[name]}:{""}
+    {isEditing ? (
+      <input
+        name = {name}
+        value = {newData[name]}
+        onChange= {handleChange}
+      ></input>
+    ) : (
+      <b>{newData[name]}</b>
+    )}
+    <br></br>
+  </label>)
+}
+const handleChange = (event) => {
+  const {name,value} = event.target;
+  setNewData(prevState => ({...prevState, [name] : value}));
+}
 
   return (
-    <div style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 100,
-        
-      }}>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          setIsEditing(!isEditing);
-        }}
-      >
-        <label>
-          First name:{""}
-          {isEditing ? (
-            <input
-              value={session.user.firstname}
-              onChange={(e) => {
-                setNewData((prevState) => {
-                  return {
-                    ...prevState,
-                    firstname: e.target.value,
-                  }
-                })
-              }}
-            ></input>
-          ) : (
-            <b>{session.user.firstname}</b>
-          )}<br></br>
-        </label>
-        <label>
-          Last name:{""}
-          {isEditing ? (
-            <input
-              value={session.user.lastname}
-              onChange={(e) => {
-                setNewData((prevState) => {
-                  return {
-                    ...prevState,
-                    lastName: e.target.value,
-                  }
-                })
-              }}
-            ></input>
-          ) : (
-            <b>{session.user.lastname}</b>
-          )}<br></br>
-        </label>
-        <label>
-          Mail:{""}
-          {isEditing ? (
-            <input
-              value={session.user.email}
-              onChange={(e) => {
-                setNewData((prevState) => {
-                  return {
-                    ...prevState,
-                    email: e.target.value,
-                  }
-                })
-              }}
-            ></input>
-          ) : (
-            <b>{session.user.email}</b>
-          )}<br></br>
-        </label>
-        <label>
-          Password:{""}
-          {isEditing ? (
-            <input
-              value={session.user.password}
-              onChange={(e) => {
-                setNewData((prevState) => {
-                  return {
-                    ...prevState,
-                    password: e.target.value,
-                  }
-                })
-              }}
-            ></input>
-          ) : (
-            <b>{session.user.password}</b>
-          )}<br></br>
-        </label>
-        <label>
-          Username:{""}
-          {isEditing ? (
-            <input
-              value={session.user.pseudo}
-              onChange={(e) => {
-                setNewData(e.target.value);
-              }}
-            ></input>
-          ) : (
-            <b>{session.user.pseudo}</b>
-          )}<br></br>
-        </label>
-        <label>
-          Number of coin:{""}
+    <div className="main-content">
+      <div className="left-content">
+        <div className="edit-profile">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setIsEditing(!isEditing);
+            }}
+          >
+            
+              <div className="title-form">
+                <p>
+                  <i>
+                    Hey, {session.user.firstname} {session.user.lastname}
+                  </i>
+                </p>
+              </div>
+              {
+                dataKeys.map(name => renderField(name))
+              }
+                
+            <label>
+              Number of coin:{""}
             <b>{session.user.coins}</b>
           <br></br>
         </label>
-        <button type="submit">{isEditing ? "Save" : "Edit"} Profile</button>
-        <p>
-          <i>
-            Hey, {session.user.firstname} {session.user.lastname}
-          </i>
-        </p>
-      </form>
+            <button type="submit" className="form-button">
+              {isEditing ? "Save" : "Edit"} Profile
+            </button>
+          </form>
+        </div>
+      </div>
+      <div className="right-content">
+        <div className="purchase-history"></div>
+      </div>
     </div>
   );
 }

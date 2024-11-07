@@ -1,5 +1,4 @@
 import { Sequelize } from 'sequelize';
-
 // Configuration de la connexion à la base de données AWS
 const sequelize = new Sequelize({
   dialect: 'mysql',

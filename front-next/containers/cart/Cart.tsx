@@ -6,7 +6,7 @@ import { useCartStore } from '@/store/cart.store';
 export const Cart = () => {
   const { cart, clearCart, removeFromCart } = useCartStore();
   return (
-    <div className="max-w-lg mx-auto mt-32 p-4 bg-white rounded-lg shadow-md">
+    <div className="max-w-lg mx-auto my-48 p-4 bg-white">
       <h1 className="text-2xl font-bold text-center">Mon Panier</h1>
       <div className="mt-4">
         {cart

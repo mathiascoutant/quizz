@@ -71,7 +71,7 @@ export const login = async (req, res) => {
         userId: user.id  // Inclure l'ID de l'utilisateur dans le payload
       },
       JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '24h' }
     );
 
     // Envoyer le token et les informations de l'utilisateur au client
@@ -90,8 +90,11 @@ export const protect = async (req, res, next) => {
       return res.status(401).json({ message: 'Vous n\'êtes pas connecté. Veuillez vous connecter pour accéder à cette ressource.' });
     }
 
-    // Vérifier le token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('Token:', token);
+
+    // Vérifier le token avec la clé secrète en brut
+    const decoded = jwt.verify(token, JWT_SECRET); // Remplacez 'votre_clé_secrète' par votre clé secrète
+    console.log('User ID extrait du token:', decoded.userId);
 
     // Vérifier si l'utilisateur existe toujours
     const currentUser = await User.findById(decoded.userId);
@@ -114,6 +117,24 @@ export const restrictTo = async (...roles) => {
     }
     next();
   };
+};
+
+export const status = async (req, res) => {
+  try {
+    // L'utilisateur est déjà protégé par la fonction protect
+    const userId = req.user.id; // Récupérer l'ID de l'utilisateur à partir de la requête
+
+    // Récupérer les informations de l'utilisateur
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    // Retourner les informations de l'utilisateur
+    return res.status(200).json({ user });
+  } catch (error) {
+    return res.status(500).json({ message: 'Erreur lors de la récupération des informations de l\'utilisateur', error: error.message });
+  }
 };
 
 

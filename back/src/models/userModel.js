@@ -47,7 +47,7 @@ const User = sequelize.define('Users', {
   },
   coins: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: false,
     unique: false,
   },
 });
@@ -56,6 +56,12 @@ const User = sequelize.define('Users', {
 User.findByEmail = async function(email) {
   return await this.findOne({
     where: { email: email }
+  });
+};
+
+User.findById = async function(userid) {
+  return await this.findOne({
+    where: { id: userid }
   });
 };
 
