@@ -4,6 +4,7 @@ const router = express.Router();
 
 // Route pour l'inscription
 router.get('/', userController.getUserProfile);
+router.put('/', userController.updateUser);
 router.get('/coins', userController.getUserCoins);
 
 router.get('/some-route', (req, res) => {
