@@ -28,10 +28,23 @@ export interface GetQuestionBody {
   numberOfAnswers: string;
 }
 
+interface PostResponse {
+  message: string;
+  newCoinBalance: number;
+  userAnswerData: {
+    coinValue: number;
+    isCorrect: boolean;
+    formId: number;
+    id: number;
+    userAnswer: string;
+    userId: string;
+  };
+}
+
 export interface PostQuestionAnswerBody {
   formId: number;
   userId: string;
-  userAnswer: string;
+  userAnswer: string | null;
 }
 
 const GET = async ({
@@ -58,6 +71,7 @@ const POST = async ({
   userId,
   userAnswer,
 }: PostQuestionAnswerBody): Promise<{
+  newCoinBalance: number;
   coinValue: number;
   isCorrect: boolean;
 }> => {
@@ -77,9 +91,11 @@ const POST = async ({
     throw new Error('Error posting answer');
   }
 
-  const { userAnswerData } = await response.json();
+  const { newCoinBalance, userAnswerData } =
+    (await response.json()) as PostResponse;
 
   return {
+    newCoinBalance,
     coinValue: userAnswerData.coinValue,
     isCorrect: userAnswerData.isCorrect,
   };

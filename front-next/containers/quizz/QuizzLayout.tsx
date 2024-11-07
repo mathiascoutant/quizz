@@ -2,10 +2,10 @@ import { ModalQuizz } from '@/components/ModalQuizz';
 import { NumberTicker } from '@/components/NumberTicker';
 import { useGetTimer } from '@/hooks/useGetTimer';
 import { usePostAnswer } from '@/hooks/usePostQuestionAnswer';
-import { constructUrl } from '@/services/api.service';
 import { Question as IQuestion } from '@/services/questions.service';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
+import { useEffect } from 'react';
 import { useSessionStore } from '../../store/session.store';
 import { cn } from '../../utils/utils';
 
@@ -28,29 +28,27 @@ const Interactive = ({
   isEntracte: boolean;
   setIsEntracte: (isEntracte: boolean) => void;
 }) => {
-  const { time, resetTimer, setTime, startTimer } = useGetTimer();
+  const { time, resetTimer, freezeTimer, startTimer } = useGetTimer();
   const { postAnswer, answerQuestionResponse } = usePostAnswer();
-  const { session, updateUser } = useSessionStore();
+  const { session } = useSessionStore();
+
+  useEffect(() => {
+    if (time === 0) {
+      handleTimeUp();
+    }
+  }, [time]);
 
   if (!session) return null;
 
+  const handleTimeUp = async () => {
+    postAnswer({ formId: question.id, userAnswer: '' });
+    setIsEntracte(true);
+  };
+
   const handleSelectResponse = async (option: string) => {
     await postAnswer({ formId: question.id, userAnswer: option });
-
     setIsEntracte(true);
-
-    setTime(0);
-
-    const refreshUser = await fetch(constructUrl('/auth/status'), {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${session.token}`,
-      },
-    });
-
-    const refreshUserData = await refreshUser.json();
-
-    updateUser(refreshUserData.user);
+    freezeTimer();
   };
 
   const handleGenerateQuestion = async () => {
@@ -59,13 +57,6 @@ const Interactive = ({
     resetTimer();
     startTimer();
   };
-
-  // useEffect(() => {
-  //   if (time === 0) {
-  //     postAnswer({ formId: undefined, userAnswer: undefined });
-  //     setIsEntracte(true);
-  //   }
-  // }, [time]);
 
   return (
     <div className="flex flex-col gap-12 z-50">
@@ -149,6 +140,7 @@ const Interactive = ({
       {isEntracte && (
         <ModalQuizz
           isCorrect={answerQuestionResponse.isCorrect}
+          coinValue={question.difficulty.coinValue}
           title={
             answerQuestionResponse.isCorrect
               ? 'Bonne réponse !'

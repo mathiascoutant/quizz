@@ -3,27 +3,27 @@ import { useState } from 'react';
 import { useSessionStore } from '../store/session.store';
 
 export const usePostAnswer = () => {
-  const { session, sessionLogIn } = useSessionStore();
+  const { session, updateUser } = useSessionStore();
   const [answerQuestionResponse, setAnswerQuestionResponse] = useState<{
     isCorrect: boolean | null;
-    userAnswer: string;
+    userAnswer: string | null;
   }>({
     isCorrect: null,
-    userAnswer: '',
+    userAnswer: null,
   });
 
   const postAnswer = async ({
     userAnswer,
     formId,
   }: {
-    userAnswer?: string;
+    userAnswer: string | null;
     formId?: number;
   }) => {
     if (!session) {
       return;
     }
 
-    if (!userAnswer || !formId) {
+    if (!formId) {
       // time is up
       await new Promise((resolve) => setTimeout(resolve, 1000));
       return;
@@ -33,6 +33,11 @@ export const usePostAnswer = () => {
       formId,
       userId: session.user.id,
       userAnswer,
+    });
+
+    updateUser({
+      ...session.user,
+      coins: response.newCoinBalance,
     });
 
     setAnswerQuestionResponse({

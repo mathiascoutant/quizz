@@ -9,6 +9,7 @@ import { Button, ButtonLink } from './common/Button';
 type Props = {
   title: string;
   description: string;
+  coinValue: number;
   isCorrect: boolean | null;
   handleGenerateQuestion: () => void;
 };
@@ -16,6 +17,7 @@ type Props = {
 export const ModalQuizz = ({
   handleGenerateQuestion,
   title,
+  coinValue,
   isCorrect,
   description,
 }: Props) => {
@@ -38,7 +40,9 @@ export const ModalQuizz = ({
         }}
       >
         <ModalContent
+          isCorrect={isCorrect}
           title={title}
+          coinValue={coinValue}
           description={description}
           handleGenerateQuestion={handleGenerateQuestion}
         />
@@ -53,7 +57,9 @@ const ModalContent = ({
   title,
   description,
   handleGenerateQuestion,
-}: Omit<Props, 'isCorrect'>) => {
+  isCorrect,
+  coinValue,
+}: Props) => {
   return (
     <motion.div
       animate={{
@@ -70,6 +76,13 @@ const ModalContent = ({
           className="text-center"
           dangerouslySetInnerHTML={{ __html: description }}
         />
+
+        <p className="flex justify-center items-center gap-1 text-gray-800">
+          {isCorrect
+            ? 'Tu as gagné' + ' ' + coinValue
+            : 'Tu as perdu' + ' ' + coinValue}{' '}
+          <img src="/assets/coin.png" alt="coin" className="size-4" />
+        </p>
 
         <div className="flex items-center justify-center gap-4">
           <ButtonLink href="/" variant={'outline'}>
