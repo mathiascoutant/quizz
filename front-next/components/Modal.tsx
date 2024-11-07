@@ -52,14 +52,15 @@ export const Modal = ({
     >
       <ModalContent
         title={title}
-        children={children}
         path={path}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
         difficulties={difficulties}
         selectedDifficulty={selectedDifficulty}
         setSelectedDifficulty={setSelectedDifficulty}
-      />
+      >
+        {children}
+      </ModalContent>
     </motion.div>,
     document.body
   );
@@ -130,7 +131,11 @@ const ModalContent = ({
       className="bg-white rounded-lg shadow-xl w-3/4 max-w-2xl overflow-hidden flex relative"
     >
       {/* Partie gauche avec l'icône */}
-      <div className="w-1/3 bg-gray-100 p-6 flex items-center justify-center">
+      <div
+        className={`w-1/3 ${
+          getCategoryIcon(title).color
+        } p-6 flex items-center justify-center`}
+      >
         {getCategoryIcon(title).icon}
       </div>
 

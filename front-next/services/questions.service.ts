@@ -77,11 +77,11 @@ const POST = async ({
     throw new Error('Error posting answer');
   }
 
-  const { coinValue, isCorrect } = await response.json();
+  const { userAnswerData } = await response.json();
 
   return {
-    coinValue,
-    isCorrect,
+    coinValue: userAnswerData.coinValue,
+    isCorrect: userAnswerData.isCorrect,
   };
 };
 

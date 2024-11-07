@@ -1,3 +1,4 @@
+import { ModalQuizz } from '@/components/ModalQuizz';
 import { NumberTicker } from '@/components/NumberTicker';
 import { useGetTimer } from '@/hooks/useGetTimer';
 import { usePostAnswer } from '@/hooks/usePostQuestionAnswer';
@@ -5,7 +6,6 @@ import { constructUrl } from '@/services/api.service';
 import { Question as IQuestion } from '@/services/questions.service';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useSessionStore } from '../../store/session.store';
 import { cn } from '../../utils/utils';
 
@@ -147,20 +147,20 @@ const Interactive = ({
       </div>
 
       {isEntracte && (
-        <div className="flex items-center w-full justify-center gap-12">
-          <Link
-            href={'/'}
-            className="flex flex-col gap-4 ring select-none ring-indigo-800 bg-indigo-500 py-2 px-6 cursor-pointer transition ease-in-out duration-300 hover:scale-105 active:translate-y-1 rounded-lg"
-          >
-            <span className="text-white text-2xl">Quitter</span>
-          </Link>
-          <button
-            onClick={() => handleGenerateQuestion()}
-            className="flex flex-col gap-4 ring select-none ring-indigo-800 bg-indigo-500 py-2 px-6 cursor-pointer transition ease-in-out duration-300 hover:scale-105 active:translate-y-1 rounded-lg"
-          >
-            <span className="text-white text-2xl">Continuer</span>
-          </button>
-        </div>
+        <ModalQuizz
+          isCorrect={answerQuestionResponse.isCorrect}
+          title={
+            answerQuestionResponse.isCorrect
+              ? 'Bonne réponse !'
+              : 'Mauvaise réponse !'
+          }
+          description={
+            answerQuestionResponse.isCorrect
+              ? `<strong>${answerQuestionResponse.userAnswer}</strong> était la bonne réponse !`
+              : `La bonne réponse était <strong>${question.correctAnswer}</strong>`
+          }
+          handleGenerateQuestion={handleGenerateQuestion}
+        />
       )}
     </div>
   );
@@ -168,7 +168,7 @@ const Interactive = ({
 
 const Question = ({ question }: { question: string }) => {
   return (
-    <div className="flex flex-col gap-24 mt-8 z-50 relative">
+    <div className="flex flex-col max-w-[80%] mx-auto gap-24 mt-8 z-50 relative">
       <span className="text-black font-black text-center uppercase text-3xl">
         {question}
       </span>
