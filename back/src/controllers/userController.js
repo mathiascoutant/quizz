@@ -21,7 +21,8 @@ export const createUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const user = await UserService.updateUser(req.params.id, req.body);
+    const userId = req.user.id;
+    const user = await UserService.updateUser(userId, req.body);
     if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
     res.status(200).json(user);
   } catch (error) {
