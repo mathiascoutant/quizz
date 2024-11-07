@@ -119,4 +119,22 @@ export const restrictTo = async (...roles) => {
   };
 };
 
+export const status = async (req, res) => {
+  try {
+    // L'utilisateur est déjà protégé par la fonction protect
+    const userId = req.user.id; // Récupérer l'ID de l'utilisateur à partir de la requête
+
+    // Récupérer les informations de l'utilisateur
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    // Retourner les informations de l'utilisateur
+    return res.status(200).json({ user });
+  } catch (error) {
+    return res.status(500).json({ message: 'Erreur lors de la récupération des informations de l\'utilisateur', error: error.message });
+  }
+};
+
 
