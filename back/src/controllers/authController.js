@@ -90,8 +90,11 @@ export const protect = async (req, res, next) => {
       return res.status(401).json({ message: 'Vous n\'êtes pas connecté. Veuillez vous connecter pour accéder à cette ressource.' });
     }
 
-    // Vérifier le token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('Token:', token);
+
+    // Vérifier le token avec la clé secrète en brut
+    const decoded = jwt.verify(token, JWT_SECRET); // Remplacez 'votre_clé_secrète' par votre clé secrète
+    console.log('User ID extrait du token:', decoded.userId);
 
     // Vérifier si l'utilisateur existe toujours
     const currentUser = await User.findById(decoded.userId);
