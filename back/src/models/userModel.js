@@ -59,4 +59,10 @@ User.findByEmail = async function(email) {
   });
 };
 
+User.findById = async function(userid) {
+  return await this.findOne({
+    where: { id: userid }
+  });
+};
+
 export { User };

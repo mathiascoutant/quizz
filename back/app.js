@@ -8,6 +8,7 @@ import couponRoutes from '../back/src/routes/couponRoutes.js';
 import userCouponRoutes from '../back/src/routes/userCouponRoutes.js';
 import coinRoutes from './src/routes/coinRoutes.js';
 import categoryRoutes from '../back/src/routes/categoryRoutes.js';
+import badgeRoutes from '../back/src/routes/badgeRoutes.js';
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use('/api/coupons', couponRoutes);
 app.use('/api/user-coupons', userCouponRoutes);
 app.use('/api/levels', coinRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/badges', badgeRoutes);
 // app.use('/users', userRoutes);
 
 // Gestion des erreurs 404
