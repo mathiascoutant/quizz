@@ -1,6 +1,5 @@
 import express from 'express';
 import * as authController from '../controllers/authController.js';
-
 import { protect } from '../controllers/authController.js';
 const router = express.Router();
 
