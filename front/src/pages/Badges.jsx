@@ -41,7 +41,7 @@ function Badges() {
       <h1 className="text-4xl font-bold mb-4">Mes badges</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {badges.map(badge => (
-          <div key={badge.id} className={`border rounded-lg p-4 ${userBadges.some(userBadge => userBadge.id === badge.id) ? '' : 'opacity-50'}`}>
+          <div key={badge.id} className={`border rounded-lg p-4 ${userBadges.some(userBadge => userBadge.id === badge.id) ? '' : 'opacity-50 blur-sm'}`}>
             <img src={`${badge.urlImage}`} alt={badge.name} className="w-full h-32 object-cover rounded-md mb-2" />
             <h2 className="text-xl font-semibold">{badge.name}</h2>
             <p>{badge.description}</p>
