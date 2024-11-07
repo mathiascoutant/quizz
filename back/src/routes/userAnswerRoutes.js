@@ -19,6 +19,6 @@ router.get('/:id', getUserAnswerById);
 router.get('/user/:userId', getUserAnswersByUserId);
 router.delete('/delete/:id', deleteUserAnswer);
 router.get('/stats/:userId', getUserAnswersStats);
-router.get('/statsbyCategory/:userId',getUserAnswersStatsByCategory);
+router.get('/statsByCategory/:userId',getUserAnswersStatsByCategory);
 
 export default router;

@@ -1,100 +1,55 @@
-import { useContext, useEffect, useState } from "react";
-import RegisterPage from "./RegisterPage";
-import { useSessionStore } from "../store/session.store";
-import "./ProfilePage.css";
+import { useState } from "react";
+import Profile from "./Profile";
+import Badges from "./Badges";
+import Statistics from "./Statistics";
+
 function ProfilePage() {
-  const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState("account");
 
-  const session = useSessionStore((state) => state.session);
-  const [newData, setNewData] = useState({
-    firstname: session.user.firstname,
-    lastname: session.user.lastname,
-    username: session.user.pseudo,
-    email: session.user.email,
-    password: session.user.password,
-    coins: session.user.coins,
-  });
-
-
-  const dataKeys = Object.keys(newData).filter((value) => value !== "coins");
-  const dataKeys1 = Object.keys(newData).filter((value) => value !== "password" &&  value !== "coins");
-
-  console.log(dataKeys1);
-
-  const fieledLabels = {
-    firstname: "Prénom",
-    lastname: "Nom",
-    username: "Pseudo",
-    email: "Email",
-    password: "Mot de passe",
-  };
-  console.log("d");
-  //console.log(dataKeys);
-
-  // create function that will fetch using post the api.
-  // const user = useContext(RegisterPage);
-
-  //console.log("sessiondata", session);
-  //console.log("newdata", newData);
-
-  const renderField = (name) => {
-    console.log(name);
-    return (
-      <label id="label-form">
-        {fieledLabels[name]}
-        {""}
-        <br />
-        {isEditing ? (
-          <input
-            id="input-form"
-            name={name}
-            value={newData[name]}
-            onChange={handleChange}
-          ></input>
-        ) : (
-          
-          <p id="text-form">{newData[name]}</p>
-        )}
-        <br/>
-      </label>
-    );
-  };
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setNewData((prevState) => ({ ...prevState, [name]: value }));
+  const renderContent = () => {
+    switch (activeTab) {
+      case "badges":
+        return <Badges />;
+      case "statistics":
+        return <Statistics />;
+      case "account":
+      default:
+        return <Profile />;
+    }
   };
 
   return (
-    <div className="main-content">
-      <div className="left-content">
-        <div className="edit-profile">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setIsEditing(!isEditing);
-            }}
+    <div className="bg-gray-100 p-4 rounded-lg shadow-lg max-w-4xl mx-auto my-8">
+      <p className="text-2xl font-semibold">Mon profil</p>
+      <p className="text-lg text-gray-600">Gérez les paramètres de votre compte et définissez vos préférences de messagerie.</p>
+      <hr className="my-4" />
+      <div className="flex justify-center items-start">
+      <nav className="w-1/4 bg-white text-gray-800 p-4 rounded-lg shadow-md border border-gray-300">
+        <ul className="space-y-2">
+          <li 
+            onClick={() => setActiveTab("account")}
+            className={`cursor-pointer p-2 rounded hover:bg-gray-200 ${activeTab === "account" ? "bg-gray-300" : ""}`}
           >
-            <div className="title-form">
-              <i id="title-text">Profile</i>
-              <br />
-              <i>This is how others will see you on the site.</i>
-            </div>
-            <div id="lign"></div>
-            {dataKeys.map((name) => renderField(name))}
-            <label>
-              Number of coin:{""}
-              <b>{session.user.coins}</b>
-              <br></br>
-            </label>
-            <button type="submit" className="form-button">
-              {isEditing ? "Save" : "Edit"} Profile
-            </button>
-          </form>
-        </div>
+            Mon compte
+          </li>
+          <li 
+            onClick={() => setActiveTab("badges")} 
+            className={`cursor-pointer p-2 rounded hover:bg-gray-200 ${activeTab === "badges" ? "bg-gray-300" : ""}`}
+          >
+            Mes badges
+          </li>
+          <li 
+            onClick={() => setActiveTab("statistics")} 
+            className={`cursor-pointer p-2 rounded hover:bg-gray-200 ${activeTab === "statistics" ? "bg-gray-300" : ""}`}
+          >
+            Statistiques
+          </li>
+        </ul>
+      </nav>
+      <div className="w-3/4 ml-2">
+        {renderContent()}
       </div>
-      <div className="right-content">
-        <div className="purchase-history"></div>
-      </div>
+    </div>
     </div>
   );
 }
