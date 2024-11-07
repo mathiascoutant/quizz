@@ -10,7 +10,18 @@ const config: Config = {
     './utils/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      keyframes: {
+        'scale-up': {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.1)' },
+          '100%': { transform: 'scale(1)' },
+        },
+      },
+      animation: {
+        'scale-up': 'scale-up 1s ease-in-out infinite',
+      },
+    },
   },
   plugins: [],
 };

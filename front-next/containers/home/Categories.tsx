@@ -97,7 +97,7 @@ function CategoryCard({
     <div
       onClick={() => setSelectedCategory(category)}
       className={cn(
-        'bg-white rounded-lg shadow-md p-6 flex flex-col items-center text-center cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-purple-50',
+        `bg-white rounded-lg shadow-md p-6 flex flex-col items-center text-center cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-purple-50`,
         {
           'pointer-events-none opacity-50': !isConnected,
         }

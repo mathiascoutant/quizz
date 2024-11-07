@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useSessionStore } from '../store/session.store';
 
 export const usePostAnswer = () => {
-  const session = useSessionStore((state) => state.session);
+  const { session, sessionLogIn } = useSessionStore();
   const [answerQuestionResponse, setAnswerQuestionResponse] = useState<{
     isCorrect: boolean | null;
     userAnswer: string;

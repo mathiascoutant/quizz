@@ -1,9 +1,11 @@
+import { NumberTicker } from '@/components/NumberTicker';
 import { useGetTimer } from '@/hooks/useGetTimer';
 import { usePostAnswer } from '@/hooks/usePostQuestionAnswer';
+import { constructUrl } from '@/services/api.service';
 import { Question as IQuestion } from '@/services/questions.service';
 import { AnimatePresence, motion } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect } from 'react';
 import { useSessionStore } from '../../store/session.store';
 import { cn } from '../../utils/utils';
 
@@ -17,24 +19,38 @@ export const QuizzLayout = ({ children }: { children: React.ReactNode }) => {
 
 const Interactive = ({
   question,
-  correctAnswer,
   fetchQuestion,
   isEntracte,
   setIsEntracte,
 }: {
   question: IQuestion;
-  correctAnswer: string;
   fetchQuestion: () => void;
   isEntracte: boolean;
   setIsEntracte: (isEntracte: boolean) => void;
 }) => {
   const { time, resetTimer, setTime, startTimer } = useGetTimer();
   const { postAnswer, answerQuestionResponse } = usePostAnswer();
+  const { session, updateUser } = useSessionStore();
+
+  if (!session) return null;
 
   const handleSelectResponse = async (option: string) => {
     await postAnswer({ formId: question.id, userAnswer: option });
+
     setIsEntracte(true);
+
     setTime(0);
+
+    const refreshUser = await fetch(constructUrl('/auth/status'), {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.token}`,
+      },
+    });
+
+    const refreshUserData = await refreshUser.json();
+
+    updateUser(refreshUserData.user);
   };
 
   const handleGenerateQuestion = async () => {
@@ -44,16 +60,16 @@ const Interactive = ({
     startTimer();
   };
 
-  useEffect(() => {
-    if (time === 0) {
-      postAnswer({ formId: undefined, userAnswer: undefined });
-      setIsEntracte(true);
-    }
-  }, [time]);
+  // useEffect(() => {
+  //   if (time === 0) {
+  //     postAnswer({ formId: undefined, userAnswer: undefined });
+  //     setIsEntracte(true);
+  //   }
+  // }, [time]);
 
   return (
     <div className="flex flex-col gap-12 z-50">
-      <div className="grid grid-cols-2 place-items-center gap-12">
+      <div className="grid grid-cols-[repeat(3_min-content)] grid-rows-3 place-items-center gap-4 w-full">
         {/* random possible answers sort by alphabet */}
         {question.possibleAnswers
           .sort((a, b) => a.localeCompare(b))
@@ -78,18 +94,25 @@ const Interactive = ({
                 animate="animate"
                 exit="exit"
                 initial="initial"
-                whileHover="whileHover"
                 key={index}
                 onClick={() => handleSelectResponse(option)}
                 disabled={isEntracte}
                 className={cn(
                   'flex flex-col gap-4 min-w-[450px] items-center ring select-none py-6 px-12 cursor-pointer transition ease-in-out duration-300 active:translate-y-1 rounded-lg',
                   {
-                    'opacity-20': isEntracte && correctAnswer !== option,
-                    'bg-red-600 ring-red-700': index === 0,
-                    'bg-blue-600 ring-blue-700': index === 1,
-                    'bg-yellow-600 ring-yellow-700': index === 2,
-                    'bg-green-600 ring-green-700': index === 3,
+                    'opacity-20':
+                      isEntracte && question.correctAnswer !== option,
+                    'bg-red-600 ring-red-700 col-start-1 row-start-1':
+                      index === 0,
+                    'bg-blue-600 ring-blue-700 col-start-3 row-start-1':
+                      index === 1,
+                    'bg-yellow-600 ring-yellow-700 col-start-1 row-start-3':
+                      index === 2,
+                    'bg-green-600 ring-green-700 col-start-3 row-start-3':
+                      index === 3,
+                    'row-start-2':
+                      (question.possibleAnswers.length === 2 && index === 0) ||
+                      (question.possibleAnswers.length === 2 && index === 1),
                   }
                 )}
               >
@@ -97,11 +120,31 @@ const Interactive = ({
               </motion.button>
             </AnimatePresence>
           ))}
-      </div>
 
-      <span className="text-5xl text-white font-bold mx-auto">
-        {time}&apos;S
-      </span>
+        <AnimatePresence mode="wait">
+          <div
+            className={cn(
+              'text-5xl col-start-2 row-start-2 p-2 size-28 text-white rounded-full flex items-center justify-center bg-indigo-500 font-bold mx-auto',
+              {
+                'animate-scale-up': time > 0,
+              }
+            )}
+          >
+            <motion.span
+              key={time}
+              variants={{
+                initial: { opacity: 0, scale: 0.5 },
+                animate: { opacity: 1, scale: 1 },
+                exit: { opacity: 0, scale: 0.5 },
+              }}
+              initial="initial"
+              animate="animate"
+            >
+              {time}
+            </motion.span>
+          </div>
+        </AnimatePresence>
+      </div>
 
       {isEntracte && (
         <div className="flex items-center w-full justify-center gap-12">
@@ -133,7 +176,7 @@ const Question = ({ question }: { question: string }) => {
   );
 };
 
-const BottomBar = () => {
+const BottomBar = ({ gainValue }: { gainValue: number }) => {
   const session = useSessionStore((state) => state.session);
 
   if (!session) return null;
@@ -141,33 +184,25 @@ const BottomBar = () => {
   return (
     <div className=" bottom-0 left-0 z-50 flex p-4 justify-between w-full">
       <div className="flex items-center gap-3">
-        <div className="size-5 bg-purple-500"></div>
-        <span>{session.user.pseudo ?? 'Anonymous'}</span>
+        <Image width={24} height={24} alt="" src="/assets/userBlack.png" />
+        <span className="font-black">{session.user.pseudo}</span>
       </div>
 
       <div className="flex flex-col gap-1">
         <span className="flex items-center">
-          +1 <img src="/assets/coin.png" alt="" className="size-6" /> par bonne
-          réponse
+          +{gainValue} <img src="/assets/coin.png" alt="" className="size-6" />{' '}
+          par bonne réponse
         </span>
 
         <span className="flex items-center">
-          -1 <img src="/assets/coin.png" alt="" className="size-6" /> par
-          mauvaise réponse
+          -{gainValue} <img src="/assets/coin.png" alt="" className="size-6" />{' '}
+          par mauvaise réponse
         </span>
       </div>
 
       <div className="flex flex-col items-center gap-2">
         <img src="/assets/coin.png" alt="" className="size-12" />
-        <motion.span
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0, 1, 1],
-            transition: { duration: 0.3 },
-          }}
-        >
-          {session.user.coins ?? 0}
-        </motion.span>
+        <NumberTicker value={session.user.coins ?? 0} />
       </div>
     </div>
   );

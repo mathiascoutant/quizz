@@ -5,6 +5,7 @@ type SessionState = {
   session: Session | null;
   sessionLogOut: () => void;
   sessionLogIn: (session: Session) => void;
+  updateUser: (user: User) => void;
 };
 
 type Session = {
@@ -24,10 +25,17 @@ type User = {
 
 export const useSessionStore = create<SessionState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       session: null,
       sessionLogOut: () => set({ session: null }),
       sessionLogIn: (session) => set({ session }),
+      updateUser: (updatedUser) =>
+        set({
+          session: {
+            ...get().session,
+            user: updatedUser,
+          } as Session,
+        }),
     }),
     {
       name: 'session-storage',

@@ -2,6 +2,7 @@
 
 import { BackgroundLines } from '@/components/BackgroundLines';
 import { useGetQuestion } from '@/hooks/useGetQuestion';
+import { getCategoryIcon } from '@/utils/getCategoryIcon';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { QuizzLayout } from './QuizzLayout';
@@ -20,21 +21,32 @@ export const QuizzContainer = ({ category }: { category: string }) => {
 
   const [isEntracte, setIsEntracte] = useState<boolean>(false);
   return (
-    <BackgroundLines className=" w-full min-h-screen max-h-screen">
+    <BackgroundLines className="relative w-full min-h-screen max-h-screen">
       {isLoading || !questionData ? (
         <QuizzLoader />
       ) : (
-        <QuizzLayout>
-          <QuizzLayout.Question question={questionData.content} />
-          <QuizzLayout.Interactive
-            correctAnswer={questionData.correctAnswer}
-            question={questionData}
-            fetchQuestion={fetchQuestion}
-            isEntracte={isEntracte}
-            setIsEntracte={setIsEntracte}
-          />
-          <QuizzLayout.BottomBar />
-        </QuizzLayout>
+        <>
+          <div
+            className={`absolute top-4 left-4 flex justify-center backdrop-contrast-50 gap-2 p-4 text-white font-black rounded-md backdrop-blur-md items-center ${
+              getCategoryIcon(category).color
+            }`}
+          >
+            {getCategoryIcon(category).icon}
+            <span>{category}</span>
+          </div>
+          <QuizzLayout>
+            <QuizzLayout.Question question={questionData.content} />
+            <QuizzLayout.Interactive
+              question={questionData}
+              fetchQuestion={fetchQuestion}
+              isEntracte={isEntracte}
+              setIsEntracte={setIsEntracte}
+            />
+            <QuizzLayout.BottomBar
+              gainValue={questionData.difficulty.coinValue}
+            />
+          </QuizzLayout>
+        </>
       )}
     </BackgroundLines>
   );

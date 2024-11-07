@@ -16,15 +16,18 @@ export const useGetQuestion = ({
 }: Nullable<Omit<GetQuestionBody, 'userId'>>) => {
   const [questionData, setQuestionData] = useState<Question | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const session = useSessionStore((s) => s.session);
+  const userId = useSessionStore((s) => s.session?.user.id);
 
   const fetchQuestion = useCallback(async () => {
-    if (!session || !difficultyId || !categoryId || !numberOfAnswers) {
+    console.log('zjbzyudfbzeud', userId);
+    if (!userId || !difficultyId || !categoryId || !numberOfAnswers) {
       return;
     }
 
+    console.log('fetchQuestion');
+
     const question = await questionsService.GET({
-      userId: session.user.id,
+      userId,
       difficultyId,
       categoryId,
       numberOfAnswers,
@@ -32,7 +35,7 @@ export const useGetQuestion = ({
 
     setQuestionData(question);
     setIsLoading(false);
-  }, [categoryId, difficultyId, session, numberOfAnswers]);
+  }, [categoryId, difficultyId, userId, numberOfAnswers]);
 
   useEffect(() => {
     fetchQuestion();
