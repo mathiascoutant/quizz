@@ -53,7 +53,7 @@ function ProfilePage() {
           ></input>
         ) : (
           
-          <p id="text-form">{dataKeys1[name]}</p>
+          <p id="text-form">{newData[name]}</p>
         )}
         <br/>
       </label>
