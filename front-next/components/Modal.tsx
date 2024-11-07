@@ -41,7 +41,7 @@ export const Modal = ({
     };
   }, [difficulties, isLoading, setSelectedCategory]);
 
-  if (!difficulties || isLoading) return 'Chargement...';
+  if (!difficulties || isLoading) return null;
 
   return createPortal(
     <motion.div
@@ -99,18 +99,18 @@ const ModalContent = ({
 
       if (!diff) return;
 
-      let newCoinsWon = 3;
-      let newCoinsLost = 2;
+      let newCoinsWon;
+      let newCoinsLost;
 
       if (diff.difficulty === 'Débutant') {
-        newCoinsWon = answerChoiceCount === '2' ? 2 : 3;
-        newCoinsLost = 1;
+        newCoinsWon = answerChoiceCount === '2' ? 10 : 10;
+        newCoinsLost = 10;
       } else if (diff.difficulty === 'Confirmé') {
-        newCoinsWon = answerChoiceCount === '2' ? 3 : 4;
-        newCoinsLost = 2;
+        newCoinsWon = answerChoiceCount === '2' ? 20 : 20;
+        newCoinsLost = 20;
       } else if (diff.difficulty === 'Expert') {
-        newCoinsWon = answerChoiceCount === '2' ? 4 : 5;
-        newCoinsLost = 3;
+        newCoinsWon = answerChoiceCount === '2' ? 30 : 30;
+        newCoinsLost = 30;
       }
 
       setCoinsWon(newCoinsWon);
