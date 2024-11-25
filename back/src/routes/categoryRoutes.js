@@ -14,7 +14,7 @@ const router = express.Router();
 
 router.post('/create', createCategory);          
 router.get('/', getCategories);    
-router.get('/percentage', protect,getPercentageForCategories);        
+router.get('/percentage/:userid', protect,getPercentageForCategories);        
 router.get('/:id', getCategoryById);      
 router.put('/update/:id', updateCategory);       
 router.delete('/delete/:id', deleteCategory);

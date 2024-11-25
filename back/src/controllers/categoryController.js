@@ -79,10 +79,10 @@ export const deleteCategory = async (req, res) => {
 // Get percentage of responses for each category
 export const getPercentageForCategories = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.params.userId;
 
     if (!userId) {
-      return res.status(401).json({ error: 'Utilisateur non authentifié' });
+      return res.status(400).json({ error: 'ID utilisateur manquant' });
     }
 
     const categoriesData = await CategoryService.getPercentageForCategories(userId);
