@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+const TIMER_RESET_VALUE = 20;
+
 export const useGetTimer = () => {
-  const [time, setTime] = useState<number>(10);
+  const [time, setTime] = useState<number>(TIMER_RESET_VALUE);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const startTimer = useCallback(() => {
@@ -25,7 +27,7 @@ export const useGetTimer = () => {
   }, [startTimer]);
 
   const resetTimer = () => {
-    setTime(10);
+    setTime(TIMER_RESET_VALUE);
   };
 
   const freezeTimer = () => {
