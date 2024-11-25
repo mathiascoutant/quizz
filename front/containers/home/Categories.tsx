@@ -8,6 +8,7 @@ import { cn } from '@/utils/utils';
 import { motion } from 'framer-motion';
 import { Fragment, useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
+import { CategoriesLoader } from '../loaders/CategoriesLoader';
 
 export const Categories = () => {
   const [displayedCategories, setDisplayedCategories] = useState<number>(6);
@@ -43,7 +44,7 @@ export const Categories = () => {
     !categoriesCompletion ||
     isCategoriesCompletionLoading
   )
-    return 'Chargement...';
+    return <CategoriesLoader />;
 
   const modeledCategories = categories.map((category) => {
     const completion = categoriesCompletion.find((c) => c.id === category.id);
@@ -164,12 +165,12 @@ function CategoryCard({
         <h3 className="text-xl font-semibold mb-2 ">{category.name}</h3>
         <p className="text-sm ">{category.shortDescription}</p>
         <div className="space-y-2 w-full ">
-          <p className="text-xs font-bold text-gray-500 mt-1 ">
+          <p className="text-xs font-bold text-gray-500 mt-1 mb-2">
             {category.completion}% de questions répondues
           </p>
 
           {!isCompleted ? (
-            <div className="w-full bg-gray-300 h-2 rounded-full">
+            <div className="w-full  bg-gray-300 h-2 rounded-full">
               <motion.div
                 variants={{
                   initial: { width: 0 },
@@ -183,8 +184,17 @@ function CategoryCard({
                 }}
                 whileInView="whileInView"
                 initial="initial"
-                className="bg-purple-700 h-2 rounded-full"
-              ></motion.div>
+                className="bg-purple-700 relative h-2 rounded-full"
+              >
+                {/* <IoIosRocket className="text-lg rotate-45 absolute text-purple-900 top-1/2 -translate-y-1/2 -right-2" /> */}
+                {category.completion ? (
+                  <img
+                    src={'/assets/images/rocket.png'}
+                    className="text-lg rotate-45 absolute text-purple-900 top-1/2 size-6 min-w-6 minh-h-6 -translate-y-1/2 -right-2"
+                    alt=""
+                  />
+                ) : null}
+              </motion.div>
             </div>
           ) : null}
         </div>
