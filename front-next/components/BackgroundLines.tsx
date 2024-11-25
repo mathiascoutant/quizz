@@ -135,7 +135,7 @@ const SVG = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
-      className="absolute inset-0 w-full h-full"
+      className="absolute inset-0 w-full h-full blur-[0.5px]"
     >
       {paths.map((path, idx) => (
         <motion.path
