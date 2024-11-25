@@ -9,12 +9,9 @@ import coinIcon from '../assets/coin.png'; // Assurez-vous que le chemin est cor
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { session, sessionLogOut } = useSessionStore();
-  const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const [userData, setUserData] = useState(null);
   const [cartCount, setCartCount] = useState(0);
-  const [coins, setCoins] = useState(0);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -40,10 +37,6 @@ function Header() {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
   };
   
   return (

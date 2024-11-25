@@ -1,13 +1,13 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../config/database.js";
+import { DataTypes } from 'sequelize';
+import { sequelize } from '../config/database.js';
 
-const User = sequelize.define("Users", {
+const User = sequelize.define('Users', {
   firstname: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: false,
     validate: {
-      notEmpty: { msg: "Le prénom est requis" },
+      notEmpty: { msg: 'Le prénom est requis' },
     },
   },
   lastname: {
@@ -15,7 +15,7 @@ const User = sequelize.define("Users", {
     allowNull: false,
     unique: false,
     validate: {
-      notEmpty: { msg: "Le nom de famille est requis" },
+      notEmpty: { msg: 'Le nom de famille est requis' },
     },
   },
   pseudo: {
@@ -41,7 +41,7 @@ const User = sequelize.define("Users", {
     validate: {
       len: {
         args: [6, 100],
-        msg: "Le mot de passe doit contenir au moins 6 caractères",
+        msg: 'Le mot de passe doit contenir au moins 6 caractères',
       },
     },
   },
@@ -59,9 +59,9 @@ User.findByEmail = async function (email) {
   });
 };
 
-User.findById = async function(userid) {
+User.findById = async function (userid) {
   return await this.findOne({
-    where: { id: userid }
+    where: { id: userid },
   });
 };
 
