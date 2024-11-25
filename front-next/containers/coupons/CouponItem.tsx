@@ -1,40 +1,50 @@
 import { Coupon } from '@/services/coupons.service';
 import { useCartStore } from '@/store/cart.store';
+import { useSessionStore } from '@/store/session.store';
 
 export const CouponItem = ({ coupon }: { coupon: Coupon }) => {
   const addToCart = useCartStore((state) => state.addToCart);
+  const session = useSessionStore((state) => state.session);
+
+  const miamsAvailable = session?.user.coins; // Remplacez ceci par la valeur réelle de miams disponibles
+
   return (
     <div>
       <div
-        style={{ backgroundColor: coupon.color }}
-        className="max-w-1/3 h-40 rounded-lg flex flex-col justify-between items-start"
+        style={{ backgroundColor: coupon.color, position: 'relative' }}
+        className={`max-w-1/3 h-40 rounded-lg flex flex-col justify-between items-start ${coupon.coinCost > miamsAvailable ? 'opacity-50' : ''}`}
       >
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full h-full justify-between">
           <div className='flex justify-end'>
-          <strong className="pr-2 pt-1 text-lg" style={{ color: 'white' }}>
+          <strong className="pr-3 pt-2 text-lg" style={{ color: 'white' }}>
             -{coupon.cashReduction 
               ? `${coupon.cashReduction} €` 
               : `${coupon.percentReduction}%`}
           </strong>
           </div>
-          <p className="text-white text-center flex-grow">{coupon.brand}</p>
+          <p className="text-white text-center flex-grow" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+            {coupon.brand}
+          </p>
+          <div className='flex'>
+            <p className="pl-2 pb-1 text-xs italic" style={{ color: 'white' }}>
+              * {coupon.specificContent}
+            </p>
+          </div>
         </div>
       </div>
-      <div className="p-2">
-        <p className="text-xs italic" style={{ color: coupon.color }}>
-          * {coupon.specificContent}
-        </p>
-      </div>
       <button
-        className="w-full py-2 px-4 bg-purple-600 text-white rounded-none font-semibold hover:bg-purple-700 transition-colors"
-        onClick={() =>
-          addToCart({
-            brand: coupon.brand,
-            percentReduction: coupon.percentReduction,
-            id: coupon.id,
-            quantity: 1,
-          })
-        }
+        className={`w-full mt-4 py-2 px-4 ${coupon.coinCost > miamsAvailable ? 'bg-gray-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'} text-white rounded-none font-semibold transition-colors`}
+        onClick={() => {
+          if (coupon.coinCost <= miamsAvailable) {
+            addToCart({
+              brand: coupon.brand,
+              percentReduction: coupon.percentReduction,
+              id: coupon.id,
+              quantity: 1,
+            });
+          }
+        }}
+        disabled={coupon.coinCost > miamsAvailable}
       >
         Ajouter au panier - {coupon.coinCost} 
         <img src={'/assets/coin.png'} className="w-4 h-4 inline" alt="coin" />
