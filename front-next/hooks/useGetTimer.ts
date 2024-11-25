@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-const TIMER_RESET_VALUE = 20;
+const TIMER_RESET_VALUE = 30;
 
 export const useGetTimer = () => {
   const [time, setTime] = useState<number>(TIMER_RESET_VALUE);
