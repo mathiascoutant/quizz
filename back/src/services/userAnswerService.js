@@ -1,21 +1,35 @@
 import { UserAnswerRepository } from '../repositories/userAnswerRepository.js';
 import { CategoryRepository } from '../repositories/categoryRepository.js';
+import { UserRepository } from '../repositories/userRepository.js';
 
 export const UserAnswerService = {
   async createUserAnswer({ formId, userId, userAnswer }) {
     const form = await UserAnswerRepository.findFormById(formId);
     if (!form) throw new Error('Form not found.');
-
+  
     const isCorrect = userAnswer === form.correctAnswer;
     let coinValue = 0;
-
+    const coin = await UserAnswerRepository.findCoinByDifficultyId(form.difficultyId);
+    
+    let message = ''; 
     if (isCorrect) {
-      const coin = await UserAnswerRepository.findCoinByDifficultyId(form.difficultyId);
       if (coin) coinValue = coin.coinValue;
+      message = "You are a winner, Babe 🦄 !"; 
+    } else {
+      if (coin) coinValue = coin.coinValue * -1;
+      message = "You are a fucking loser 🦄 !";
     }
-
-    return await UserAnswerRepository.createUserAnswer({ formId, userId, userAnswer, isCorrect, coinValue });
+  
+    const userAnswerData = await UserAnswerRepository.createUserAnswer({ formId, userId, userAnswer, isCorrect, coinValue });
+    const newCoinBalance = await UserRepository.updateCoins(userId, coinValue);
+  
+    return {
+      userAnswerData,
+      newCoinBalance,
+      message 
+    };
   },
+  
 
   async getAllUserAnswers() {
     return await UserAnswerRepository.findAllUserAnswers();

@@ -1,4 +1,5 @@
 import { UserService } from '../services/userService.js';
+import {hashPassword,comparePassword} from '../../src/utils/passwordUtils.js';
 
 export const getUserById = async (req, res) => {
   try {
@@ -20,14 +21,53 @@ export const createUser = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
+  console.log('req.body', req.body, req.params.userId);
   try {
-    const user = await UserService.updateUser(req.params.id, req.body);
+    const userId = req.params.userId;
+    const { firstname, lastname, pseudo, newPassword, oldPassword, email } = req.body;
+    
+    // Récupérer l'utilisateur actuel
+    const user = await UserService.getUserById(userId);
     if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
-    res.status(200).json(user);
+
+    let updatedFields = {};
+
+    // Vérifier et mettre à jour le mot de passe si nécessaire
+    if (newPassword && oldPassword) {
+      const isPasswordValid = await comparePassword(oldPassword, user.password);
+      if (!isPasswordValid) {
+        return res.status(400).json({ message: "L'ancien mot de passe est incorrect" });
+      }
+      // Hacher le nouveau mot de passe
+      const hashedPassword = await hashPassword(newPassword);
+      updatedFields.password = hashedPassword;
+      console.log('updatedFields', updatedFields);
+    }
+
+    // Vérifier les autres champs et les mettre à jour si présents
+    if (firstname) updatedFields.firstname = firstname;
+    if (lastname) updatedFields.lastname = lastname;
+    if (pseudo) {
+      // Vérifier si le pseudo est déjà utilisé
+      const existingUser = await UserService.getUserByPseudo(pseudo);   
+      if (existingUser) return res.status(400).json({ message: "Ce pseudo est déjà utilisé" });
+      updatedFields.pseudo = pseudo;
+    }
+
+    if (email) updatedFields.email = email;
+
+    // Appeler le service pour mettre à jour l'utilisateur
+    const updatedUser = await UserService.updateUser(userId, updatedFields);
+    if (!updatedUser) return res.status(404).json({ message: "Erreur lors de la mise à jour de l'utilisateur" });
+
+    res.status(200).json({ message: "Utilisateur mis à jour avec succès", updatedUser });
   } catch (error) {
-    res.status(400).json({ message: "Erreur lors de la mise à jour de l'utilisateur" });
+    console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);
+    res.status(500).json({ message: "Erreur serveur lors de la mise à jour de l'utilisateur", error: error.message });
   }
 };
+
+
 
 export const deleteUser = async (req, res) => {
   try {

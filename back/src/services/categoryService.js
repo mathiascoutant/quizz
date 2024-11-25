@@ -24,5 +24,9 @@ export const CategoryService = {
     if (!category) return null;
     await CategoryRepository.deleteCategory(category);
     return true;
+  },
+
+  getPercentageForCategories: async (userId) => {
+    return await CategoryRepository.findCategoriesWithPercentage(userId);
   }
 };
