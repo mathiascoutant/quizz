@@ -3,8 +3,11 @@
 import { BackgroundLines } from '@/components/BackgroundLines';
 import { useGetQuestion } from '@/hooks/useGetQuestion';
 import { getCategoryIcon } from '@/utils/getCategoryIcon';
-import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { IoMdArrowRoundBack } from 'react-icons/io';
+import { toast } from 'sonner';
 import { QuizzLayout } from './QuizzLayout';
 
 export const QuizzContainer = ({ category }: { category: string }) => {
@@ -12,22 +15,43 @@ export const QuizzContainer = ({ category }: { category: string }) => {
   const difficultyId = searchParams.get('difficultyId');
   const categoryId = searchParams.get('categoryId');
   const numberOfAnswers = searchParams.get('answerChoiceCount');
+  const router = useRouter();
 
-  const { fetchQuestion, isLoading, questionData } = useGetQuestion({
-    categoryId,
-    difficultyId,
-    numberOfAnswers,
-  });
+  const { fetchQuestion, isLoading, questionData, isQuestionAvailable } =
+    useGetQuestion({
+      categoryId,
+      difficultyId,
+      numberOfAnswers,
+    });
 
   const [isEntracte, setIsEntracte] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!isQuestionAvailable) {
+      toast.error(
+        'Vous avez déjà répondu à toutes les questions de cette catégorie pour cette difficulté et ce nombre de choix de réponses'
+      );
+      router.push('/categories');
+    }
+  }, [isQuestionAvailable]);
+
   return (
     <BackgroundLines className="relative w-full min-h-screen max-h-screen">
       {isLoading || !questionData ? (
         <QuizzLoader />
       ) : (
         <>
-          <div
+          <Link
+            href={'/'}
             className={`absolute top-4 left-4 flex justify-center backdrop-contrast-50 gap-2 p-4 text-white font-black rounded-md backdrop-blur-md items-center ${
+              getCategoryIcon(category).color
+            }`}
+          >
+            <IoMdArrowRoundBack className="text-xl" />
+            <span>Quitter</span>
+          </Link>
+          <div
+            className={`absolute top-4 right-4 flex justify-center backdrop-contrast-50 gap-2 p-4 text-white font-black rounded-md backdrop-blur-md items-center ${
               getCategoryIcon(category).color
             }`}
           >

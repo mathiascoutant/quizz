@@ -16,25 +16,29 @@ export const useGetQuestion = ({
 }: Nullable<Omit<GetQuestionBody, 'userId'>>) => {
   const [questionData, setQuestionData] = useState<Question | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isQuestionAvailable, setIsQuestionAvailable] = useState<boolean>(true);
   const userId = useSessionStore((s) => s.session?.user.id);
 
   const fetchQuestion = useCallback(async () => {
-    console.log('zjbzyudfbzeud', userId);
     if (!userId || !difficultyId || !categoryId || !numberOfAnswers) {
       return;
     }
 
-    console.log('fetchQuestion');
+    try {
+      const question = await questionsService.GET({
+        userId,
+        difficultyId,
+        categoryId,
+        numberOfAnswers,
+      });
 
-    const question = await questionsService.GET({
-      userId,
-      difficultyId,
-      categoryId,
-      numberOfAnswers,
-    });
-
-    setQuestionData(question);
-    setIsLoading(false);
+      setQuestionData(question);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      setIsQuestionAvailable(false);
+      throw error;
+    }
   }, [categoryId, difficultyId, userId, numberOfAnswers]);
 
   useEffect(() => {
@@ -45,5 +49,6 @@ export const useGetQuestion = ({
     questionData,
     isLoading,
     fetchQuestion,
+    isQuestionAvailable,
   };
 };
