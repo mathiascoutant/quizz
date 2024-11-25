@@ -62,7 +62,7 @@ export const getRandomQuizByDifficultyAndCategory = async (req, res) => {
     const quiz = await FormService.getRandomQuizByDifficultyAndCategory(userId, difficultyId, categoryId, numberOfAnswers);
     
     if (!quiz) {
-      return res.status(404).json({ message: 'No available quizzes found for this user.' });
+      return res.status(201).json({ message: 'No available quizzes found for this user.' });
     }
 
     res.status(200).json(quiz);
