@@ -11,7 +11,7 @@ export const CouponItem = ({ coupon }: { coupon: Coupon }) => {
   return (
     <div>
       <div
-        style={{ backgroundColor: coupon.color, position: 'relative' }}
+        style={{ backgroundColor: coupon.color, position: 'relative', opacity: coupon.coinCost > miamsAvailable ? 0.3 : 1 }}
         className={`max-w-1/3 h-40 rounded-lg flex flex-col justify-between items-start ${coupon.coinCost > miamsAvailable ? 'opacity-50' : ''}`}
       >
         <div className="flex flex-col w-full h-full justify-between">
