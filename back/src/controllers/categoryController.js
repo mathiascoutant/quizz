@@ -1,4 +1,7 @@
 import { CategoryService } from '../services/categoryService.js';
+import Category from '../models/categoryModel.js';
+import UserAnswer from '../models/userAnswerModel.js';
+import Form from '../models/formModel.js';
 
 // Create a new category
 export const createCategory = async (req, res) => {
@@ -19,6 +22,7 @@ export const getCategories = async (req, res) => {
     res.status(500).json({ error: 'Failed to retrieve categories' });
   }
 };
+
 
 // Get a category by ID
 export const getCategoryById = async (req, res) => {
@@ -69,5 +73,27 @@ export const deleteCategory = async (req, res) => {
     res.status(204).json();
   } catch (error) {
     res.status(500).json({ error: 'Failed to delete category' });
+  }
+};
+
+// Get percentage of responses for each category
+export const getPercentageForCategories = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Utilisateur non authentifié' });
+    }
+
+    const categoriesData = await CategoryService.getPercentageForCategories(userId);
+    
+    if (!categoriesData.length) {
+      return res.status(404).json({ error: 'Aucune catégorie trouvée' });
+    }
+
+    res.status(200).json(categoriesData);
+  } catch (error) {
+    console.error('Error in getPercentageForCategories:', error);
+    res.status(500).json({ error: 'Échec du calcul des pourcentages par catégorie' });
   }
 };
