@@ -6,22 +6,23 @@ export const CouponItem = ({ coupon }: { coupon: Coupon }) => {
   return (
     <div>
       <div
-        className="absolute top-2 right-2 text-xl font-bold"
-        style={{ color: coupon.color }}
+        style={{ backgroundColor: coupon.color }}
+        className="max-w-1/3 h-40 rounded-lg flex flex-col justify-between items-start"
       >
-        {coupon.percentReduction}%
-      </div>
-      <div className="flex-grow flex items-center justify-center p-4">
-        <img
-          // FAIRE UN SWITCH SUR LA BRAND
-          src={'/assets/coin.png'}
-          alt={`${coupon.brand} logo`}
-          className="max-w-1/3 max-h-1/3 object-contain"
-        />
+        <div className="flex flex-col w-full">
+          <div className='flex justify-end'>
+          <strong className="pr-2 pt-1 text-lg" style={{ color: 'white' }}>
+            -{coupon.cashReduction 
+              ? `${coupon.cashReduction} €` 
+              : `${coupon.percentReduction}%`}
+          </strong>
+          </div>
+          <p className="text-white text-center flex-grow">{coupon.brand}</p>
+        </div>
       </div>
       <div className="p-2">
-        <p className="text-xs" style={{ color: coupon.color }}>
-          {coupon.specificContent}
+        <p className="text-xs italic" style={{ color: coupon.color }}>
+          * {coupon.specificContent}
         </p>
       </div>
       <button
@@ -35,7 +36,8 @@ export const CouponItem = ({ coupon }: { coupon: Coupon }) => {
           })
         }
       >
-        Ajouter au panier
+        Ajouter au panier - {coupon.coinCost} 
+        <img src={'/assets/coin.png'} className="w-4 h-4 inline" alt="coin" />
       </button>
     </div>
   );
