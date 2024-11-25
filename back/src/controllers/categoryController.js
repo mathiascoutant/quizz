@@ -79,13 +79,21 @@ export const deleteCategory = async (req, res) => {
 // Get percentage of responses for each category
 export const getPercentageForCategories = async (req, res) => {
   try {
-    const userId = req.params.userid;
+    const requestedUserId = req.params.userid;
+    const authenticatedUserId = req.user.id; // L'ID de l'utilisateur du token JWT
 
-    if (!userId) {
+    // Vérification que l'utilisateur demande ses propres données
+    if (parseInt(requestedUserId) !== authenticatedUserId) {
+      return res.status(403).json({ 
+        error: 'Accès non autorisé. Vous ne pouvez consulter que vos propres statistiques.' 
+      });
+    }
+
+    if (!requestedUserId) {
       return res.status(400).json({ error: 'ID utilisateur manquant' });
     }
 
-    const categoriesData = await CategoryService.getPercentageForCategories(userId);
+    const categoriesData = await CategoryService.getPercentageForCategories(requestedUserId);
     
     if (!categoriesData.length) {
       return res.status(404).json({ error: 'Aucune catégorie trouvée' });
