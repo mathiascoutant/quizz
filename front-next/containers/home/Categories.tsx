@@ -137,10 +137,10 @@ function CategoryCard({
         setSelectedCategory(category);
       }}
       className={cn(
-        `bg-white rounded-lg shadow-md p-6 relative flex flex-col items-center text-center cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-purple-50`,
+        `bg-white rounded-lg shadow-md p-6 relative text-center cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-purple-50`,
         {
           'pointer-events-none opacity-50': !isConnected,
-          'ring ring-purple-500 pointer-events-none': isCompleted,
+          'ring ring-purple-500 pointer-events-none select-none': isCompleted,
         }
       )}
     >
@@ -156,34 +156,37 @@ function CategoryCard({
         </>
       ) : null}
       <div
-        className={cn({
-          'blur-[2px]': isCompleted,
+        className={cn('flex items-center flex-col', {
+          'blur-[2px] ': isCompleted,
         })}
       >
         <div className="mb-4 ">{category.icon}</div>
         <h3 className="text-xl font-semibold mb-2 ">{category.name}</h3>
         <p className="text-sm ">{category.shortDescription}</p>
-        <div className="space-y-4 w-full ">
+        <div className="space-y-2 w-full ">
           <p className="text-xs font-bold text-gray-500 mt-1 ">
             {category.completion}% de questions répondues
           </p>
 
-          <div className="w-full bg-gray-300 h-2 rounded-full">
-            <motion.div
-              variants={{
-                initial: { opacity: 0, width: 0, scale: 0 },
-                whileInView: {
-                  opacity: 1,
-                  scale: 1,
-                  width: `${category.completion}%`,
-                },
-              }}
-              whileInView="whileInView"
-              initial="initial"
-              className="bg-purple-700 h-2 rounded-full"
-              style={{ width: `${category.completion}%` }}
-            ></motion.div>
-          </div>
+          {!isCompleted ? (
+            <div className="w-full bg-gray-300 h-2 rounded-full">
+              <motion.div
+                variants={{
+                  initial: { width: 0 },
+                  whileInView: {
+                    width: `${category.completion}%`,
+                    transition: {
+                      duration: 0.5,
+                      delay: 0.5,
+                    },
+                  },
+                }}
+                whileInView="whileInView"
+                initial="initial"
+                className="bg-purple-700 h-2 rounded-full"
+              ></motion.div>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
