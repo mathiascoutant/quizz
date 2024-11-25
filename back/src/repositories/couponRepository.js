@@ -5,7 +5,7 @@ import UserCoupon from '../models/userCouponModel.js';
 export const CouponRepository = {
   // CRUD Coupons
   createCoupon: async (data) => await Coupon.create(data),
-  findAllCoupons: async () => await Coupon.findAll(),
+  findAllCoupons: async () => await Coupon.findAll({ order: [['coinCost', 'ASC']] }),
   findCouponById: async (id) => await Coupon.findByPk(id),
   updateCoupon: async (coupon, data) => await coupon.update(data),
   deleteCoupon: async (coupon) => await coupon.destroy(),
