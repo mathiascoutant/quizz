@@ -2,9 +2,12 @@
 
 import { Modal } from '@/components/Modal';
 import { useGetCategories } from '@/hooks/useGetCategories';
+import { useGetCategoriesCompletion } from '@/hooks/useGetCategoriesCompletion';
 import { useSessionStore } from '@/store/session.store';
 import { cn } from '@/utils/utils';
+import { motion } from 'framer-motion';
 import { Fragment, useState } from 'react';
+import { FaCheck } from 'react-icons/fa';
 
 export const Categories = () => {
   const [displayedCategories, setDisplayedCategories] = useState<number>(6);
@@ -13,6 +16,11 @@ export const Categories = () => {
     null
   );
   const { data: categories, isLoading } = useGetCategories();
+  const {
+    data: categoriesCompletion,
+    isLoading: isCategoriesCompletionLoading,
+  } = useGetCategoriesCompletion();
+
   const session = useSessionStore((state) => state.session);
 
   const toggleCategoriesDisplay = () => {
@@ -27,7 +35,30 @@ export const Categories = () => {
     }
   };
 
-  if (!categories || isLoading) return 'Chargement...';
+  console.log('COMPLETIONS', categoriesCompletion);
+
+  if (
+    !categories ||
+    isLoading ||
+    !categoriesCompletion ||
+    isCategoriesCompletionLoading
+  )
+    return 'Chargement...';
+
+  const modeledCategories = categories.map((category) => {
+    const completion = categoriesCompletion.find((c) => c.id === category.id);
+    if (!completion)
+      return {
+        ...category,
+        completion: 0,
+        totalQuestions: 0,
+      };
+    return {
+      ...category,
+      completion: completion.percentage,
+      totalQuestions: completion.totalQuestions,
+    };
+  });
 
   return (
     <div className="bg-purple-100 py-16">
@@ -36,26 +67,30 @@ export const Categories = () => {
           Explorez nos catégories de quiz
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {categories.slice(0, displayedCategories).map((category, index) => (
-            <Fragment key={index}>
-              <CategoryCard
-                category={category}
-                setSelectedCategory={setSelectedCategory}
-                isConnected={!!session?.user}
-              />
-
-              {selectedCategory && selectedCategory.name === category.name && (
-                <Modal
-                  selectedCategory={selectedCategory}
+          {modeledCategories
+            .slice(0, displayedCategories)
+            .map((category, index) => (
+              <Fragment key={index}>
+                <CategoryCard
+                  category={category}
                   setSelectedCategory={setSelectedCategory}
-                  title={category.name}
-                  path={`/categories/${category.name}/quizz`}
-                >
-                  <p>{category.longDescription}</p>
-                </Modal>
-              )}
-            </Fragment>
-          ))}
+                  isConnected={!!session?.user}
+                  isCompleted={category.completion === 100}
+                />
+
+                {selectedCategory &&
+                  selectedCategory.name === category.name && (
+                    <Modal
+                      selectedCategory={selectedCategory}
+                      setSelectedCategory={setSelectedCategory}
+                      title={category.name}
+                      path={`/categories/${category.name}/quizz`}
+                    >
+                      <p>{category.longDescription}</p>
+                    </Modal>
+                  )}
+              </Fragment>
+            ))}
         </div>
         <div className="text-center">
           <button
@@ -75,9 +110,10 @@ export const Categories = () => {
 };
 
 type CategoryCardProps = {
-  category: Category;
+  category: Category & { completion: number; totalQuestions: number };
   setSelectedCategory: (category: Category) => void;
   isConnected: boolean;
+  isCompleted: boolean;
 };
 
 export interface Category {
@@ -92,20 +128,64 @@ function CategoryCard({
   category,
   setSelectedCategory,
   isConnected,
+  isCompleted,
 }: CategoryCardProps) {
   return (
     <div
-      onClick={() => setSelectedCategory(category)}
+      onClick={() => {
+        if (isCompleted) return;
+        setSelectedCategory(category);
+      }}
       className={cn(
-        `bg-white rounded-lg shadow-md p-6 flex flex-col items-center text-center cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-purple-50`,
+        `bg-white rounded-lg shadow-md p-6 relative flex flex-col items-center text-center cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-purple-50`,
         {
           'pointer-events-none opacity-50': !isConnected,
+          'ring ring-purple-500 pointer-events-none': isCompleted,
         }
       )}
     >
-      <div className="mb-4">{category.icon}</div>
-      <h3 className="text-xl font-semibold mb-2">{category.name}</h3>
-      <p className="text-sm">{category.shortDescription}</p>
+      {isCompleted ? (
+        <>
+          <div className="absolute w-full h-full inset-0 bg-white/50 backdrop-blur-xl rounded-lg opacity-50 z-20"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2  gap-4 z-50 flex flex-col items-center justify-center -translate-y-1/2">
+            <FaCheck className="text-purple-700 text-5xl relative " />
+            <small className="text-purple-700 font-bold text-lg">
+              Complété
+            </small>
+          </div>
+        </>
+      ) : null}
+      <div
+        className={cn({
+          'blur-[2px]': isCompleted,
+        })}
+      >
+        <div className="mb-4 ">{category.icon}</div>
+        <h3 className="text-xl font-semibold mb-2 ">{category.name}</h3>
+        <p className="text-sm ">{category.shortDescription}</p>
+        <div className="space-y-4 w-full ">
+          <p className="text-xs font-bold text-gray-500 mt-1 ">
+            {category.completion}% de questions répondues
+          </p>
+
+          <div className="w-full bg-gray-300 h-2 rounded-full">
+            <motion.div
+              variants={{
+                initial: { opacity: 0, width: 0, scale: 0 },
+                whileInView: {
+                  opacity: 1,
+                  scale: 1,
+                  width: `${category.completion}%`,
+                },
+              }}
+              whileInView="whileInView"
+              initial="initial"
+              className="bg-purple-700 h-2 rounded-full"
+              style={{ width: `${category.completion}%` }}
+            ></motion.div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { useGetDifficulties } from '@/hooks/useGetDifficulties';
 import { Difficulty } from '@/services/difficulties.service';
 import { getCategoryIcon } from '@/utils/getCategoryIcon';
 import { cn } from '@/utils/utils';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -50,17 +50,19 @@ export const Modal = ({
         opacity: [0, 1],
       }}
     >
-      <ModalContent
-        title={title}
-        path={path}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        difficulties={difficulties}
-        selectedDifficulty={selectedDifficulty}
-        setSelectedDifficulty={setSelectedDifficulty}
-      >
-        {children}
-      </ModalContent>
+      <AnimatePresence>
+        <ModalContent
+          title={title}
+          path={path}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          difficulties={difficulties}
+          selectedDifficulty={selectedDifficulty}
+          setSelectedDifficulty={setSelectedDifficulty}
+        >
+          {children}
+        </ModalContent>
+      </AnimatePresence>
     </motion.div>,
     document.body
   );
@@ -113,8 +115,12 @@ const ModalContent = ({
         newCoinsLost = 30;
       }
 
-      setCoinsWon(newCoinsWon);
-      setCoinsLost(newCoinsLost);
+      if (newCoinsWon && newCoinsWon > 0) {
+        setCoinsWon(newCoinsWon);
+      }
+      if (newCoinsLost && newCoinsLost > 0) {
+        setCoinsLost(newCoinsLost);
+      }
     };
 
     if (selectedDifficulty) {
@@ -124,10 +130,13 @@ const ModalContent = ({
 
   return (
     <motion.div
-      animate={{
-        opacity: [0, 1],
-        scale: [0.7, 1],
+      key={title}
+      variants={{
+        initial: { opacity: 0, scale: 0.7 },
+        animate: { opacity: 1, scale: 1 },
       }}
+      animate="animate"
+      initial="initial"
       className="bg-white rounded-lg shadow-xl w-3/4 max-w-2xl overflow-hidden flex relative"
     >
       {/* Partie gauche avec l'icône */}
