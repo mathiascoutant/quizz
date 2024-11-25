@@ -1,6 +1,7 @@
 import TanstackQueryProvider from '@/providers/TanstackQueryProvider';
 import { Metadata } from 'next';
 import { Montserrat } from 'next/font/google';
+import { Toaster } from 'sonner';
 import './globals.css';
 
 const montserrat = Montserrat({
@@ -24,7 +25,10 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <body className={montserrat.className}>
-        <TanstackQueryProvider>{children}</TanstackQueryProvider>
+        <TanstackQueryProvider>
+          <Toaster />
+          {children}
+        </TanstackQueryProvider>
       </body>
     </html>
   );
