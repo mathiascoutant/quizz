@@ -1,5 +1,7 @@
 import { UserService } from '../services/userService.js';
+import { BadgeService } from '../services/badgeService.js';
 import {hashPassword,comparePassword} from '../../src/utils/passwordUtils.js';
+import { verifyToken } from '../utils/jwtUtils.js';
 
 export const getUserById = async (req, res) => {
   try {
@@ -81,14 +83,36 @@ export const deleteUser = async (req, res) => {
 
 export const getUserProfile = async (req, res) => {
   try {
-    const { token } = req.body;
+    const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) return res.status(400).json({ message: "Token manquant" });
 
-    const user = await UserService.getUserProfile(token);
+    const decoded = verifyToken(token);
+    if (!decoded) return res.status(401).json({ message: "Token invalide ou expiré" });
+
+    const userId = decoded.userId;
+
+    const user = await UserService.getUserById(userId);
     if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
 
-    res.status(200).json(user);
+    const badges = await BadgeService.getBadgesUser(userId);
+
+    const userResponse = {
+      id: user.id,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      pseudo: user.pseudo,
+      email: user.email,
+      coins: user.coins,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      badges
+    };
+
+    return res.status(200).json({ 
+      token,
+      user: userResponse
+    });
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
       return res.status(401).json({ message: "Token invalide", error: error.message });
