@@ -1,9 +1,15 @@
 "use client";
 import { useGetRanking } from "@/hooks/useGetRanking";
+import { data } from "framer-motion/client";
 import { Fragment, useState } from "react";
 export const Ranking = () => {
   const { data: ranking, isLoading } = useGetRanking();
-  console.log(ranking);
+  console.log("ranking", ranking);
+
+  if (isLoading || !ranking) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <section className="my-24 max-w-[80%] mx-auto space-y-12">
       <div className="main-container">
@@ -17,7 +23,15 @@ export const Ranking = () => {
                 <th>Score</th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+              {ranking.topUsers.map((player, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{player.pseudo}</td>
+                  <td>{player.coins}</td>
+                </tr>
+              ))}
+            </tbody>
           </table>
 
           <style jsx>{`
