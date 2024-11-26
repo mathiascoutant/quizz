@@ -72,7 +72,7 @@ export const getCouponsByBrand = async (req, res) => {
 export const payCoupon = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { coupons } = req.body;
+    const coupons = req.body;
 
     const result = await CouponService.payCoupon(userId, coupons);
     

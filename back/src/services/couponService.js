@@ -31,7 +31,6 @@ export const CouponService = {
 
     // Calculer le coût total des coupons
     let totalCost = 0;
-    const couponDetails = [];
 
     for (const { couponId, quantity } of coupons) {
       const coupon = await CouponRepository.findCouponById(couponId);
@@ -39,7 +38,6 @@ export const CouponService = {
         return { error: `Coupon non trouvé pour l'ID: ${couponId}.` };
       }
       totalCost += coupon.coinCost * quantity; // Ajouter le coût du coupon à la somme totale
-      couponDetails.push({ coupon, quantity });
     }
 
     // Vérifier si l'utilisateur a suffisamment de coins pour le coût total
@@ -48,7 +46,11 @@ export const CouponService = {
     }
 
     // Appliquer les coupons
-    for (const { coupon, quantity } of couponDetails) {
+    for (const { couponId, quantity } of coupons) {
+      const coupon = await CouponRepository.findCouponById(couponId);
+      if (!coupon) {
+        return { error: `Coupon non trouvé pour l'ID: ${couponId}.` };
+      }
       const discountCode = `${coupon.brand}_${coupon.id}`;
       for (let i = 0; i < quantity; i++) {
         await CouponRepository.createUserCoupon({ userId, couponId: coupon.id, discountCode });
