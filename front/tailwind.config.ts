@@ -20,6 +20,7 @@ const config: Config = {
       },
       animation: {
         'scale-up': 'scale-up 1s ease-in-out infinite',
+        'scale-up-speed': 'scale-up 0.3s ease-in-out infinite',
       },
     },
   },

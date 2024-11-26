@@ -22,8 +22,18 @@ const GET = async () => {
   return (await response.json()) as Coupon[];
 };
 
-const POST = async (body: {couponId: string, quantity: number}[]) => {
-  const response = await api("/coupons/pay", "POST", body);
+const GETSELF = async (userId: string) => {
+  const response = await api(`/user-coupons/${userId}`);
+
+  if (!response.ok) {
+    throw new Error('Error fetching categories');
+  }
+
+  return (await response.json()) as Coupon[];
+};
+
+const POST = async (body: { couponId: string; quantity: number }[]) => {
+  const response = await api('/coupons/pay', 'POST', body);
 
   if (!response.ok) {
     throw new Error('Error fetching categories');
@@ -34,7 +44,8 @@ const POST = async (body: {couponId: string, quantity: number}[]) => {
 
 const couponsService = {
   GET,
-  POST
+  GETSELF,
+  POST,
 };
 
 export default couponsService;
