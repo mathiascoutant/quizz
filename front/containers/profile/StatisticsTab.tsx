@@ -32,7 +32,7 @@ export const StatisticsTab = () => {
           parsePercentage(String(stats.global.correctPercentage)),
           parsePercentage(String(stats.global.incorrectPercentage)),
         ],
-        backgroundColor: ['#36A2EB', '#FF6384'],
+        backgroundColor: ['#8b5cf6', '#c4b5fd'],
       },
     ],
   };
@@ -46,8 +46,8 @@ export const StatisticsTab = () => {
         data: [
           parsePercentage(category.correctPercentage),
           parsePercentage(category.incorrectPercentage),
-        ], // Conversion des pourcentages
-        backgroundColor: ['#36A2EB', '#FF6384'],
+        ],
+        backgroundColor: ['#8b5cf6', '#c4b5fd'],
       },
     ],
   });
@@ -59,7 +59,7 @@ export const StatisticsTab = () => {
       {stats.global && (
         <div className="mb-8">
           <h2 className="text-2xl font-semibold">Statistiques Globales</h2>
-          <div className="max-w-lg mx-auto">
+          <div className="max-w-sm mx-auto">
             <Pie data={globalPieData} />
           </div>
         </div>
@@ -90,7 +90,7 @@ export const StatisticsTab = () => {
               .categoryName
           }
         </h3>
-        <div className="max-w-lg mx-auto">
+        <div className="max-w-sm mx-auto">
           <Pie
             data={categoryPieData(
               stats.byCategories.answersByCategory[selectedCategoryIndex]

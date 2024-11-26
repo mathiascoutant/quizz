@@ -1,20 +1,36 @@
-import { useSessionStore } from '@/store/session.store';
-import { useState } from 'react';
+import { Button } from '@/components/common/Button';
+import { api } from '@/services/api.service';
+import { User, useSessionStore } from '@/store/session.store';
+import { useEffect, useState, useTransition } from 'react';
+import { toast } from 'sonner';
 
 export const ProfileTab = () => {
-  const session = useSessionStore((state) => state.session);
+  const { session, updateUser } = useSessionStore();
+  const [pending, startTransition] = useTransition();
 
-  const [newData, setNewData] = useState({
-    firstname: session?.user.firstName,
-    lastname: session?.user.lastName,
-    username: session?.user.pseudo,
-    email: session?.user.email,
+  const [newData, setNewData] = useState<Record<string, string | null>>({
+    firstname: null,
+    lastname: null,
+    pseudo: null,
+    email: null,
   });
+
+  useEffect(() => {
+    if (session) {
+      console.log(session.user);
+      setNewData({
+        firstname: session.user.firstName,
+        lastname: session.user.lastName,
+        pseudo: session.user.pseudo,
+        email: session.user.email,
+      });
+    }
+  }, [session]);
 
   const fieledLabels = {
     firstname: 'Prénom',
     lastname: 'Nom',
-    username: 'Pseudo',
+    pseudo: 'Pseudo',
     email: 'Email',
   };
 
@@ -28,56 +44,60 @@ export const ProfileTab = () => {
     if (!session) return;
 
     try {
-      const token = session.token;
-      console.log(token);
-      const { ...dataToSubmit } = newData;
-      await fetch('http://localhost:3002/api/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(dataToSubmit),
+      const { ...payload } = newData;
+
+      startTransition(async () => {
+        const response = await api(
+          `/profile/update/${session.user.id}`,
+          'PUT',
+          payload
+        );
+
+        const data = (await response.json()) as {
+          message: string;
+          updatedUser: User;
+        };
+
+        const { message, updatedUser } = data;
+
+        updateUser(updatedUser);
+
+        toast.success(message);
       });
     } catch (error) {
-      console.error('Erreur lors de la mise à jour du profil:', error);
+      toast.error('Une erreur est survenue lors de la mise à jour du profil');
+      if (error instanceof Error) {
+        throw new Error(
+          'Une erreur est survenue lors de la mise à jour du profil'
+        );
+      }
     }
   };
 
-  const renderField = (name: string) => {
+  const renderField = (name: keyof typeof fieledLabels, index: number) => {
     return (
-      <label id="label-form">
-        {fieledLabels[name]}
-        <br />
+      <div key={index} className="flex flex-col gap-2">
+        <label id="label-form">{fieledLabels[name]}</label>
         <input
           id="input-form"
           name={name}
-          type={name === 'password' ? 'password' : 'text'}
-          value={newData[name]}
+          type={'text'}
+          defaultValue={newData[name] || ''}
           onChange={handleChange}
           className="border border-gray-300 rounded p-2"
-        ></input>
-        <br />
-      </label>
+        />
+      </div>
     );
   };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-8">
       <h1 className="text-4xl font-bold mb-4">Mon compte</h1>
-      <form onSubmit={handleSubmit}>
-        {Object.keys(newData)
-          .filter((key) => key !== 'coins')
-          .map((name) => renderField(name))}
-        <label className="block mb-4">
-          Number of coins: <b>{session.user.coins}</b>
-        </label>
-        <button
-          type="submit"
-          className="bg-purple-600 text-white font-bold py-2 px-4 rounded hover:bg-purple-700 transition duration-300"
-        >
-          Enregistrer les modifications
-        </button>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {Object.keys(newData).map((name, index) => renderField(name, index))}
+        <Button isLoading={pending} type="submit" className="w-full">
+          Mettre à jour
+        </Button>
       </form>
     </div>
   );

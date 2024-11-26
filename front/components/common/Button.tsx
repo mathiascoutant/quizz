@@ -2,7 +2,7 @@ import { cn } from '@/utils/utils';
 import { cva, VariantProps } from 'class-variance-authority';
 import Link from 'next/link';
 import React from 'react';
-import { CgSpinnerTwo } from "react-icons/cg";
+import { CgSpinnerTwo } from 'react-icons/cg';
 
 type Props = {
   children: React.ReactNode;
@@ -59,7 +59,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ) : (
           <div className="flex gap-2 w-full justify-center">
             <div role="status">
-              <CgSpinnerTwo className='size-6 animate-spin'/>
+              <CgSpinnerTwo className="size-6 animate-spin" />
               <span className="sr-only">Chargement...</span>
             </div>
           </div>
