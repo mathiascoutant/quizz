@@ -1,5 +1,7 @@
 import { FormDataRegister } from '@/hooks/useRegister';
-import { constructUrl } from './api.service';
+import { api, constructUrl } from './api.service';
+import { useSessionStore } from '@/store/session.store';
+import type {User as SessionUser, Session} from  '@/store/session.store';
 
 export interface User {
   id: string;
@@ -41,9 +43,26 @@ const REGISTER = async (body: FormDataRegister) => {
   }
 };
 
+const REFRESH = async ({session, updateUser} : {session: Session; updateUser:  (user: SessionUser) => void}) => {
+  if(!session) throw new Error('No session found');
+
+  const response = await api("/profile");
+
+  console.log(response)
+
+  const data = await response.json() as Session;
+
+  updateUser(data.user)
+
+  if (!response.ok) {
+    throw new Error('Error while refresh');
+  }
+};
+
 const authService = {
   LOGIN,
   REGISTER,
+  REFRESH
 };
 
 export default authService;

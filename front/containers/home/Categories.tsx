@@ -36,14 +36,16 @@ export const Categories = () => {
     }
   };
 
-  if (
-    !categories ||
-    isLoading ||
-    !categoriesCompletion ||
-    isCategoriesCompletionLoading
-  )
-    return <CategoriesLoader />;
+    if (
+      !categories ||
+      isLoading
+    )
+      return <CategoriesLoader />;
 
+    if(!categoriesCompletion ) {
+      return "tg";
+    }
+  
   const modeledCategories = categories.map((category) => {
     const completion = categoriesCompletion.find((c) => c.id === category.id);
     if (!completion)

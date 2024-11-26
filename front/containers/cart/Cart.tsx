@@ -1,12 +1,17 @@
 'use client';
 
 import { Button } from '@/components/common/Button';
+import authService from '@/services/auth.service';
 import couponsService from '@/services/coupons.service';
 import { useCartStore } from '@/store/cart.store';
+import { useSessionStore } from '@/store/session.store';
 import { toast } from 'sonner';
 
 export const Cart = () => {
   const { cart, clearCart, removeFromCart } = useCartStore();
+  const {session, updateUser} = useSessionStore();
+
+  if(!session) return null;
 
   return (
     <div className="max-w-lg mx-auto my-48 p-4 bg-white">
@@ -52,11 +57,12 @@ export const Cart = () => {
             <Button onClick={async () => {
               try {
                 let payload = cart.map(item => ({
-                  id: item.id,
+                  couponId: item.id,
                   quantity: item.quantity
                 }));
                 await couponsService.POST(payload);
                 clearCart();
+                await authService.REFRESH({session, updateUser});
                 toast.success("Paiement réussi.")
               } catch (error) {
                 toast.error('Paiement refusé.')

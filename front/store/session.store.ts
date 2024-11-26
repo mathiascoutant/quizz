@@ -8,12 +8,12 @@ type SessionState = {
   updateUser: (user: User) => void;
 };
 
-type Session = {
+export type Session = {
   token: string;
   user: User;
 };
 
-type User = {
+export type User = {
   id: string;
   email: string;
   pseudo: string;

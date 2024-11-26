@@ -22,7 +22,7 @@ const GET = async () => {
   return (await response.json()) as Coupon[];
 };
 
-const POST = async (body: {id: string, quantity: number}[]) => {
+const POST = async (body: {couponId: string, quantity: number}[]) => {
   const response = await api("/coupons/pay", "POST", body);
 
   if (!response.ok) {

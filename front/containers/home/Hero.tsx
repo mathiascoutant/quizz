@@ -1,7 +1,12 @@
+'use client';
+
 import { ButtonLink } from '@/components/common/Button';
 import Image from 'next/image';
+import { useSessionStore } from '@/store/session.store';
 
 export const Hero = () => {
+  const session = useSessionStore((state) => state.session);
+
   return (
     <div className="py-16 md:py-24 lg:py-32 min-h-[60vh] flex items-center">
       <div className="container mx-auto px-4 md:px-8 lg:px-16 flex flex-col md:flex-row items-center">
@@ -11,7 +16,7 @@ export const Hero = () => {
             Jouez, apprenez et récoltez des Miams avec nos quiz savoureux !
             Transformez votre savoir en récompenses délicieuses.
           </p>
-          <ButtonLink href={'/register'}>Commencer l&apos;aventure</ButtonLink>
+          <ButtonLink href={session ? '/categories' : '/register'}>Commencer l&apos;aventure</ButtonLink>
         </div>
         <div className="md:w-1/2 flex justify-center items-center">
           <Image

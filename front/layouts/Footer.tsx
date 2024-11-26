@@ -54,7 +54,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    href="/quizz"
+                    href="/categories"
                     className="hover:text-purple-400 transition-colors duration-300"
                   >
                     Jouer
@@ -62,7 +62,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    href="/statistiques"
+                    href="/profile"
                     className="hover:text-purple-400 transition-colors duration-300"
                   >
                     Statistiques
@@ -137,7 +137,7 @@ const Footer = () => {
                     href="/quiz/nouveau-quiz-1"
                     className="hover:text-purple-400 transition-colors duration-300"
                   >
-                    Quiz sur les capitales
+                    Sports
                   </Link>
                 </li>
                 <li>
@@ -145,7 +145,7 @@ const Footer = () => {
                     href="/quiz/nouveau-quiz-2"
                     className="hover:text-purple-400 transition-colors duration-300"
                   >
-                    Les grands inventeurs
+                    Télévision
                   </Link>
                 </li>
                 <li>
@@ -153,7 +153,7 @@ const Footer = () => {
                     href="/quiz/nouveau-quiz-3"
                     className="hover:text-purple-400 transition-colors duration-300"
                   >
-                    Mythologie grecque
+                    Tourisme
                   </Link>
                 </li>
                 <li>
@@ -161,7 +161,7 @@ const Footer = () => {
                     href="/quiz/nouveau-quiz-4"
                     className="hover:text-purple-400 transition-colors duration-300"
                   >
-                    Cinéma des années 90
+                    Légendes
                   </Link>
                 </li>
               </ul>
