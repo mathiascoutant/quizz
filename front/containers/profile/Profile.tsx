@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { BadgesTab } from './BadgesTab';
+import { ProfileTab } from './ProfileTab';
 import { StatisticsTab } from './StatisticsTab';
 // import Badges from "./Badges";
 // import Statistics from "./Statistics";
@@ -59,7 +60,7 @@ export const Profile = () => {
           </ul>
         </nav>
         <div className="flex-1 ml-2">
-          {/* {activeTab === 'account' && <ProfileTab />} */}
+          {activeTab === 'account' && <ProfileTab />}
           {activeTab === 'badges' && <BadgesTab />}
           {activeTab === 'statistics' && <StatisticsTab />}
         </div>

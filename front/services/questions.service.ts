@@ -30,15 +30,24 @@ export interface GetQuestionBody {
 
 interface PostResponse {
   message: string;
-  newCoinBalance: number;
-  userAnswerData: {
-    coinValue: number;
-    isCorrect: boolean;
-    formId: number;
-    id: number;
-    userAnswer: string;
-    userId: string;
+  newUserAnswer: {
+    newCoinBalance: number;
+    userAnswerData: {
+      coinValue: number;
+      isCorrect: boolean;
+      formId: number;
+      id: number;
+      userAnswer: string;
+      userId: string;
+    };
   };
+  badgesCreated: {
+    id: number;
+    name: string;
+    description: string;
+    urlImage: string;
+    conditionValue: number;
+  } | null;
 }
 
 export interface PostQuestionAnswerBody {
@@ -91,13 +100,12 @@ const POST = async ({
     throw new Error('Error posting answer');
   }
 
-  const { newCoinBalance, userAnswerData } =
-    (await response.json()) as PostResponse;
+  const { newUserAnswer } = (await response.json()) as PostResponse;
 
   return {
-    newCoinBalance,
-    coinValue: userAnswerData.coinValue,
-    isCorrect: userAnswerData.isCorrect,
+    newCoinBalance: newUserAnswer.newCoinBalance,
+    coinValue: newUserAnswer.userAnswerData.coinValue,
+    isCorrect: newUserAnswer.userAnswerData.isCorrect,
   };
 };
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { api, constructUrl } from '@/services/api.service';
+import { api } from '@/services/api.service';
 import { Badge, useSessionStore } from '@/store/session.store';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -13,7 +13,9 @@ export const BadgesTab = () => {
     (async function () {
       if (!session) return;
 
-      const response = await api(constructUrl('/badges/all'));
+      const response = await api('/badges/all');
+
+      console.log(response);
 
       if (!response.ok) throw new Error('Error while retrieving badges');
 
