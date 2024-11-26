@@ -67,5 +67,11 @@ export const UserAnswerRepository = {
       group: ['form.categoryId'],
       raw: true
     });
+  },
+  
+  async countCorrectAnswers(userId) {
+    return UserAnswer.count({
+      where: { userId, isCorrect: true }
+    });
   }
 };
