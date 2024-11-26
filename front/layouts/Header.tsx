@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { ButtonLink } from '@/components/common/Button';
-import { MENU_ITEMS_LINKS } from '@/constants/menu.items.constants';
-import { useCartStore } from '@/store/cart.store';
-import { cn } from '@/utils/utils';
-import { AnimatePresence, motion } from 'framer-motion';
-import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { FaChevronDown, FaShoppingCart, FaUser } from 'react-icons/fa';
-import { useSessionStore } from '../store/session.store';
+import { ButtonLink } from "@/components/common/Button";
+import { MENU_ITEMS_LINKS } from "@/constants/menu.items.constants";
+import { useCartStore } from "@/store/cart.store";
+import { cn } from "@/utils/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { FaChevronDown, FaShoppingCart, FaUser } from "react-icons/fa";
+import { useSessionStore } from "../store/session.store";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -28,9 +28,9 @@ function Header() {
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -50,7 +50,7 @@ function Header() {
         <Link
           href="/"
           className="text-3xl font-bold"
-          style={{ fontFamily: 'Comic Sans MS, cursive' }}
+          style={{ fontFamily: "Comic Sans MS, cursive" }}
         >
           QuizzGo
         </Link>
@@ -79,10 +79,10 @@ function Header() {
                 key={index}
                 href={item.href}
                 className={cn(
-                  'relative text-lg font-medium hover:text-purple-500 transition-colors duration-300 group',
+                  "relative text-lg font-medium hover:text-purple-500 transition-colors duration-300 group",
                   {
-                    'text-purple-500': pathname === item.href,
-                    'text-gray-700': pathname !== item.href,
+                    "text-purple-500": pathname === item.href,
+                    "text-gray-700": pathname !== item.href,
                   }
                 )}
               >
@@ -104,7 +104,7 @@ function Header() {
                 <span className="font-medium">{session.user.pseudo}</span>
                 <FaChevronDown
                   className={`text-sm transition-transform duration-300 ${
-                    isDropdownOpen ? 'rotate-180' : ''
+                    isDropdownOpen ? "rotate-180" : ""
                   }`}
                 />
               </button>
@@ -151,6 +151,12 @@ function Header() {
                     >
                       Mes coupons
                     </Link>
+                    <Link
+                      href="/classement"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100 transition-colors duration-300"
+                    >
+                      Classement
+                    </Link>
                     <div className="px-4 pt-2">
                       <button
                         onClick={()=> {
@@ -176,10 +182,10 @@ function Header() {
             </div>
           ) : (
             <>
-              <ButtonLink variant="outline" href={'/login'}>
+              <ButtonLink variant="outline" href={"/login"}>
                 Se connecter
               </ButtonLink>
-              <ButtonLink href={'/register'}>S&apos;inscrire</ButtonLink>
+              <ButtonLink href={"/register"}>S&apos;inscrire</ButtonLink>
             </>
           )}
         </div>
@@ -211,9 +217,9 @@ const MobileMenu = ({
           <Link
             key={index}
             href={`/${item.href.toLowerCase()}`}
-            className={cn('block px-3 py-2 rounded-md text-base font-medium', {
-              'bg-purple-500 text-white': pathname === item.href,
-              'text-gray-700 hover:bg-purple-100 hover:text-purple-500':
+            className={cn("block px-3 py-2 rounded-md text-base font-medium", {
+              "bg-purple-500 text-white": pathname === item.href,
+              "text-gray-700 hover:bg-purple-100 hover:text-purple-500":
                 pathname !== item.href,
             })}
           >
