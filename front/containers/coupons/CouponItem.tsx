@@ -6,7 +6,7 @@ export const CouponItem = ({ coupon }: { coupon: Coupon }) => {
   const addToCart = useCartStore((state) => state.addToCart);
   const session = useSessionStore((state) => state.session);
 
-  const miamsAvailable = session?.user.coins; // Remplacez ceci par la valeur réelle de miams disponibles
+  const miamsAvailable = session?.user.coins;
 
   return (
     <div>
