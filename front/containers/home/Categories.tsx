@@ -43,7 +43,49 @@ export const Categories = () => {
       return <CategoriesLoader />;
 
     if(!categoriesCompletion ) {
-      return "tg";
+      return (
+        <div className="bg-purple-100 py-16">
+          <div className="container mx-auto px-4 md:px-8 lg:px-16">
+            <h2 className="text-3xl font-bold text-center mb-12">
+              Explorez nos catégories de quiz
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {categories.slice(0, displayedCategories).map((category, index) => (
+              <Fragment key={index}>
+                <CategoryCard
+                  category={category}
+                  setSelectedCategory={setSelectedCategory}
+                  isConnected={!!session?.user}
+                />
+
+                {selectedCategory && selectedCategory.name === category.name && (
+                  <Modal
+                    selectedCategory={selectedCategory}
+                    setSelectedCategory={setSelectedCategory}
+                    title={category.name}
+                    path={`/categories/${category.name}/quizz`}
+                  >
+                    <p>{category.longDescription}</p>
+                  </Modal>
+                )}
+              </Fragment>
+            ))}
+          </div>
+            <div className="text-center">
+              <button
+                onClick={toggleCategoriesDisplay}
+                className="inline-flex items-center text-purple-700 font-medium text-lg focus:outline-none"
+              >
+                <span className="h-px w-12 bg-purple-600 mr-3"></span>
+                <span className="hover:underline italic">
+                  {showAllCategories ? 'Voir moins' : 'Afficher plus'}
+                </span>
+                <span className="h-px w-12 bg-purple-600 ml-3"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      );
     }
   
   const modeledCategories = categories.map((category) => {
@@ -145,7 +187,7 @@ function CategoryCard({
         }
       )}
     >
-      {isCompleted ? (
+      {isCompleted && isConnected ? (
         <>
           <div className="absolute w-full h-full inset-0 bg-white/50 backdrop-blur-xl rounded-lg opacity-50 z-20"></div>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2  gap-4 z-50 flex flex-col items-center justify-center -translate-y-1/2">
@@ -156,15 +198,19 @@ function CategoryCard({
           </div>
         </>
       ) : null}
-      <div
-        className={cn('flex items-center flex-col', {
-          'blur-[2px] ': isCompleted,
-        })}
-      >
+
+        <div
+          className={cn('flex items-center flex-col', {
+            'blur-[2px] ': isCompleted && isConnected,
+          })}
+        >
+      
         <div className="mb-4 ">{category.icon}</div>
         <h3 className="text-xl font-semibold mb-2 ">{category.name}</h3>
         <p className="text-sm ">{category.shortDescription}</p>
-        <div className="space-y-2 w-full ">
+
+        {isConnected ? (
+          <div className="space-y-2 w-full ">
           <p className="text-xs font-bold text-gray-500 mt-1 mb-2">
             {category.completion}% de questions répondues
           </p>
@@ -186,7 +232,6 @@ function CategoryCard({
                 initial="initial"
                 className="bg-purple-700 relative h-2 rounded-full"
               >
-                {/* <IoIosRocket className="text-lg rotate-45 absolute text-purple-900 top-1/2 -translate-y-1/2 -right-2" /> */}
                 {category.completion ? (
                   <img
                     src={'/assets/images/rocket.png'}
@@ -198,6 +243,7 @@ function CategoryCard({
             </div>
           ) : null}
         </div>
+        ) : null}
       </div>
     </div>
   );

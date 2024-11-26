@@ -10,7 +10,7 @@ export const CategoriesLoader = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {Array.from({ length: 6 }).map((_, index) => (
-            <Skeleton key={index} className="w-full h-[195px]" />
+            <Skeleton key={index} className="w-full h-[170px]" />
           ))}
         </div>
       </div>
