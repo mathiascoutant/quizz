@@ -17,8 +17,8 @@ export type User = {
   id: string;
   email: string;
   pseudo: string;
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   password: string;
   coins: number;
   badges: Badge[];

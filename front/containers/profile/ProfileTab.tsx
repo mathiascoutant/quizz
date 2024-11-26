@@ -17,10 +17,9 @@ export const ProfileTab = () => {
 
   useEffect(() => {
     if (session) {
-      console.log(session.user);
       setNewData({
-        firstname: session.user.firstName,
-        lastname: session.user.lastName,
+        firstname: session.user.firstname,
+        lastname: session.user.lastname,
         pseudo: session.user.pseudo,
         email: session.user.email,
       });
