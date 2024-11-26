@@ -1,4 +1,7 @@
+import { CouponRepository } from '../repositories/couponRepository.js';
 import { userCouponService } from '../services/userCouponService.js';
+import  UserCoupon  from '../models/userCouponModel.js'; 
+import  Coupon  from '../models/couponModel.js'
 
 export const createUserCoupon = async (req, res) => {
   try {
@@ -12,6 +15,7 @@ export const createUserCoupon = async (req, res) => {
 export const getAllUserCoupons = async (req, res) => {
   try {
     const userCoupons = await userCouponService.getAllUserCoupons();
+
     res.status(200).json(userCoupons);
   } catch (error) {
     res.status(500).json({ message: 'Erreur lors de la récupération des UserCoupons.', error: error.message });
@@ -21,22 +25,45 @@ export const getAllUserCoupons = async (req, res) => {
 export const getUserCouponById = async (req, res) => {
   const { userId, couponId } = req.params;
   try {
-    const userCoupon = await userCouponService.getUserCouponById(userId, couponId);
-    res.status(200).json(userCoupon);
+  
+    const data = await userCouponService.getUserCouponWithDetails(userId, couponId);
+    res.status(200).json(data);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
 };
 
+
+
 export const getUserCouponsByUserId = async (req, res) => {
-  const { userId } = req.params;
   try {
-    const userCoupons = await userCouponService.getUserCouponsByUserId(userId);
-    res.status(200).json(userCoupons);
+    const userId = parseInt(req.params.userId, 10); 
+    console.log('userId:', userId);
+
+    const userCoupons = await UserCoupon.findAll({
+      where: { userId },
+    });
+
+    // Ajouter les détails des Coupons
+    const userCouponsWithDetails = await Promise.all(
+      userCoupons.map(async (userCoupon) => {
+        const coupon = await CouponRepository.findCouponById(userCoupon.couponId);
+
+        return {
+          ...userCoupon.dataValues, 
+          coupon, 
+        };
+      })
+    );
+
+    
+    res.status(200).json(userCouponsWithDetails);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    console.error('Erreur lors de la récupération des UserCoupons:', error.message);
+    res.status(500).json({ message: 'Erreur lors de la récupération des UserCoupons.', error: error.message });
   }
 };
+
 
 export const updateUserCoupon = async (req, res) => {
   const { userId, couponId } = req.params;
