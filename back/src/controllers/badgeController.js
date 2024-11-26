@@ -1,5 +1,4 @@
 import { BadgeService } from '../services/badgeService.js';
-import { protect } from './authController.js';
 
 export const getBadgesUser = async (req, res) => {
   try {

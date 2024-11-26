@@ -4,6 +4,7 @@ import { Op } from 'sequelize';
 import mongoose from 'mongoose';
 import { comparePassword, hashPassword } from '../utils/passwordUtils.js';
 import { JWT_SECRET } from '../utils/jwtUtils.js';
+import { BadgeService } from '../services/badgeService.js';
 
 
 
@@ -65,6 +66,9 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
     } 
 
+    // Récupérer les badges de l'utilisateur
+    const badges = await BadgeService.getBadgesUser(user.id);
+
     // Générer un token JWT
     const token = jwt.sign(
       { 
@@ -74,8 +78,8 @@ export const login = async (req, res) => {
       { expiresIn: '24h' }
     );
 
-    // Envoyer le token et les informations de l'utilisateur au client
-    return res.status(200).json({ token, userId: user._id, user });
+    // Envoyer le token, les informations de l'utilisateur et les badges au client
+    return res.status(200).json({ token, userId: user._id, user, badges });
   } catch (error) {
     return res.status(500).json({ message: 'Erreur lors de la connexion', error: error.message });
   }
