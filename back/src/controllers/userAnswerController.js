@@ -1,11 +1,38 @@
 import { UserAnswerService } from '../services/userAnswerService.js';
+import { UserAnswerRepository } from '../repositories/userAnswerRepository.js';
+import { UserBadgeRepository } from '../repositories/userBadgesRepository.js';
+import { BadgeRepository } from '../repositories/badgeRepository.js';
+import BadgeModel from '../models/badgeModel.js';
 
 export const createUserAnswer = async (req, res) => {
   try {
     const newUserAnswer = await UserAnswerService.createUserAnswer(req.body);
-    res.status(201).json(newUserAnswer);
+    const userId = req.body.userId;
+    const correctAnswersCount = await UserAnswerRepository.countCorrectAnswers(userId);
+    const badges = await BadgeRepository.findAll();
+    let badgeCreated = null;
+    for (const badge of badges) {
+      badge.conditionValue = parseInt(badge.conditionValue);
+      if (correctAnswersCount >= badge.conditionValue) {
+        const alreadyHasBadge = await UserBadgeRepository.hasBadge(userId, badge.id);
+          
+        if (!alreadyHasBadge) {
+            await UserBadgeRepository.createUserBadge(userId, badge.id);
+            badgeCreated = await BadgeModel.findByPk(badge.id);
+        }
+      }
+    }
+    res.status(201).json({
+      message: 'Réponse utilisateur créée avec succès et badges attribués si nécessaire.',
+      newUserAnswer,
+      badgeCreated
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la création de la réponse utilisateur.', error: error.message });
+    console.error(error);
+    res.status(500).json({
+      message: 'Erreur lors de la création de la réponse utilisateur.',
+      error: error.message
+    });
   }
 };
 

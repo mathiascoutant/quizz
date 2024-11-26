@@ -9,13 +9,14 @@ export const BadgeRepository = {
         where: { userId },
         required: true,
       }],
-      attributes: ['id', 'name', 'description', 'urlImage'],
+      attributes: ['id', 'name', 'description', 'urlImage', 'conditionValue'],  
     });
   },
   
   findAll: async () => {
     return await BadgeModel.findAll({
-      attributes: ['id', 'name', 'description', 'urlImage'],
+      attributes: ['id', 'name', 'description', 'urlImage', 'conditionValue'],  
     });
   }
 };
+

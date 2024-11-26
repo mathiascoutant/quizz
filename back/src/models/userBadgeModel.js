@@ -16,13 +16,13 @@ const UserBadge = sequelize.define('usersBadges', {
     defaultValue: DataTypes.NOW,
   },
 }, {
-  tableName: 'usersBadges', // Nom de la table dans la base de données
-  timestamps: false, // Désactiver les timestamps
+  tableName: 'usersBadges', 
+  timestamps: false, 
 });
 
-// Définir les relations
+
 BadgeModel.hasMany(UserBadge, { foreignKey: 'badgeId' });
 UserBadge.belongsTo(BadgeModel, { foreignKey: 'badgeId' });
 
-// Exporter le modèle UserBadge
+
 export default UserBadge; 

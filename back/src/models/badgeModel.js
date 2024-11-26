@@ -14,8 +14,13 @@ const BadgeModel = sequelize.define('badges', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  conditionValue: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 }, {
-  tableName: 'badges', // Nom de la table dans la base de données
+  tableName: 'badges',
+  timestamps: false, // Désactive les champs createdAt et updatedAt
 });
 
 export default BadgeModel;
