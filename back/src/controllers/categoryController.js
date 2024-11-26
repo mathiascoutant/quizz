@@ -1,7 +1,4 @@
 import { CategoryService } from '../services/categoryService.js';
-import Category from '../models/categoryModel.js';
-import UserAnswer from '../models/userAnswerModel.js';
-import Form from '../models/formModel.js';
 
 // Create a new category
 export const createCategory = async (req, res) => {

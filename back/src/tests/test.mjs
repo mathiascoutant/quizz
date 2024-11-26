@@ -112,7 +112,7 @@ describe('Tests pour le classement des utilisateurs', () => {
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('topUsers');
         expect(response.body.topUsers).toBeInstanceOf(Array);
-        expect(response.body.topUsers.length).toBe(3);
+        expect(response.body.topUsers.length).toBe(10);
 
         response.body.topUsers.forEach(user => {
             expect(user).toHaveProperty('id');

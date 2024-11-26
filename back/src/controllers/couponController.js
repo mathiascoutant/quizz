@@ -1,5 +1,4 @@
 import { CouponService } from '../services/couponService.js';
-import { verifyToken } from '../utils/jwtUtils.js';
 
 // CRUD de base pour les coupons
 export const createCoupon = async (req, res) => {

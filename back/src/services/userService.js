@@ -82,7 +82,7 @@ export const UserService = {
     // Récupérer le top 3 des utilisateurs avec le plus de coins
     const topUsers = await User.findAll({
       order: [['coins', 'DESC']],
-      limit: 3,
+      limit: 10,
       attributes: ['id', 'pseudo', 'coins'], // Utilisez 'pseudo' au lieu de 'firstname' et 'lastname'
     });
 
