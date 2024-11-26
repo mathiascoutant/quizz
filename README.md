@@ -12,7 +12,7 @@
 ## Technos choisies
 
 * Back : NodeJS
-* Front : React
+* Front : NextJS
 * Base de données : 
 * (BONUS) Hébergement : Aucun
 
