@@ -9,12 +9,8 @@ export const api = <T>(
 ) => {
   const storage = JSON.parse(localStorage.getItem("session-storage") || "{}");
   const token = storage.state.session.token;
-
-<<<<<<< HEAD
-=======
   console.log("token api service", token);
 
->>>>>>> 784c757 ([ADD] : ranking page)
   return fetch(constructUrl(url), {
     method,
     headers: {
