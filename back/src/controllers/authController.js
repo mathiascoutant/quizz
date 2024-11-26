@@ -52,8 +52,9 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({ message: 'Tous les champs sont obligatoires' });
+      return res.status(400).json({ message: 'Tous les champs sont obligatoires' });
     }
+
     // Vérifier si l'utilisateur existe
     const user = await User.findByEmail(email);
     if (!user) {
@@ -64,7 +65,7 @@ export const login = async (req, res) => {
     const isPasswordValid = await comparePassword(password, user.password);
     if (!isPasswordValid) {
       return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
-    } 
+    }
 
     // Récupérer les badges de l'utilisateur
     const badges = await BadgeService.getBadgesUser(user.id);
@@ -78,8 +79,24 @@ export const login = async (req, res) => {
       { expiresIn: '24h' }
     );
 
-    // Envoyer le token, les informations de l'utilisateur et les badges au client
-    return res.status(200).json({ token, userId: user._id, user, badges });
+    // Construire l'objet utilisateur sans dataValues
+    const userResponse = {
+      id: user.id,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      pseudo: user.pseudo,
+      email: user.email,
+      coins: user.coins,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      badges // Ajouter les badges directement dans l'objet user
+    };
+
+    // Envoyer le token et les informations de l'utilisateur au client
+    return res.status(200).json({ 
+      token, 
+      user: userResponse // Utiliser l'objet utilisateur construit
+    });
   } catch (error) {
     return res.status(500).json({ message: 'Erreur lors de la connexion', error: error.message });
   }
