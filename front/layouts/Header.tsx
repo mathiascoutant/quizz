@@ -15,6 +15,7 @@ import { useSessionStore } from '../store/session.store';
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const { session, sessionLogOut } = useSessionStore();
+  const { clearCart } = useCartStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useRef(null);
   const pathname = usePathname();
@@ -54,7 +55,6 @@ function Header() {
           QuizzGo
         </Link>
 
-        {/* Hamburger menu for mobile */}
         <button onClick={toggleMenu} className="lg:hidden">
           <svg
             className="w-6 h-6"
@@ -72,7 +72,6 @@ function Header() {
           </svg>
         </button>
 
-        {/* Desktop menu - Now centered */}
         <nav className="hidden absolute left-1/2 -translate-x-1/2 lg:flex justify-center flex-grow">
           <div className="flex space-x-6">
             {MENU_ITEMS_LINKS.map((item, index) => (
@@ -94,7 +93,6 @@ function Header() {
           </div>
         </nav>
 
-        {/* User icons and login/register buttons */}
         <div className="hidden lg:flex items-center space-x-4">
           {session && session.user ? (
             <div className="relative flex items-center" ref={dropdownRef}>
@@ -155,7 +153,10 @@ function Header() {
                     </Link>
                     <div className="px-4 pt-2">
                       <button
-                        onClick={sessionLogOut}
+                        onClick={()=> {
+                          clearCart();
+                          sessionLogOut();
+                        }}
                         className="block w-full text-center px-4 py-2 text-sm text-white bg-purple-500 hover:bg-purple-600 rounded-md transition-colors duration-300"
                       >
                         Se déconnecter
@@ -186,7 +187,10 @@ function Header() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <MobileMenu isLoggedIn={!!session?.user} handleLogout={sessionLogOut} />
+        <MobileMenu isLoggedIn={!!session?.user} handleLogout={()=> {
+          clearCart();
+          sessionLogOut();
+        }} />
       )}
     </header>
   );

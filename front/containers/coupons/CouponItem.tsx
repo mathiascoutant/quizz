@@ -3,7 +3,7 @@ import { useCartStore } from '@/store/cart.store';
 import { useSessionStore } from '@/store/session.store';
 import { useState } from 'react';
 
-export const CouponItem = ({ coupon }: { coupon: Coupon }) => {
+export const CouponItem = ({ coupon, unavailable }: { coupon: Coupon, unavailable: boolean }) => {
   const addToCart = useCartStore((state) => state.addToCart);
   const cart = useCartStore((state) => state.cart);
   const session = useSessionStore((state) => state.session);
@@ -21,7 +21,7 @@ export const CouponItem = ({ coupon }: { coupon: Coupon }) => {
         style={{ 
           backgroundColor: coupon.color, 
           position: 'relative', 
-          opacity: coupon.coinCost > miamsAvailable ? 0.3 : 1,
+          opacity: unavailable ? 0.3 : 1,
           transition: 'transform 0.2s',
         }}
         className={`max-w-1/3 h-40 rounded-lg flex flex-col justify-between items-start ${coupon.coinCost > miamsAvailable ? 'opacity-50' : ''}`}
