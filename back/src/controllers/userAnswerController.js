@@ -14,7 +14,6 @@ export const createUserAnswer = async (req, res) => {
     for (const badge of badges) {
       badge.conditionValue = parseInt(badge.conditionValue);
       if (correctAnswersCount >= badge.conditionValue) {
-        console.log("passage dans le if");
         const alreadyHasBadge = await UserBadgeRepository.hasBadge(userId, badge.id);
           
         if (!alreadyHasBadge) {
