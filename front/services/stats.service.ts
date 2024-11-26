@@ -8,6 +8,28 @@ type CategoryCompletion = {
   name: string;
 };
 
+export type Stats = {
+  global: GlobalStats;
+  categoryStats: {
+    userId: string;
+    answersByCategory: {
+      categoryId: number;
+      categoryName: string;
+      totalAnswers: number;
+      correctAnswers: string;
+      correctPercentage: string;
+      incorrectAnswers: string;
+      incorrectPercentage: string;
+    }[];
+  };
+};
+
+type GlobalStats = {
+  correctPercentage: string;
+  incorrectPercentage: string;
+  totalAnswers: number;
+};
+
 const getStatsByCategories = async (userId: string) => {
   const response = await fetch(
     constructUrl(`/useranswers/statsbyCategory/${userId}`)
@@ -30,8 +52,30 @@ const getCategoryCompletion = async (userId: string) => {
   return (await response.json()) as CategoryCompletion[];
 };
 
+const getUserStats = async (userId: string) => {
+  const response = await api(`/useranswers/stats/${userId}`);
+
+  if (!response.ok) {
+    throw new Error('Error fetching user stats');
+  }
+
+  return (await response.json()) as GlobalStats;
+};
+
+const getUserStatsByCategories = async (userId: string) => {
+  const response = await api(`/useranswers/statsByCategory/${userId}`);
+
+  if (!response.ok) {
+    throw new Error('Error fetching user stats by categories');
+  }
+
+  return (await response.json()) as Stats['categoryStats'];
+};
+
 const StatsService = {
   getStatsByCategories,
   getCategoryCompletion,
+  getUserStats,
+  getUserStatsByCategories,
 };
 export default StatsService;

@@ -2,6 +2,7 @@
 
 import { api, constructUrl } from '@/services/api.service';
 import { Badge, useSessionStore } from '@/store/session.store';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 export const BadgesTab = () => {
@@ -36,9 +37,12 @@ export const BadgesTab = () => {
                 : 'opacity-50 blur-sm'
             }`}
           >
-            <img
+            <Image
               src={`${badge.urlImage}`}
               alt={badge.name}
+              width={0}
+              height={0}
+              sizes="100vw"
               className="w-full h-32 object-cover rounded-md mb-2"
             />
             <h2 className="text-xl font-semibold">{badge.name}</h2>
