@@ -21,6 +21,14 @@ type User = {
   lastName: string;
   password: string;
   coins: number;
+  badges: Badge[];
+};
+
+export type Badge = {
+  id: string;
+  name: string;
+  description: string;
+  urlImage: string;
 };
 
 export const useSessionStore = create<SessionState>()(

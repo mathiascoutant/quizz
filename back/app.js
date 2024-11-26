@@ -31,6 +31,7 @@ app.use('/api/user-coupons', userCouponRoutes);
 app.use('/api/levels', coinRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/badges', badgeRoutes);
+app.use('/api/classement', userRoutes);
 // app.use('/users', userRoutes);
 
 // Gestion des erreurs 404

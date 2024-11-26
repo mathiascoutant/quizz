@@ -113,3 +113,32 @@ export const getUserCoins = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur", error: error.message });
   }
 };
+
+export const getTopUsersByCoins = async (req, res) => {
+  try {
+    const topUsers = await UserService.getTopUsersByCoins();
+    res.status(200).json(topUsers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getUserPosition = async (req, res) => {
+  try {
+    const userId = req.user.id; // Récupérer l'ID de l'utilisateur actuel
+    const position = await UserService.getUserPositionByCoins(userId);
+    res.status(200).json({ position });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getTopUsersWithPosition = async (req, res) => {
+  try {
+    const userId = req.user.id; // Récupérer l'ID de l'utilisateur actuel
+    const result = await UserService.getTopUsersWithPosition(userId);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
