@@ -1,7 +1,9 @@
 import { UserService } from '../services/userService.js';
-import { BadgeService } from '../services/badgeService.js';
 import {hashPassword,comparePassword} from '../../src/utils/passwordUtils.js';
 import { verifyToken } from '../utils/jwtUtils.js';
+import UserBadge from '../models/userBadgeModel.js';
+import { User } from '../models/userModel.js';
+import BadgeModel from '../models/badgeModel.js';
 
 export const getUserById = async (req, res) => {
   try {
@@ -92,10 +94,18 @@ export const getUserProfile = async (req, res) => {
 
     const userId = decoded.userId;
 
-    const user = await UserService.getUserById(userId);
+    // Récupérer l'utilisateur avec ses badges
+    const user = await User.findOne({
+      where: { id: userId },
+      include: [{
+        model: UserBadge,
+        include: [BadgeModel]
+      }]
+    });
+
     if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
 
-    const badges = await BadgeService.getBadgesUser(userId);
+    const badges = user.usersBadges.map(userBadge => userBadge.badge);
 
     const userResponse = {
       id: user.id,
