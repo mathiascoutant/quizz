@@ -36,8 +36,6 @@ export const Categories = () => {
     }
   };
 
-  console.log('COMPLETIONS', categoriesCompletion);
-
   if (
     !categories ||
     isLoading ||

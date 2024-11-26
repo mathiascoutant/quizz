@@ -12,7 +12,7 @@ type CartState = {
 type CartItem = {
   id: string;
   quantity: number;
-} & Pick<Coupon, 'brand' | 'percentReduction' | 'id'>;
+} & Pick<Coupon, 'brand' | 'percentReduction' | 'id' | 'coinCost'>;
 
 export const useCartStore = create<CartState>()(
   persist(

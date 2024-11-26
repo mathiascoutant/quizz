@@ -1,18 +1,55 @@
 import { Coupon } from '@/services/coupons.service';
 import { useCartStore } from '@/store/cart.store';
 import { useSessionStore } from '@/store/session.store';
+import { useState } from 'react';
 
 export const CouponItem = ({ coupon }: { coupon: Coupon }) => {
   const addToCart = useCartStore((state) => state.addToCart);
+  const cart = useCartStore((state) => state.cart);
   const session = useSessionStore((state) => state.session);
+  const [isHovered, setIsHovered] = useState(false);
 
-  const miamsAvailable = session?.user.coins;
+  const totalCartCost = cart?.reduce((total, item) => {
+    return total + (item.quantity * item.coinCost);
+  }, 0) ?? 0;
+
+  let miamsAvailable = session?.user.coins - totalCartCost;
 
   return (
     <div>
       <div
-        style={{ backgroundColor: coupon.color, position: 'relative', opacity: coupon.coinCost > miamsAvailable ? 0.3 : 1 }}
+        style={{ 
+          backgroundColor: coupon.color, 
+          position: 'relative', 
+          opacity: coupon.coinCost > miamsAvailable ? 0.3 : 1,
+          transition: 'transform 0.2s',
+        }}
         className={`max-w-1/3 h-40 rounded-lg flex flex-col justify-between items-start ${coupon.coinCost > miamsAvailable ? 'opacity-50' : ''}`}
+        onClick={() => {
+          if (coupon.coinCost <= miamsAvailable) {
+            addToCart({
+              brand: coupon.brand,
+              percentReduction: coupon.percentReduction,
+              id: coupon.id,
+              quantity: 1,
+              coinCost: coupon.coinCost 
+            });
+            miamsAvailable -= 100;
+          }
+        }}
+        onMouseEnter={(e) => {
+          if (coupon.coinCost <= miamsAvailable) {
+            setIsHovered(true);
+            e.currentTarget.style.cursor = 'pointer';
+            e.currentTarget.style.transform = 'scale(1.05)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (coupon.coinCost <= miamsAvailable) {
+            setIsHovered(false);
+            e.currentTarget.style.transform = 'scale(1)';
+          }
+        }}
       >
         <div className="flex flex-col w-full h-full justify-between">
           <div className='flex justify-end'>
@@ -30,25 +67,15 @@ export const CouponItem = ({ coupon }: { coupon: Coupon }) => {
               * {coupon.specificContent}
             </p>
           </div>
+          {isHovered && (
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <p className="text-white font-semibold">
+                {coupon.coinCost} | <img src={'/assets/coin.png'} className="w-4 h-4 inline" alt="coin" />
+              </p>
+            </div>
+          )}
         </div>
       </div>
-      <button
-        className={`w-full mt-4 py-2 px-4 ${coupon.coinCost > miamsAvailable ? 'bg-gray-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'} text-white rounded-none font-semibold transition-colors`}
-        onClick={() => {
-          if (coupon.coinCost <= miamsAvailable) {
-            addToCart({
-              brand: coupon.brand,
-              percentReduction: coupon.percentReduction,
-              id: coupon.id,
-              quantity: 1,
-            });
-          }
-        }}
-        disabled={coupon.coinCost > miamsAvailable}
-      >
-        Ajouter au panier - {coupon.coinCost} 
-        <img src={'/assets/coin.png'} className="w-4 h-4 inline" alt="coin" />
-      </button>
     </div>
   );
 };

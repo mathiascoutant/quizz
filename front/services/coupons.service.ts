@@ -1,4 +1,4 @@
-import { constructUrl } from './api.service';
+import { api, constructUrl } from './api.service';
 
 export interface Coupon {
   id: string;
@@ -22,8 +22,19 @@ const GET = async () => {
   return (await response.json()) as Coupon[];
 };
 
+const POST = async (body: {id: string, quantity: number}[]) => {
+  const response = await api("/coupons/pay", "POST", body);
+
+  if (!response.ok) {
+    throw new Error('Error fetching categories');
+  }
+
+  return true;
+};
+
 const couponsService = {
   GET,
+  POST
 };
 
 export default couponsService;
