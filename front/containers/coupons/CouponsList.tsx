@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useSessionStore } from '@/store/session.store';
 import { useCartStore } from '@/store/cart.store';
 import { Skeleton } from '@/components/common/Skeleton';
+import { div } from 'framer-motion/client';
 
 export type CartItem = {
   quantity: number;
@@ -23,10 +24,12 @@ export const CouponsList = () => {
   };
 
   if (isLoading || !coupons) return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-      {Array.from({ length: 6 }).map((_, index) => (
-        <Skeleton key={index} className="w-full h-[195px]" />
-      ))}
+    <div className='p-8'>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <Skeleton key={index} className="w-full h-[160px] rounded-lg" />
+        ))}
+      </div>
     </div>
   );
 
