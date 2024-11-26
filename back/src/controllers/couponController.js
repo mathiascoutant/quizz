@@ -1,4 +1,5 @@
 import { CouponService } from '../services/couponService.js';
+import { verifyToken } from '../utils/jwtUtils.js';
 
 // CRUD de base pour les coupons
 export const createCoupon = async (req, res) => {
@@ -70,12 +71,18 @@ export const getCouponsByBrand = async (req, res) => {
 
 export const payCoupon = async (req, res) => {
   try {
-    const result = await CouponService.payCoupon(req.body.userId, req.body.couponId);
+    const userId = req.user.id;
+    const { coupons } = req.body;
+
+    const result = await CouponService.payCoupon(userId, coupons);
+    
     if (result.error) {
       return res.status(400).json({ message: result.error });
     }
-    res.status(200).json({ message: 'Coupon appliqué à l’utilisateur avec succès' });
+
+    res.status(200).json({ message: 'Coupons appliqués avec succès.' });
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de l\'application du coupon.', error });
+    console.error('Erreur dans payCoupon controller:', error);
+    res.status(500).json({ message: 'Erreur lors de l\'application des coupons.', error: error.message });
   }
 };

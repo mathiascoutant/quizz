@@ -22,18 +22,41 @@ export const CouponService = {
   // Opérations spécifiques
   getCouponsByBrand: async (brand) => await CouponRepository.findCouponsByBrand(brand),
 
-  payCoupon: async (userId, couponId) => {
-    const coupon = await CouponRepository.findCouponById(couponId);
+  payCoupon: async (userId, coupons) => {
     const user = await CouponRepository.findUserById(userId);
 
-    if (!coupon || !user) return { error: 'Coupon ou utilisateur non trouvé' };
-    if (user.coins < coupon.coinCost) return { error: 'Solde insuffisant' };
+    if (!user) {
+      return { error: `Utilisateur non trouvé pour l'ID: ${userId}.` };
+    }
 
-    const discountCode = `${coupon.brand}_${coupon.id}`;
-    const newCoinBalance = user.coins - coupon.coinCost;
+    // Calculer le coût total des coupons
+    let totalCost = 0;
+    const couponDetails = [];
 
-    await CouponRepository.createUserCoupon({ userId, couponId, discountCode });
-    await user.update({ coins: newCoinBalance });
+    for (const { couponId, quantity } of coupons) {
+      const coupon = await CouponRepository.findCouponById(couponId);
+      if (!coupon) {
+        return { error: `Coupon non trouvé pour l'ID: ${couponId}.` };
+      }
+      totalCost += coupon.coinCost * quantity; // Ajouter le coût du coupon à la somme totale
+      couponDetails.push({ coupon, quantity });
+    }
+
+    // Vérifier si l'utilisateur a suffisamment de coins pour le coût total
+    if (user.coins < totalCost) {
+      return { error: `Fonds insuffisants. Vous avez ${user.coins} coins, mais le coût total est de ${totalCost} coins.` };
+    }
+
+    // Appliquer les coupons
+    for (const { coupon, quantity } of couponDetails) {
+      const discountCode = `${coupon.brand}_${coupon.id}`;
+      for (let i = 0; i < quantity; i++) {
+        await CouponRepository.createUserCoupon({ userId, couponId: coupon.id, discountCode });
+      }
+    }
+
+    // Mettre à jour le solde de l'utilisateur
+    await user.update({ coins: user.coins - totalCost });
 
     return { success: true };
   }

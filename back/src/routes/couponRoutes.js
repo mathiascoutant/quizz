@@ -8,7 +8,7 @@ import {
   getCouponsByBrand,
   payCoupon
 } from '../controllers/couponController.js';
-
+import { protect } from '../controllers/authController.js';
 const router = express.Router();
 
 router.post('/create', createCoupon);
@@ -17,6 +17,6 @@ router.get('/:id', getCouponById);
 router.get('/brand/:brand', getCouponsByBrand );
 router.put('/update/:id', updateCoupon);
 router.delete('/delete/:id', deleteCoupon);
-router.post('/pay', payCoupon);
+router.post('/pay', protect, payCoupon);
 
 export default router;
