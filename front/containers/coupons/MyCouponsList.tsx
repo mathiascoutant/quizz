@@ -42,6 +42,7 @@ export const MyCouponsList = () => {
                             coupon={coupon.coupon}
                             unavailable={false}
                             quantity={coupon.quantity}
+                            discountCode={coupon.discountCode}
                         />
                     ))}
                 </div>

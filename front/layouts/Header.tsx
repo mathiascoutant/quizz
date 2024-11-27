@@ -103,9 +103,8 @@ function Header() {
                 <FaUser className="text-xl" />
                 <span className="font-medium">{session.user.pseudo}</span>
                 <FaChevronDown
-                  className={`text-sm transition-transform duration-300 ${
-                    isDropdownOpen ? "rotate-180" : ""
-                  }`}
+                  className={`text-sm transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""
+                    }`}
                 />
               </button>
               <AnimatePresence>
@@ -127,15 +126,15 @@ function Header() {
                           Mes Miams
                         </span>
                         <div className="flex items-center space-x-1">
+                          <span className="text-sm font-bold text-purple-600">
+                            {new Intl.NumberFormat('fr-FR').format(session.user.coins)}
+                          </span>
                           <Image
                             alt="Miam icon"
                             src="/assets/coin.png"
-                            width={20}
-                            height={20}
+                            width={18}
+                            height={18}
                           />
-                          <span className="text-sm font-bold text-purple-600">
-                            {session.user.coins}
-                          </span>
                         </div>
                       </div>
                     </div>
@@ -159,7 +158,7 @@ function Header() {
                     </Link>
                     <div className="px-4 pt-2">
                       <button
-                        onClick={()=> {
+                        onClick={() => {
                           clearCart();
                           sessionLogOut();
                         }}
@@ -195,7 +194,7 @@ function Header() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <MobileMenu isLoggedIn={!!session?.user} handleLogout={()=> {
+        <MobileMenu isLoggedIn={!!session?.user} handleLogout={() => {
           clearCart();
           sessionLogOut();
         }} />

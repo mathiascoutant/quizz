@@ -183,7 +183,7 @@ function CategoryCard({
         `bg-white rounded-lg shadow-md p-6 relative text-center cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-purple-50`,
         {
           'pointer-events-none opacity-50': !isConnected,
-          'ring ring-purple-500 pointer-events-none select-none': isCompleted,
+          'ring ring-purple-500 pointer-events-none select-none': isCompleted && isConnected,
         }
       )}
     >
