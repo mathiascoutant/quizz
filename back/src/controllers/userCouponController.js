@@ -1,7 +1,4 @@
-import { CouponRepository } from '../repositories/couponRepository.js';
 import { userCouponService } from '../services/userCouponService.js';
-import  UserCoupon  from '../models/userCouponModel.js'; 
-import  Coupon  from '../models/couponModel.js'
 
 export const createUserCoupon = async (req, res) => {
   try {
@@ -36,32 +33,19 @@ export const getUserCouponById = async (req, res) => {
 
 
 export const getUserCouponsByUserId = async (req, res) => {
-  try {
-    const userId = parseInt(req.params.userId, 10); 
-    console.log('userId:', userId);
+    try {
+        const userId = parseInt(req.params.userId, 10);
+        console.log('userId:', userId);
 
-    const userCoupons = await UserCoupon.findAll({
-      where: { userId },
-    });
+        const userCoupons = await userCouponService.getUserCouponsByUserId(userId);
+        
+        console.log('Coupons récupérés de la base de données:', userCoupons);
 
-    // Ajouter les détails des Coupons
-    const userCouponsWithDetails = await Promise.all(
-      userCoupons.map(async (userCoupon) => {
-        const coupon = await CouponRepository.findCouponById(userCoupon.couponId);
-
-        return {
-          ...userCoupon.dataValues, 
-          coupon, 
-        };
-      })
-    );
-
-    
-    res.status(200).json(userCouponsWithDetails);
-  } catch (error) {
-    console.error('Erreur lors de la récupération des UserCoupons:', error.message);
-    res.status(500).json({ message: 'Erreur lors de la récupération des UserCoupons.', error: error.message });
-  }
+        res.status(200).json(userCoupons);
+    } catch (error) {
+        console.error('Erreur lors de la récupération des UserCoupons:', error.message);
+        res.status(500).json({ message: 'Erreur lors de la récupération des UserCoupons.', error: error.message });
+    }
 };
 
 

@@ -36,14 +36,45 @@ export const userCouponService = {
     return userCoupon;
   },
 
-  // Méthode pour récupérer tous les UserCoupons d'un utilisateur
+  // Méthode pour récupérer tous les UserCoupons d'un utilisateur avec quantité
   getUserCouponsByUserId: async (userId) => {
     const userCoupons = await UserCouponRepository.findAllByUserId(userId);
 
     if (userCoupons.length === 0) {
-      throw new Error("Aucun UserCoupon trouvé pour cet utilisateur.");
+        throw new Error("Aucun UserCoupon trouvé pour cet utilisateur.");
     }
-    return userCoupons;
+
+    // Regrouper les coupons par couponId
+    const groupedCoupons = userCoupons.reduce((acc, coupon) => {
+        const existingCoupon = acc.find(c => c.couponId === coupon.couponId);
+        if (existingCoupon) {
+            existingCoupon.quantity += 1; // Incrémente la quantité
+        } else {
+            const couponDetails = coupon.coupon || {}; // Utiliser un objet vide si coupon.coupon est null
+
+            acc.push({ 
+                id: coupon.id,
+                userId: coupon.userId,
+                couponId: coupon.couponId,
+                discountCode: coupon.discountCode,
+                quantity: 1, // Initialiser la quantité
+                coupon: { // Inclure les détails du coupon dans un objet
+                    id: couponDetails.id,
+                    cashReduction: couponDetails.cashReduction,
+                    percentReduction: couponDetails.percentReduction,
+                    nameNominator: couponDetails.nameNominator || "Inconnu", // Valeur par défaut si null
+                    brand: couponDetails.brand || "Inconnu", // Valeur par défaut si null
+                    specificContent: couponDetails.specificContent || "Aucun contenu spécifique", // Valeur par défaut si null
+                    coinCost: couponDetails.coinCost !== null ? couponDetails.coinCost : 0, // Valeur par défaut si null
+                    validityDate: couponDetails.validityDate || "Aucune date de validité", // Valeur par défaut si null
+                    color: couponDetails.color || "#FFFFFF" // Valeur par défaut si null
+                }
+            });
+        }
+        return acc;
+    }, []);
+
+    return groupedCoupons; // Retourne les coupons groupés
   },
 
   // Méthode pour mettre à jour un UserCoupon

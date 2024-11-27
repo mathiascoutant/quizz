@@ -36,8 +36,8 @@ const UserCoupons = sequelize.define('UserCoupons', {
   timestamps: false, // Si vous n'utilisez pas les colonnes createdAt et updatedAt
 });
 
-UserCoupons.hasOne(User, { as: 'user', foreignKey: 'id' });
-UserCoupons.hasOne(Coupon, { as: 'coupon', foreignKey: 'id' });
+UserCoupons.belongsTo(User, { foreignKey: 'userId' });
+UserCoupons.belongsTo(Coupon, { foreignKey: 'couponId', as: 'coupon' });
 
 // Export par défaut
 export default UserCoupons; // Utilisez export default ici pour une exportation par défaut
