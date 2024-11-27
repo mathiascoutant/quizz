@@ -45,8 +45,6 @@ export const CouponsList = () => {
 
   const miamsAvailable = (session?.user?.coins ?? 0) - totalCartCost;
 
-  console.log(session);
-
   return (
     <div className="bg-purple-100 py-16">
       <div className="container mx-auto px-4 md:px-8 lg:px-16">

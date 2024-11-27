@@ -9,7 +9,6 @@ export const api = <T>(
 ) => {
   const storage = JSON.parse(localStorage.getItem("session-storage") || "{}");
   const token = storage.state.session.token;
-  console.log("token api service", token);
 
   return fetch(constructUrl(url), {
     method,

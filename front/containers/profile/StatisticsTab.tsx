@@ -5,6 +5,7 @@ import { Stats } from '@/services/stats.service';
 import { ArcElement, Chart, Legend, Tooltip } from 'chart.js';
 import { useState } from 'react';
 import { Pie } from 'react-chartjs-2';
+import { CgSpinnerTwo } from 'react-icons/cg';
 
 Chart.register(ArcElement, Tooltip, Legend);
 
@@ -13,16 +14,20 @@ export const StatisticsTab = () => {
 
   const { data: stats, isLoading } = useGetUserStats();
 
-  if (isLoading || !stats) return 'Chargement...';
+  if (isLoading || !stats) {
+    return (
+      <div className="bg-white rounded-lg shadow-md p-8">
+        <h1 className="text-4xl font-bold mb-4">Statistiques Utilisateur</h1>
+        <div className='flex items-center mt-2'>
+          <p className='mr-2'>Chargement en cours...</p><CgSpinnerTwo className="size-6 animate-spin" />
+        </div>
+      </div>
+    );
+  }
 
   const parsePercentage = (percentage: string) => {
     return parseFloat(percentage.replace('%', '').replace(',', '.'));
   };
-
-  console.log(
-    'TOTO',
-    stats.byCategories.answersByCategory[selectedCategoryIndex]
-  );
 
   const globalPieData = {
     labels: ['Réponses Correctes', 'Réponses Incorrectes'],

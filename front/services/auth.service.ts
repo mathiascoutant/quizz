@@ -48,8 +48,6 @@ const REFRESH = async ({session, updateUser} : {session: Session; updateUser:  (
 
   const response = await api("/profile");
 
-  console.log(response)
-
   const data = await response.json() as Session;
 
   updateUser(data.user)
