@@ -19,11 +19,10 @@ export const CouponItem = ({ coupon, unavailable, quantity = 0 }: { coupon: Coup
     <div>
       <div className={`rounded-lg shadow-md p-2 relative text-center transition-transform duration-300 
           ${unavailable ? 'transform-none' : isHovered ? 'scale-105' : 'transform-none'} 
-          ${unavailable ? 'opacity-30' : 'opacity-100'} 
           h-[186px]`}
         style={{
-          backgroundColor: `${coupon.color}10`,
-          border: `2px solid ${coupon.color}`,
+          backgroundColor: `${unavailable ? coupon.color + '10' : coupon.color + '10'}`,
+          border: `2px solid ${unavailable ? coupon.color + '10' : coupon.color}`,
         }}
         onClick={() => {
           if (!unavailable && quantity === 0) {
@@ -55,25 +54,28 @@ export const CouponItem = ({ coupon, unavailable, quantity = 0 }: { coupon: Coup
           <div className='absolute w-full h-full inset-0 bg-black backdrop-blur-xl rounded-lg opacity-10 z-20'></div>
         )}
         <div className="flex flex-col w-full h-full justify-between">
-          <div className={`flex ${quantity === 0 ? 'justify-end' : 'justify-between'}`}>
-          {quantity !== 0 && (
+          {quantity === 0 && unavailable && (
+            <img src={'/assets/images/locked.png'} alt="Coupon bloqué" className="w-6 h-6 absolute top-3 left-3" />
+          )}
+          <div className={`flex ${quantity === 0 ? 'justify-end' : 'justify-between items-center'}`}>
+          {quantity !== 0 && !unavailable && (
             <div className="ml-1 mt-1 flex items-center justify-center w-7 h-7 rounded-full border-2 border-black">
               <strong className="text-sm" style={{ color: 'black' }}>
                 {quantity}
               </strong>
             </div>
           )}
-          <strong className={`pr-3 pt-2 text-lg text-black ${isHovered ? 'opacity-50' : ''}`}>
+          <strong className={`pr-3 pt-2 text-lg text-black ${isHovered ? 'opacity-50' : ''} ${unavailable ? 'opacity-20' : 'opacity-100'}`}>
             -{coupon.cashReduction 
               ? `${coupon.cashReduction} €` 
               : `${coupon.percentReduction}%`}
           </strong>
           </div>
-          <p className={`text-black text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex-grow ${isHovered ? 'opacity-50' : ''}`}>
+          <p className={`text-black text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex-grow ${isHovered ? 'opacity-50' : ''} ${unavailable ? 'opacity-20' : 'opacity-100'} `}>
             {coupon.brand}
           </p>
           <div className='flex'>
-            <p className={`pl-2 pb-1 text-xs italic text-black ${isHovered ? 'opacity-50' : ''}`}>
+            <p className={`pl-2 pb-1 text-xs italic text-black ${isHovered ? 'opacity-50' : ''} ${unavailable ? 'opacity-20' : 'opacity-100'} `}>
               <b>*</b> {coupon.specificContent}
             </p>
           </div>
