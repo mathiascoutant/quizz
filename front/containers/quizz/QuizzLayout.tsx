@@ -122,8 +122,8 @@ const Interactive = ({
             className={cn(
               'text-5xl col-start-2 row-start-2 p-2 size-28 text-white rounded-full flex items-center justify-center bg-indigo-500 font-bold mx-auto',
               {
-                'animate-scale-up': time > 0 && time <= 26,
-                'bg-red-500 animate-scale-up-speed': time <= 26,
+                'animate-scale-up': time > 0 && time <= 5,
+                'bg-red-500 animate-scale-up-speed': time <= 5,
               }
             )}
           >

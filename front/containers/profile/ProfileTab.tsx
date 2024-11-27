@@ -17,6 +17,7 @@ export const ProfileTab = () => {
 
   useEffect(() => {
     if (session) {
+      console.log(session.user)
       setNewData({
         firstname: session.user.firstname,
         lastname: session.user.lastname,
@@ -44,6 +45,8 @@ export const ProfileTab = () => {
 
     try {
       const { ...payload } = newData;
+
+      console.log(payload)
 
       startTransition(async () => {
         const response = await api(

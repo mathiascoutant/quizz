@@ -15,8 +15,6 @@ export const BadgesTab = () => {
 
       const response = await api('/badges/all');
 
-      console.log(response);
-
       if (!response.ok) throw new Error('Error while retrieving badges');
 
       const data = await response.json();

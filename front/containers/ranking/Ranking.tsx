@@ -1,63 +1,46 @@
 "use client";
 import { useGetRanking } from "@/hooks/useGetRanking";
-import { data } from "framer-motion/client";
-import { Fragment, useState } from "react";
+import { useSessionStore } from "@/store/session.store";
 export const Ranking = () => {
   const { data: ranking, isLoading } = useGetRanking();
-  console.log("ranking", ranking);
+  const { session } = useSessionStore();
 
   if (isLoading || !ranking) {
     return <div>Loading...</div>;
   }
 
+  const userInRanking = ranking.topUsers.some(player => player.id === session?.user.id);
+
   return (
     <section className="my-24 max-w-[80%] mx-auto space-y-12">
       <div className="main-container">
         <div className="container">
-          <h1>Classement des utilisateurs</h1>
-          <table className="ranking-table">
+          <h1 className="text-2xl font-bold text-center">Classement des utilisateurs</h1>
+          <table className="ranking-table w-full border-collapse mt-5">
             <thead>
               <tr>
-                <th>Rang</th>
-                <th>Pseudo</th>
-                <th>Score</th>
+                <th className="p-2 border">Rang</th>
+                <th className="p-2 border">Pseudo</th>
+                <th className="p-2 border">Score</th>
               </tr>
             </thead>
             <tbody>
               {ranking.topUsers.map((player, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{player.pseudo}</td>
-                  <td>{player.coins}</td>
+                <tr key={index} className={index === 0 ? 'bg-yellow-300' : index === 1 ? 'bg-gray-200' : index === 2 ? 'bg-orange-300' : ''}>
+                  <td className="p-2 border text-center">{index + 1}</td>
+                  <td className="p-2 border text-center">{player.pseudo}</td>
+                  <td className="p-2 border text-center">{player.coins}</td>
                 </tr>
               ))}
+              {!userInRanking && (
+                <tr className="bg-blue-200">
+                  <td className="p-2 border text-center">{ranking.currentUser.position}</td>
+                  <td className="p-2 border text-center"><b><i>(Vous)</i></b> {ranking.currentUser.pseudo}</td>
+                  <td className="p-2 border text-center">{ranking.currentUser.coins}</td>
+                </tr>
+              )}
             </tbody>
           </table>
-
-          <style jsx>{`
-            .container {
-              max-width: 600px;
-              margin: 0 auto;
-              padding: 20px;
-            }
-            h1 {
-              text-align: center;
-            }
-            .ranking-table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-top: 20px;
-            }
-            .ranking-table th,
-            .ranking-table td {
-              padding: 10px;
-              text-align: center;
-              border: 1px solid #ddd;
-            }
-            .ranking-table th {
-              background-color: #f4f4f4;
-            }
-          `}</style>
         </div>
       </div>
     </section>
