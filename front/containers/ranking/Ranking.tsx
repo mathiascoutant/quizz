@@ -25,15 +25,25 @@ export const Ranking = () => {
               </tr>
             </thead>
             <tbody>
-              {ranking.topUsers.map((player, index) => (
-                <tr key={index} className={player.id === session?.user.id ? 'bg-blue-200' : index === 0 ? 'bg-yellow-300' : index === 1 ? 'bg-gray-200' : index === 2 ? 'bg-orange-300' : index % 2 === 0 ? 'bg-gray-200' : ''}>
-                  <td className="p-2 border text-center">{index + 1}</td>
-                  <td className="p-2 border text-center">
-                    {player.id === session?.user.id ? <b><i>(Vous) </i></b> : ''}{player.pseudo}
-                  </td>
-                  <td className="p-2 border text-center">{player.coins}</td>
-                </tr>
-              ))}
+              {ranking.topUsers.map((player, index) => {
+                let medalIcon = '';
+                if (index === 0) {
+                  medalIcon = '🥇';
+                } else if (index === 1) {
+                  medalIcon = '🥈';
+                } else if (index === 2) {
+                  medalIcon = '🥉';
+                }
+                return (
+                  <tr key={index} className={player.id === session?.user.id ? 'bg-blue-200' : (index % 2 === 0 ? 'bg-gray-100' : '')}>
+                    <td className="p-2 border text-center">{medalIcon || index + 1}</td>
+                    <td className="p-2 border text-center">
+                      {player.id === session?.user.id ? <b><i>(Vous) </i></b> : ''}{player.pseudo}
+                    </td>
+                    <td className="p-2 border text-center">{player.coins}</td>
+                  </tr>
+                );
+              })}
               {!userInRanking && (
                 <tr className="bg-blue-200">
                   <td className="p-2 border text-center">{ranking.currentUser.position}</td>
