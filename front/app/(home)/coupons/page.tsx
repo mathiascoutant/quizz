@@ -2,7 +2,7 @@ import { CouponsList } from '@/containers/coupons/CouponsList';
 
 export default function DiscountsPage() {
   return (
-    <section className="my-24 max-w-[80%] mx-auto space-y-12">
+    <section className="bg-gray-100 pt-12">
       <CouponsList />
     </section>
   );

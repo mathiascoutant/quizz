@@ -13,7 +13,7 @@ export const MENU_ITEMS_LINKS: MenuItem[] = [
     href: '/categories',
   },
   {
-    label: 'Bon de réduction',
+    label: 'Bons de réduction',
     href: '/coupons',
   },
 ];

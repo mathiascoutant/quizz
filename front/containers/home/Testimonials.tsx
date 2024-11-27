@@ -51,7 +51,7 @@ const testimonials: Testimonial[] = [
   },
   {
     name: 'William Fort',
-    text: "Grâce à QuizzGo, j'apprends quelque chose de nouveau chaque jour. C'est une façon ludique et motivante d'enrichir sa culture générale.",
+    text: "Avec QuizzGo, j'apprends chaque jour. C'est une façon ludique d'enrichir ma culture générale.",
   },
 ];
 

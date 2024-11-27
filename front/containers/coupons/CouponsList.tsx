@@ -24,11 +24,16 @@ export const CouponsList = () => {
 
   if (isLoading || !coupons)
     return (
-      <div className="p-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <Skeleton key={index} className="w-full h-[160px] rounded-lg" />
-          ))}
+      <div className="bg-purple-100 py-16">
+        <div className="container mx-auto px-4 md:px-8 lg:px-16">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Explorez les différents bons de réduction
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <Skeleton key={index} className="w-full h-[186px] rounded-lg" />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -38,12 +43,17 @@ export const CouponsList = () => {
       return total + item.quantity * item.coinCost;
     }, 0) ?? 0;
 
-  const miamsAvailable = session?.user.coins - totalCartCost;
+  const miamsAvailable = (session?.user?.coins ?? 0) - totalCartCost;
+
+  console.log(session);
 
   return (
-    <div>
-      <div className="p-8">
-        {miamsAvailable < 25 ? (
+    <div className="bg-purple-100 py-16">
+      <div className="container mx-auto px-4 md:px-8 lg:px-16">
+        <h2 className="text-3xl font-bold text-center mb-12">
+          Explorez les différents bons de réduction
+        </h2>
+        {miamsAvailable < 10 && session != null ? (
           <div className="text-center">
             Plus aucun coupon disponible car vous n'avez pas assez de miams.
           </div>

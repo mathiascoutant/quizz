@@ -182,10 +182,12 @@ function Header() {
             </div>
           ) : (
             <>
-              <ButtonLink variant="outline" href={"/login"}>
+              <ButtonLink variant="outline" href={"/login"} className=" py-2 px-4">
                 Se connecter
               </ButtonLink>
-              <ButtonLink href={"/register"}>S&apos;inscrire</ButtonLink>
+              <ButtonLink href={"/register"} className=" py-2 px-4">
+                S&apos;inscrire
+              </ButtonLink>
             </>
           )}
         </div>
