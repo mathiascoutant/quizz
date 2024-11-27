@@ -16,7 +16,7 @@ export const Ranking = () => {
       <div className="main-container">
         <div className="container">
           <h1 className="text-2xl font-bold text-center">Classement des utilisateurs</h1>
-          <table className="ranking-table w-full border-collapse mt-5">
+          <table className="ranking-table w-full border-collapse mt-5 border">
             <thead>
               <tr>
                 <th className="p-2 border">Rang</th>
@@ -35,7 +35,7 @@ export const Ranking = () => {
                   medalIcon = '🥉';
                 }
                 return (
-                  <tr key={index} className={player.id === session?.user.id ? 'bg-blue-200' : (index % 2 === 0 ? 'bg-gray-100' : '')}>
+                  <tr key={index} className={`${player.id === session?.user.id ? 'bg-blue-200' : (index % 2 === 0 ? 'bg-gray-100' : '')} ${index === 2 ? 'border-b-2 border-black' : ''}`}>
                     <td className="p-2 border text-center">{medalIcon || index + 1}</td>
                     <td className="p-2 border text-center">
                       {player.id === session?.user.id ? <b><i>(Vous) </i></b> : ''}{player.pseudo}
