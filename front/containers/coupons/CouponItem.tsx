@@ -19,7 +19,7 @@ export const CouponItem = ({ coupon, unavailable, quantity = 0 }: { coupon: Coup
     <div>
       <div className={`rounded-lg shadow-md p-2 relative text-center transition-transform duration-300 
           ${unavailable ? 'transform-none' : isHovered ? 'scale-105' : 'transform-none'} 
-          ${unavailable ? 'opacity-50' : 'opacity-100'} 
+          ${unavailable ? 'opacity-30' : 'opacity-100'} 
           h-[186px]`}
         style={{
           backgroundColor: `${coupon.color}10`,
