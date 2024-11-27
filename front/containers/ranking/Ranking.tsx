@@ -26,9 +26,11 @@ export const Ranking = () => {
             </thead>
             <tbody>
               {ranking.topUsers.map((player, index) => (
-                <tr key={index} className={index === 0 ? 'bg-yellow-300' : index === 1 ? 'bg-gray-200' : index === 2 ? 'bg-orange-300' : ''}>
+                <tr key={index} className={player.id === session?.user.id ? 'bg-blue-200' : index === 0 ? 'bg-yellow-300' : index === 1 ? 'bg-gray-200' : index === 2 ? 'bg-orange-300' : ''}>
                   <td className="p-2 border text-center">{index + 1}</td>
-                  <td className="p-2 border text-center">{player.pseudo}</td>
+                  <td className="p-2 border text-center">
+                    {player.id === session?.user.id ? <b><i>(Vous) </i></b> : ''}{player.pseudo}
+                  </td>
                   <td className="p-2 border text-center">{player.coins}</td>
                 </tr>
               ))}

@@ -234,12 +234,6 @@ const MobileMenu = ({
             >
               Profile
             </Link>
-            <Link
-              href="/wallet"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-purple-100 hover:text-purple-500"
-            >
-              Wallet
-            </Link>
             <button
               onClick={handleLogout}
               className="block w-full text-left px-3 py-2 rounded-md text-base font-medium bg-purple-500 text-white hover:bg-purple-600"
