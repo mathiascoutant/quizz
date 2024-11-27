@@ -146,7 +146,7 @@ function Header() {
                       Mon profil
                     </Link>
                     <Link
-                      href="/coupons"
+                      href="/mes-coupons"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100 transition-colors duration-300"
                     >
                       Mes coupons
