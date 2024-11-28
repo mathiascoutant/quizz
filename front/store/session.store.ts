@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 type SessionState = {
   session: Session | null;
@@ -37,16 +37,29 @@ export const useSessionStore = create<SessionState>()(
       session: null,
       sessionLogOut: () => set({ session: null }),
       sessionLogIn: (session) => set({ session }),
-      updateUser: (updatedUser) =>
-        set({
-          session: {
-            ...get().session,
-            user: updatedUser,
-          } as Session,
-        }),
+      updateUser: (updatedUser) => {
+        // Log avant la mise à jour pour voir l'état initial de la session
+        console.log(
+          "État initial de la session avant mise à jour:",
+          get().session
+        );
+
+        // Assurez-vous que l'utilisateur mis à jour est complet et que le token reste inchangé
+        set((state) => ({
+          session: state.session
+            ? {
+                ...state.session, // Conserve le token et les autres propriétés de la session
+                user: { ...updatedUser }, // Met à jour l'utilisateur sans modifier le token
+              }
+            : null,
+        }));
+
+        // Log après la mise à jour pour vérifier l'état final de la session
+        console.log("Nouvelle session après mise à jour:", get().session);
+      },
     }),
     {
-      name: 'session-storage',
+      name: "session-storage",
     }
   )
 );

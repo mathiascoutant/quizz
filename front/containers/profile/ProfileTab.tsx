@@ -77,19 +77,20 @@ export const ProfileTab = () => {
           updatedUser: User;
         };
 
+        console.log("Données de l'API reçues:", data);
+
         const { message, updatedUser } = data;
 
-        updateUser(updatedUser);
-
-        toast.success(message);
+        if (session) {
+          updateUser(updatedUser);
+          toast.success(message);
+        } else {
+          toast.error("La mise à jour a échoué, la session n'est plus active.");
+        }
       });
     } catch (error) {
       toast.error("Une erreur est survenue lors de la mise à jour du profil");
-      if (error instanceof Error) {
-        throw new Error(
-          "Une erreur est survenue lors de la mise à jour du profil"
-        );
-      }
+      console.error(error);
     }
   };
 
