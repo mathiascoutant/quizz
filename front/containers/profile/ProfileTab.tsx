@@ -123,7 +123,7 @@ export const ProfileTab = () => {
           className={`w-full opacity-50 ${
             isUpdated()
               ? "bg-purple-500 hover:bg-purple-700 opacity-100 text-white"
-              : "bg-gray-300 text-gray-600"
+              : "bg-gray-300 hover:bg-gray-300 text-gray-600"
           }`}
           disabled={!isUpdated()} // Désactive le bouton si aucune modification n'a été faite
         >
