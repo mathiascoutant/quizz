@@ -15,7 +15,7 @@ const app = express();
 // Configuration de CORS
 app.use(cors({
   origin: '*',
-  allowedHeaders: ['Content-Type', 'Authorization']
+  // allowedHeaders: ['Content-Type', 'Authorization']
 }));
 // Middleware pour parser le JSON
 app.use(express.json());
