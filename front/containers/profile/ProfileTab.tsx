@@ -38,7 +38,7 @@ export const ProfileTab = () => {
     }
   }, [session]);
 
-  const fieledLabels = {
+  const fieldLabels = {
     firstname: "Prénom",
     lastname: "Nom",
     pseudo: "Pseudo",
@@ -63,7 +63,23 @@ export const ProfileTab = () => {
     }
 
     try {
-      const { ...payload } = newData;
+      const payload = Object.keys(newData).reduce((acc, key) => {
+        if (
+          newData[key] !== initialData[key] &&
+          newData[key] !== null &&
+          newData[key] !== ""
+        ) {
+          acc[key] = newData[key];
+        }
+        return acc;
+      }, {} as Record<string, string | null>);
+
+      console.log("Payload final avant soumission:", payload);
+
+      if (Object.keys(payload).length === 0) {
+        toast.info("Aucune modification détectée.");
+        return;
+      }
 
       startTransition(async () => {
         const response = await api(
@@ -94,15 +110,15 @@ export const ProfileTab = () => {
     }
   };
 
-  const renderField = (name: keyof typeof fieledLabels, index: number) => {
+  const renderField = (name: keyof typeof fieldLabels, index: number) => {
     return (
       <div key={index} className="flex flex-col gap-2">
-        <label id="label-form">{fieledLabels[name]}</label>
+        <label id="label-form">{fieldLabels[name]}</label>
         <input
           id="input-form"
           name={name}
-          type={"text"}
-          defaultValue={newData[name] || ""}
+          type="text"
+          value={newData[name] || ""} // Utilisez `value` pour rendre le champ contrôlé
           onChange={handleChange}
           className="border border-gray-300 rounded p-2"
         />
@@ -115,7 +131,7 @@ export const ProfileTab = () => {
       <h1 className="text-4xl font-bold mb-4">Mon compte</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         {Object.keys(newData).map((name, index) =>
-          renderField(name as keyof typeof fieledLabels, index)
+          renderField(name as keyof typeof fieldLabels, index)
         )}
         <Button
           isLoading={pending}
