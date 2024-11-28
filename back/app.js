@@ -14,7 +14,7 @@ const app = express();
 
 // Configuration de CORS
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'https://quizzgo-beta.vercel.app/',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
