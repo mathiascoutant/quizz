@@ -1,25 +1,22 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useSessionStore } from '@/store/session.store';
+import { useState } from 'react';
 import { BadgesTab } from './BadgesTab';
 import { ProfileTab } from './ProfileTab';
 import { StatisticsTab } from './StatisticsTab';
-import { useSessionStore } from '@/store/session.store';
 
 export const Profile = () => {
   const [activeTab, setActiveTab] = useState('account');
   const session = useSessionStore((state) => state.session);
 
-  if(session == null) {
-    window.location.href = '/';
-  }
+  if (!session) return null;
 
   return (
     <section className="bg-gray-100 p-4 rounded-lg shadow-lg max-w-7xl mx-auto my-36">
       <p className="text-2xl font-semibold">Mon profil</p>
       <p className="text-lg text-gray-600">
-        Gérez les paramètres de votre compte et définissez vos préférences de
-        messagerie.
+        Voir et modifier les informations de votre compte.
       </p>
       <hr className="my-4" />
       <div className="flex justify-center items-start">

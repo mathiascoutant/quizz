@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/common/Button';
 import { useLogin } from '@/hooks/useLogin';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -23,21 +24,26 @@ export const Login = () => {
     try {
       mutate(formData);
     } catch (error) {
-      throw new Error('Erreur lors de la connexion');
+      if (error instanceof Error) {
+        throw new Error('Une erreur est survenue lors de la connexion');
+      }
     }
   };
 
   return (
     <div className="flex h-screen">
-      <div className="w-1/2">
-        <img
+      <div className="w-1/2 hidden md:block">
+        <Image
           src={'/assets/inscription.jpg'}
           alt="login"
+          width={0}
+          height={0}
+          sizes="100vw"
           className="w-full h-full object-cover"
         />
       </div>
 
-      <div className="w-1/2 bg-white p-12 flex flex-col">
+      <div className="w-full md:w-1/2 bg-white p-12 flex flex-col">
         <div>
           <Link
             href="/"
@@ -86,7 +92,7 @@ export const Login = () => {
                 href="/register"
                 className="text-purple-600 hover:text-purple-800 transition-colors"
               >
-                Pas encore inscrit ? S'inscrire
+                Pas encore inscrit ? S&apos;inscrire
               </Link>
             </div>
           </form>

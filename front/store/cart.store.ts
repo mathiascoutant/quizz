@@ -10,9 +10,11 @@ type CartState = {
 };
 
 type CartItem = {
-  id: string;
   quantity: number;
-} & Pick<Coupon, 'brand' | 'percentReduction' | 'cashReduction' | 'id' | 'coinCost'>;
+} & Pick<
+  Coupon,
+  'brand' | 'percentReduction' | 'cashReduction' | 'id' | 'coinCost'
+>;
 
 export const useCartStore = create<CartState>()(
   persist(

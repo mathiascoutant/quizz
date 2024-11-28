@@ -6,6 +6,7 @@ import { ArcElement, Chart, Legend, Tooltip } from 'chart.js';
 import { useState } from 'react';
 import { Pie } from 'react-chartjs-2';
 import { CgSpinnerTwo } from 'react-icons/cg';
+import { ImSmile } from 'react-icons/im';
 
 Chart.register(ArcElement, Tooltip, Legend);
 
@@ -14,12 +15,27 @@ export const StatisticsTab = () => {
 
   const { data: stats, isLoading } = useGetUserStats();
 
-  if (isLoading || !stats) {
+  if (isLoading) {
     return (
       <div className="bg-white rounded-lg shadow-md p-8">
         <h1 className="text-4xl font-bold mb-4">Statistiques Utilisateur</h1>
-        <div className='flex items-center mt-2'>
-          <p className='mr-2'>Chargement en cours...</p><CgSpinnerTwo className="size-6 animate-spin" />
+        <div className="flex items-center mt-2">
+          <p className="mr-2">Chargement en cours...</p>
+          <CgSpinnerTwo className="size-6 animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!stats) {
+    return (
+      <div className="bg-white rounded-lg shadow-md p-8">
+        <h1 className="text-4xl font-bold mb-4">Statistiques Utilisateur</h1>
+        <div className="flex items-center mt-2">
+          <p className="mr-2">
+            Aucune donnée disponible, veuillez répondre à au moins une question
+          </p>
+          <ImSmile className="size-6 animate-spin" />
         </div>
       </div>
     );

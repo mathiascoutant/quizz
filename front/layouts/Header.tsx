@@ -1,36 +1,38 @@
-"use client";
+'use client';
 
-import { ButtonLink } from "@/components/common/Button";
-import { MENU_ITEMS_LINKS } from "@/constants/menu.items.constants";
-import { useCartStore } from "@/store/cart.store";
-import { cn } from "@/utils/utils";
-import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { FaChevronDown, FaShoppingCart, FaUser } from "react-icons/fa";
-import { useSessionStore } from "../store/session.store";
+import { ButtonLink } from '@/components/common/Button';
+import { MENU_ITEMS_LINKS } from '@/constants/menu.items.constants';
+import { useCartStore } from '@/store/cart.store';
+import { cn } from '@/utils/utils';
+import { AnimatePresence, motion } from 'framer-motion';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { FaChevronDown, FaShoppingCart, FaUser } from 'react-icons/fa';
+import { useSessionStore } from '../store/session.store';
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const { session, sessionLogOut } = useSessionStore();
   const { clearCart } = useCartStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
   const pathname = usePathname();
   const cart = useCartStore((state) => state.cart);
 
   useEffect(() => {
-    function handleClickOutside(event: React.MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    function handleClickOutside(event: MouseEvent) {
+      if (!dropdownRef.current) return;
+
+      if (!dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -44,13 +46,17 @@ function Header() {
     return cart.reduce((acc, item) => acc + item.quantity, 0);
   }, [cart]);
 
+  const isConnected = JSON.parse(
+    localStorage.getItem('session-storage') || '{}'
+  ).state.session;
+
   return (
     <header className="fixed top-0 left-0 right-0 bg-white z-50">
       <div className="container relative mx-auto px-4 sm:px-6 lg:px-12 py-4 flex justify-between items-center">
         <Link
           href="/"
           className="text-3xl font-bold"
-          style={{ fontFamily: "Comic Sans MS, cursive" }}
+          style={{ fontFamily: 'Comic Sans MS, cursive' }}
         >
           QuizzGo
         </Link>
@@ -79,10 +85,10 @@ function Header() {
                 key={index}
                 href={item.href}
                 className={cn(
-                  "relative text-lg font-medium hover:text-purple-500 transition-colors duration-300 group",
+                  'relative text-lg font-medium hover:text-purple-500 transition-colors duration-300 group',
                   {
-                    "text-purple-500": pathname === item.href,
-                    "text-gray-700": pathname !== item.href,
+                    'text-purple-500': pathname === item.href,
+                    'text-gray-700': pathname !== item.href,
                   }
                 )}
               >
@@ -94,17 +100,22 @@ function Header() {
         </nav>
 
         <div className="hidden lg:flex items-center space-x-4">
-          {session && session.user ? (
+          {isConnected ? (
             <div className="relative flex items-center" ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className=" items-center flex gap-4 font-bold py-2 px-4 rounded-3xl transition duration-300"
               >
                 <FaUser className="text-xl" />
-                <span className="font-medium">{session.user.pseudo}</span>
+                <span className="font-medium">
+                  {session && session.user.pseudo.length > 20
+                    ? `${session?.user.pseudo.substring(0, 20)}...`
+                    : session?.user.pseudo}
+                </span>
                 <FaChevronDown
-                  className={`text-sm transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""
-                    }`}
+                  className={`text-sm transition-transform duration-300 ${
+                    isDropdownOpen ? 'rotate-180' : ''
+                  }`}
                 />
               </button>
               <AnimatePresence>
@@ -127,7 +138,9 @@ function Header() {
                         </span>
                         <div className="flex items-center space-x-1">
                           <span className="text-sm font-bold text-purple-600">
-                            {new Intl.NumberFormat('fr-FR').format(session.user.coins)}
+                            {new Intl.NumberFormat('fr-FR').format(
+                              session ? session.user.coins : `0`
+                            )}
                           </span>
                           <Image
                             alt="Miam icon"
@@ -181,10 +194,14 @@ function Header() {
             </div>
           ) : (
             <>
-              <ButtonLink variant="outline" href={"/login"} className=" py-2 px-4">
+              <ButtonLink
+                variant="outline"
+                href={'/login'}
+                className=" py-2 px-4"
+              >
                 Se connecter
               </ButtonLink>
-              <ButtonLink href={"/register"} className=" py-2 px-4">
+              <ButtonLink href={'/register'} className=" py-2 px-4">
                 S&apos;inscrire
               </ButtonLink>
             </>
@@ -194,10 +211,13 @@ function Header() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <MobileMenu isLoggedIn={!!session?.user} handleLogout={() => {
-          clearCart();
-          sessionLogOut();
-        }} />
+        <MobileMenu
+          isLoggedIn={!!session?.user}
+          handleLogout={() => {
+            clearCart();
+            sessionLogOut();
+          }}
+        />
       )}
     </header>
   );
@@ -218,9 +238,9 @@ const MobileMenu = ({
           <Link
             key={index}
             href={`/${item.href.toLowerCase()}`}
-            className={cn("block px-3 py-2 rounded-md text-base font-medium", {
-              "bg-purple-500 text-white": pathname === item.href,
-              "text-gray-700 hover:bg-purple-100 hover:text-purple-500":
+            className={cn('block px-3 py-2 rounded-md text-base font-medium', {
+              'bg-purple-500 text-white': pathname === item.href,
+              'text-gray-700 hover:bg-purple-100 hover:text-purple-500':
                 pathname !== item.href,
             })}
           >

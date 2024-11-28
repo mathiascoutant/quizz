@@ -1,6 +1,7 @@
 'use client';
 import { Button } from '@/components/common/Button';
 import { useRegister } from '@/hooks/useRegister';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -27,13 +28,15 @@ export const Register = () => {
     try {
       mutate(formData);
     } catch (error) {
-      throw new Error("Une erreur est survenue lors de l'inscription: ");
+      if (error instanceof Error) {
+        throw new Error("Une erreur est survenue lors de l'inscription");
+      }
     }
   };
 
   return (
     <div className="flex h-screen">
-      <div className="w-1/2 bg-white p-12 flex flex-col">
+      <div className="w-full md:w-1/2 bg-white p-12 flex flex-col">
         <div>
           <Link
             href="/"
@@ -106,7 +109,7 @@ export const Register = () => {
               <small className="text-red-700">{error.message}</small>
             ) : null}
             <Button type="submit" isLoading={isPending} className="w-full">
-              S'inscrire
+              S&apos;inscrire
             </Button>
             <div className="text-center mt-6">
               <Link
@@ -120,10 +123,13 @@ export const Register = () => {
         </div>
       </div>
 
-      <div className="w-1/2">
-        <img
+      <div className="hidden md:w-1/2 md:block">
+        <Image
           src={'/assets/inscription.jpg'}
           alt="inscription"
+          width={0}
+          height={0}
+          sizes="100vw"
           className="w-full h-full object-cover"
         />
       </div>

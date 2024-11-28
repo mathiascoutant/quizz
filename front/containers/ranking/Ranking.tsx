@@ -1,14 +1,12 @@
-"use client";
-import { Skeleton } from "@/components/common/Skeleton";
-import { useGetRanking } from "@/hooks/useGetRanking";
-import { useSessionStore } from "@/store/session.store";
+'use client';
+import { Skeleton } from '@/components/common/Skeleton';
+import { useGetRanking } from '@/hooks/useGetRanking';
+import { useSessionStore } from '@/store/session.store';
 export const Ranking = () => {
   const { data: ranking, isLoading } = useGetRanking();
   const { session } = useSessionStore();
 
-  if(session == null) {
-    window.location.href = '/';
-  }
+  if (!session) return null;
 
   if (isLoading || !ranking) {
     return (
@@ -17,17 +15,21 @@ export const Ranking = () => {
           <h2 className="text-3xl font-bold text-center mb-12">
             Classement des utilisateurs
           </h2>
-            <div className="grid mb-12">
-              {Array.from({ length: 1 }).map((_, index) => (
-                <Skeleton key={index} className="w-full h-[450px] mx-auto   " />
-              ))}
-            </div>
+          <div className="grid mb-12">
+            {Array.from({ length: 1 }).map((_, index) => (
+              <Skeleton key={index} className="w-full h-[450px] mx-auto   " />
+            ))}
+          </div>
         </div>
       </div>
     );
   }
 
-  const userInRanking = ranking.topUsers.some(player => player.id === session?.user.id);
+  console.log(ranking);
+
+  const userInRanking = ranking.topUsers.some(
+    (player) => player.id === Number(session?.user.id)
+  );
 
   return (
     <div className="bg-purple-100 py-16">
@@ -54,10 +56,28 @@ export const Ranking = () => {
                 medalIcon = '🥉';
               }
               return (
-                <tr key={index} className={`${player.id === session?.user.id ? 'bg-blue-200' : (index % 2 === 0 ? 'bg-gray-100' : '')} ${index === 2 ? 'border-b-2 border-black' : ''}`}>
-                  <td className="p-2 border text-center">{medalIcon || index + 1}</td>
+                <tr
+                  key={index}
+                  className={`${
+                    player.id === Number(session?.user.id)
+                      ? 'bg-blue-200'
+                      : index % 2 === 0
+                      ? 'bg-gray-100'
+                      : ''
+                  } ${index === 2 ? 'border-b-2 border-black' : ''}`}
+                >
                   <td className="p-2 border text-center">
-                    {player.id === session?.user.id ? <b><i>(Vous) </i></b> : ''}{player.pseudo}
+                    {medalIcon || index + 1}
+                  </td>
+                  <td className="p-2 border text-center">
+                    {player.id === Number(session?.user.id) ? (
+                      <b>
+                        <i>(Vous) </i>
+                      </b>
+                    ) : (
+                      ''
+                    )}
+                    {player.pseudo}
                   </td>
                   <td className="p-2 border text-center">{player.coins}</td>
                 </tr>
@@ -65,9 +85,18 @@ export const Ranking = () => {
             })}
             {!userInRanking && (
               <tr className="bg-blue-200">
-                <td className="p-2 border text-center">{ranking.currentUser.position}</td>
-                <td className="p-2 border text-center"><b><i>(Vous)</i></b> {ranking.currentUser.pseudo}</td>
-                <td className="p-2 border text-center">{ranking.currentUser.coins}</td>
+                <td className="p-2 border text-center">
+                  {ranking.currentUser.position}
+                </td>
+                <td className="p-2 border text-center">
+                  <b>
+                    <i>(Vous)</i>
+                  </b>{' '}
+                  {ranking.currentUser.pseudo}
+                </td>
+                <td className="p-2 border text-center">
+                  {ranking.currentUser.coins}
+                </td>
               </tr>
             )}
           </tbody>

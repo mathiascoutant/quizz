@@ -1,26 +1,15 @@
 'use client';
 
-import { api } from '@/services/api.service';
-import { Badge, useSessionStore } from '@/store/session.store';
+import { useGetBadges } from '@/hooks/useGetBadges';
+import { useSessionStore } from '@/store/session.store';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { BadgesLoader } from '../loaders/BadgesLoader';
 
 export const BadgesTab = () => {
   const session = useSessionStore((state) => state.session);
-  const [badges, setBadges] = useState<Badge[]>([]);
+  const { data: badges, isLoading } = useGetBadges();
 
-  useEffect(() => {
-    (async function () {
-      if (!session) return;
-
-      const response = await api('/badges/all');
-
-      if (!response.ok) throw new Error('Error while retrieving badges');
-
-      const data = await response.json();
-      setBadges(data);
-    })();
-  }, []);
+  if (isLoading || !badges) return <BadgesLoader />;
 
   return (
     <div className="bg-white rounded-lg shadow-md p-8">
@@ -38,14 +27,15 @@ export const BadgesTab = () => {
             }`}
           >
             <Image
-              src={`${badge.urlImage}`}
+              src={badge.urlImage ?? '/assets/image-fallback.png'}
               alt={badge.name}
               width={0}
               height={0}
               sizes="100vw"
+              loading="lazy"
               className="w-full h-32 object-cover rounded-md mb-2"
             />
-            <h2 className="text-xl font-semibold">{badge.name}</h2>
+            <h2 className="text-xl font-semibold text-center">{badge.name}</h2>
             <p>{badge.description}</p>
           </div>
         ))}

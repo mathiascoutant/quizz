@@ -1,24 +1,29 @@
-import { User } from "@/store/session.store";
-import { api, constructUrl } from "./api.service";
+import { api } from './api.service';
 
 export interface Ranking {
   topUsers: TopUsers[];
+  currentUser: {
+    coins: number;
+    id: number;
+    pseudo: string;
+    position: number;
+  };
 }
 
 export interface TopUsers {
+  id: number;
   pseudo: string;
-  score: number;
-  rang: number;
+  coins: number;
 }
 
 const GET = async () => {
-  const response = await api("/classement/top-users");
+  const response = await api('/classement/top-users');
 
   if (!response.ok) {
-    throw new Error("Error fetching rankings pages");
+    throw new Error('Error fetching rankings pages');
   }
 
-  return (await response.json()) as Ranking[];
+  return (await response.json()) as Ranking;
 };
 
 const rankingService = {

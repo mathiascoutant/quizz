@@ -1,7 +1,6 @@
 import { FormDataRegister } from '@/hooks/useRegister';
+import type { Session, User as SessionUser } from '@/store/session.store';
 import { api, constructUrl } from './api.service';
-import { useSessionStore } from '@/store/session.store';
-import type {User as SessionUser, Session} from  '@/store/session.store';
 
 export interface User {
   id: string;
@@ -43,14 +42,20 @@ const REGISTER = async (body: FormDataRegister) => {
   }
 };
 
-const REFRESH = async ({session, updateUser} : {session: Session; updateUser:  (user: SessionUser) => void}) => {
-  if(!session) throw new Error('No session found');
+const REFRESH = async ({
+  session,
+  updateUser,
+}: {
+  session: Session;
+  updateUser: (user: SessionUser) => void;
+}) => {
+  if (!session) throw new Error('No session found');
 
-  const response = await api("/profile");
+  const response = await api('/profile');
 
-  const data = await response.json() as Session;
+  const data = (await response.json()) as Session;
 
-  updateUser(data.user)
+  updateUser(data.user);
 
   if (!response.ok) {
     throw new Error('Error while refresh');
@@ -60,7 +65,7 @@ const REFRESH = async ({session, updateUser} : {session: Session; updateUser:  (
 const authService = {
   LOGIN,
   REGISTER,
-  REFRESH
+  REFRESH,
 };
 
 export default authService;
