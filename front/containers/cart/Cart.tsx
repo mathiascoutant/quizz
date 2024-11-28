@@ -9,9 +9,11 @@ import { toast } from 'sonner';
 
 export const Cart = () => {
   const { cart, clearCart, removeFromCart } = useCartStore();
-  const {session, updateUser} = useSessionStore();
+  const { session, updateUser } = useSessionStore();
 
-  if(!session) return null;
+  if (session == null) {
+    window.location.href = '/';
+  }
 
   return (
     <div className="max-w-lg mx-auto my-48 p-4 bg-white">
@@ -32,7 +34,7 @@ export const Cart = () => {
                 <span>{item.brand}</span>
                 {item.percentReduction ? (
                   <span>{item.percentReduction}%</span>
-                ) : 
+                ) :
                   <span>{item.cashReduction}€</span>
                 }
               </div>
@@ -64,7 +66,7 @@ export const Cart = () => {
                 }));
                 await couponsService.POST(payload);
                 clearCart();
-                await authService.REFRESH({session, updateUser});
+                await authService.REFRESH({ session, updateUser });
                 toast.success("Paiement réussi.")
               } catch (error) {
                 toast.error('Paiement refusé.')

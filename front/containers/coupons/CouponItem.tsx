@@ -1,6 +1,7 @@
 import { Coupon } from '@/services/coupons.service';
 import { useCartStore } from '@/store/cart.store';
 import { useSessionStore } from '@/store/session.store';
+import { cn } from '@/utils/utils';
 import { useEffect, useState } from 'react';
 
 export const CouponItem = ({ coupon, unavailable, quantity = 0, discountCode }: { coupon: Coupon, unavailable: boolean, quantity: number, discountCode: string }) => {
@@ -18,7 +19,7 @@ export const CouponItem = ({ coupon, unavailable, quantity = 0, discountCode }: 
 
   return (
     <div>
-      <div className={`rounded-lg shadow-md p-2 relative text-center transition-transform duration-300 
+      <div className={`rounded-lg group shadow-md p-2 relative text-center transition-transform duration-300 
           ${unavailable ? 'transform-none' : isHovered ? 'scale-105' : 'transform-none'} 
           h-[186px]`}
         style={{
@@ -34,19 +35,19 @@ export const CouponItem = ({ coupon, unavailable, quantity = 0, discountCode }: 
               quantity: 1,
               coinCost: coupon.coinCost
             });
-            miamsAvailable -= 100;
+            miamsAvailable -= coupon.coinCost;
           }
         }}
         onMouseEnter={(e) => {
-          if (!unavailable && quantity === 0) {
+          if (!unavailable && !quantity) {
             setIsHovered(true);
             e.currentTarget.style.cursor = 'pointer';
             e.currentTarget.style.transform = 'scale(1.05)';
           }
-          if (quantity !== 0 && !unavailable) {
-            setIsHoveredAnimation(true);
-            e.currentTarget.style.transform = 'rotateY(180deg)';
-          }
+            if (quantity && !unavailable) {
+              setIsHoveredAnimation(true);
+              e.currentTarget.style.transform = 'scaleX(-1)';
+            }
         }}
         onMouseLeave={(e) => {
           if (!unavailable && quantity === 0) {
@@ -55,12 +56,12 @@ export const CouponItem = ({ coupon, unavailable, quantity = 0, discountCode }: 
           }
           if (quantity !== 0 && !unavailable) {
             setIsHoveredAnimation(false);
-            e.currentTarget.style.transform = 'rotateY(0deg)';
+            e.currentTarget.style.transform = 'scaleX(1)';
           }
         }}
       >
         {isHovered && (
-          <div className='absolute w-full h-full inset-0 bg-black backdrop-blur-xl rounded-lg opacity-10 z-20'></div>
+          <div className='absolute  w-full h-full inset-0 bg-black backdrop-blur-xl rounded-lg opacity-10 z-20'></div>
         )}
         <div className="flex flex-col w-full h-full justify-between">
           {quantity === 0 && unavailable && (
@@ -75,14 +76,17 @@ export const CouponItem = ({ coupon, unavailable, quantity = 0, discountCode }: 
               </div>
             )}
             {!isHoveredAnimation && (
-              <strong className={`pr-3 pt-2 text-lg text-black ${isHovered ? 'opacity-50' : ''} ${unavailable ? 'opacity-20' : 'opacity-100'}`}>
-                -{coupon.cashReduction
+              <strong className={cn('pr-3 pt-2 text-lg text-black opacity-100', {
+                'opacity-50': isHovered,
+                'opacity-20': unavailable
+              })}>
+                 -{coupon.cashReduction
                   ? `${coupon.cashReduction} €`
                   : `${coupon.percentReduction}%`}
-              </strong>
+              </strong>        
             )}
           </div>
-          <p className={`w-full text-black text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex-grow ${isHovered ? 'opacity-50' : ''} ${unavailable ? 'opacity-20' : 'opacity-100'} `}>
+          <p className={`w-full text-black group-hover:scaleX(-1) text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex-grow  ${isHovered ? 'opacity-50' : ''} ${unavailable ? 'opacity-20' : 'opacity-100'} `}>
             {isHoveredAnimation ? <><u>Code :</u> <b>{discountCode}</b></> : coupon.brand}
           </p>
           {!isHoveredAnimation && (

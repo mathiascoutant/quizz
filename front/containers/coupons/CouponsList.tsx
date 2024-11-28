@@ -10,7 +10,7 @@ import { CouponItem } from './CouponItem';
 
 export type CartItem = {
   quantity: number;
-} & Pick<Coupon, 'brand' | 'percentReduction' | 'id'>;
+} & Pick<Coupon, 'brand' | 'percentReduction' | 'cashReduction' | 'id'>;
 
 export const CouponsList = () => {
   const { data: coupons, isLoading } = useGetCoupons();
