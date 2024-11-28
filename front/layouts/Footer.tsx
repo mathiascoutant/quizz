@@ -121,7 +121,7 @@ const Footer = () => {
                     href="/categories"
                     className="hover:text-purple-400 transition-colors duration-300"
                   >
-                    hrefutes les catégories
+                    Toutes les catégories
                   </Link>
                 </li>
               </ul>

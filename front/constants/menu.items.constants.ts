@@ -9,7 +9,7 @@ export const MENU_ITEMS_LINKS: MenuItem[] = [
     href: '/',
   },
   {
-    label: 'Quizz',
+    label: 'Quiz',
     href: '/categories',
   },
   {
