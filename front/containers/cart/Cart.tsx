@@ -32,7 +32,9 @@ export const Cart = () => {
                 <span>{item.brand}</span>
                 {item.percentReduction ? (
                   <span>{item.percentReduction}%</span>
-                ) : null}
+                ) : 
+                  <span>{item.cashReduction}€</span>
+                }
               </div>
               <div className="flex justify-between">
                 <span>{item.quantity}</span>

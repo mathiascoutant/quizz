@@ -102,7 +102,6 @@ export const StatisticsTab = () => {
             )}
           />
         </div>
-        {/* Camembert pour la catégorie sélectionnée avec taille réduite */}
       </div>
 
       <table className="min-w-full border-collapse border border-gray-300">

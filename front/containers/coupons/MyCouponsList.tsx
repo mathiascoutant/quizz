@@ -4,14 +4,20 @@ import { Skeleton } from '@/components/common/Skeleton';
 import { useGetMyCoupons } from '@/hooks/useGetMyCoupons';
 import { useState } from 'react';
 import { CouponItem } from './CouponItem';
+import { useSessionStore } from '@/store/session.store';
 
 export const MyCouponsList = () => {
     const { data: coupons, isLoading } = useGetMyCoupons();
     const [showUnavailable, setShowUnavailable] = useState(false);
+    const session = useSessionStore((state) => state.session);
 
     const handleToggle = () => {
         setShowUnavailable(!showUnavailable);
     };
+
+    if(session == null) {
+      window.location.href = '/';
+    }
 
     if (isLoading || !coupons)
         return (

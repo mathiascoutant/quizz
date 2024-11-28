@@ -6,6 +6,10 @@ export const Ranking = () => {
   const { data: ranking, isLoading } = useGetRanking();
   const { session } = useSessionStore();
 
+  if(session == null) {
+    window.location.href = '/';
+  }
+
   if (isLoading || !ranking) {
     return (
       <div className="bg-purple-100 py-16">

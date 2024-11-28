@@ -1,26 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BadgesTab } from './BadgesTab';
 import { ProfileTab } from './ProfileTab';
 import { StatisticsTab } from './StatisticsTab';
-// import Badges from "./Badges";
-// import Statistics from "./Statistics";
+import { useSessionStore } from '@/store/session.store';
 
 export const Profile = () => {
   const [activeTab, setActiveTab] = useState('account');
+  const session = useSessionStore((state) => state.session);
 
-  // const renderContent = () => {
-  //   switch (activeTab) {
-  //     case 'badges':
-  //       return <BadgesTab />;
-  //     case 'statistics':
-  //       return <StatisticsTab />;
-  //     case 'account':
-  //     default:
-  //       return 'tg';
-  //   }
-  // };
+  if(session == null) {
+    window.location.href = '/';
+  }
 
   return (
     <section className="bg-gray-100 p-4 rounded-lg shadow-lg max-w-7xl mx-auto my-36">
