@@ -1,8 +1,8 @@
-import { Button } from "@/components/common/Button";
-import { api } from "@/services/api.service";
-import { User, useSessionStore } from "@/store/session.store";
-import { useEffect, useState, useTransition } from "react";
-import { toast } from "sonner";
+import { Button } from '@/components/common/Button';
+import { api } from '@/services/api.service';
+import { User, useSessionStore } from '@/store/session.store';
+import { useEffect, useState, useTransition } from 'react';
+import { toast } from 'sonner';
 
 export const ProfileTab = () => {
   const { session, updateUser } = useSessionStore();
@@ -39,10 +39,10 @@ export const ProfileTab = () => {
   }, [session]);
 
   const fieldLabels = {
-    firstname: "Prénom",
-    lastname: "Nom",
-    pseudo: "Pseudo",
-    email: "Email",
+    firstname: 'Prénom',
+    lastname: 'Nom',
+    pseudo: 'Pseudo',
+    email: 'Email',
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +58,7 @@ export const ProfileTab = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!session || !session.user) {
-      toast.error("La session utilisateur est introuvable.");
+      toast.error('La session utilisateur est introuvable.');
       return;
     }
 
@@ -67,45 +67,45 @@ export const ProfileTab = () => {
         if (
           newData[key] !== initialData[key] &&
           newData[key] !== null &&
-          newData[key] !== ""
+          newData[key] !== ''
         ) {
           acc[key] = newData[key];
         }
         return acc;
       }, {} as Record<string, string | null>);
 
-      console.log("Payload final avant soumission:", payload);
+      console.log('Payload final avant soumission:', payload);
 
       if (Object.keys(payload).length === 0) {
-        toast.info("Aucune modification détectée.");
+        toast.info('Aucune modification détectée.');
         return;
       }
 
       startTransition(async () => {
         const response = await api(
           `/profile/update/${session.user.id}`,
-          "PUT",
+          'PUT',
           payload
         );
 
         const data = (await response.json()) as {
           message: string;
-          updatedUser: User;
+          user: User;
         };
 
         console.log("Données de l'API reçues:", data);
 
-        const { message, updatedUser } = data;
+        const { message, user } = data;
 
         if (session) {
-          updateUser(updatedUser);
+          updateUser(user);
           toast.success(message);
         } else {
           toast.error("La mise à jour a échoué, la session n'est plus active.");
         }
       });
     } catch (error) {
-      toast.error("Une erreur est survenue lors de la mise à jour du profil");
+      toast.error('Une erreur est survenue lors de la mise à jour du profil');
       console.error(error);
     }
   };
@@ -117,8 +117,8 @@ export const ProfileTab = () => {
         <input
           id="input-form"
           name={name}
-          type="text"
-          value={newData[name] || ""} // Utilisez `value` pour rendre le champ contrôlé
+          type={'text'}
+          defaultValue={newData[name] || ''}
           onChange={handleChange}
           className="border border-gray-300 rounded p-2"
         />
@@ -138,8 +138,8 @@ export const ProfileTab = () => {
           type="submit"
           className={`w-full opacity-50 ${
             isUpdated()
-              ? "bg-purple-500 hover:bg-purple-700 opacity-100 text-white"
-              : "bg-gray-300 hover:bg-gray-300 text-gray-600"
+              ? 'bg-purple-500 hover:bg-purple-700 opacity-100 text-white'
+              : 'bg-gray-300 hover:bg-gray-300 text-gray-600'
           }`}
           disabled={!isUpdated()} // Désactive le bouton si aucune modification n'a été faite
         >
