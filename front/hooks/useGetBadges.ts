@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 
 export const useGetBadges = () => {
   const query = useQuery({
-    queryKey: ['categories'],
+    queryKey: ['badges'],
     queryFn: async () => {
       return await badgesService.GET();
     },

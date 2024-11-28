@@ -46,10 +46,6 @@ function Header() {
     return cart.reduce((acc, item) => acc + item.quantity, 0);
   }, [cart]);
 
-  const isConnected = JSON.parse(
-    localStorage.getItem('session-storage') || '{}'
-  ).state.session;
-
   return (
     <header className="fixed top-0 left-0 right-0 bg-white z-50">
       <div className="container relative mx-auto px-4 sm:px-6 lg:px-12 py-4 flex justify-between items-center">
@@ -100,7 +96,7 @@ function Header() {
         </nav>
 
         <div className="hidden lg:flex items-center space-x-4">
-          {isConnected ? (
+          {session ? (
             <div className="relative flex items-center" ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}

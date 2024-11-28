@@ -18,15 +18,16 @@ export const usePostAnswer = () => {
   }: {
     userAnswer: string | null;
     formId?: number;
-  }) => {
-    if (!session) {
-      return;
-    }
-
-    if (!formId) {
-      // time is up
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      return;
+  }): Promise<{
+    badgeCreated: null | {
+      name: string;
+      description: string;
+      urlImage: string;
+      conditionValue: number;
+    };
+  }> => {
+    if (!session || !formId) {
+      throw new Error('No session or formId');
     }
 
     const response = await questionsService.POST({
@@ -37,13 +38,21 @@ export const usePostAnswer = () => {
 
     updateUser({
       ...session.user,
-      coins: response.newCoinBalance,
+      coins: response.newUserAnswer.newCoinBalance,
     });
 
     setAnswerQuestionResponse({
-      isCorrect: response.isCorrect,
+      isCorrect: response.newUserAnswer.userAnswerData.isCorrect,
       userAnswer,
     });
+
+    console.log('RESPONSE ICI FROM HOOK', response.badgeCreated);
+
+    if (!response.badgeCreated) {
+      return { badgeCreated: null };
+    }
+
+    return { badgeCreated: response.badgeCreated };
   };
 
   return { postAnswer, answerQuestionResponse };

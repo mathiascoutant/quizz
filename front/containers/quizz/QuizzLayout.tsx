@@ -2,10 +2,12 @@ import { ModalQuizz } from '@/components/ModalQuizz';
 import { NumberTicker } from '@/components/NumberTicker';
 import { useGetTimer } from '@/hooks/useGetTimer';
 import { usePostAnswer } from '@/hooks/usePostQuestionAnswer';
+import authService from '@/services/auth.service';
 import { Question as IQuestion } from '@/services/questions.service';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 import { useSessionStore } from '../../store/session.store';
 import { cn } from '../../utils/utils';
 
@@ -30,7 +32,7 @@ const Interactive = ({
 }) => {
   const { time, resetTimer, freezeTimer, startTimer } = useGetTimer();
   const { postAnswer, answerQuestionResponse } = usePostAnswer();
-  const { session } = useSessionStore();
+  const { session, updateUser } = useSessionStore();
 
   useEffect(() => {
     if (time === 0) {
@@ -46,7 +48,21 @@ const Interactive = ({
   };
 
   const handleSelectResponse = async (option: string) => {
-    await postAnswer({ formId: question.id, userAnswer: option });
+    const response = await postAnswer({
+      formId: question.id,
+      userAnswer: option,
+    });
+
+    console.log('RESPONSE ICI', response);
+
+    if (response.badgeCreated) {
+      console.log('response.badgeCreated', response.badgeCreated);
+      toast.success(
+        `Vous venez de débloquer le bagde ${response.badgeCreated.name} !`
+      );
+      await authService.REFRESH({ session, updateUser });
+    }
+
     setIsEntracte(true);
     freezeTimer();
   };

@@ -6,6 +6,7 @@ import { useGetCategoriesCompletion } from '@/hooks/useGetCategoriesCompletion';
 import { useSessionStore } from '@/store/session.store';
 import { cn } from '@/utils/utils';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Fragment, useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
 import { CategoriesLoader } from '../loaders/CategoriesLoader';
@@ -17,10 +18,7 @@ export const Categories = () => {
     null
   );
   const { data: categories, isLoading } = useGetCategories();
-  const {
-    data: categoriesCompletion,
-    isLoading: isCategoriesCompletionLoading,
-  } = useGetCategoriesCompletion();
+  const { data: categoriesCompletion } = useGetCategoriesCompletion();
 
   const session = useSessionStore((state) => state.session);
 
@@ -36,58 +34,56 @@ export const Categories = () => {
     }
   };
 
-    if (
-      !categories ||
-      isLoading
-    )
-      return <CategoriesLoader />;
+  if (!categories || isLoading) return <CategoriesLoader />;
 
-    if(!categoriesCompletion ) {
-      return (
-        <div className="bg-purple-100 py-16">
-          <div className="container mx-auto px-4 md:px-8 lg:px-16">
-            <h2 className="text-3xl font-bold text-center mb-12">
-              Explorez nos catégories de quiz
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+  if (!categoriesCompletion) {
+    return (
+      <div className="bg-purple-100 py-16">
+        <div className="container mx-auto px-4 md:px-8 lg:px-16">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Explorez nos catégories de quiz
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {categories.slice(0, displayedCategories).map((category, index) => (
               <Fragment key={index}>
                 <CategoryCard
+                  //@ts-expect-error this category could take some completions keys
                   category={category}
                   setSelectedCategory={setSelectedCategory}
                   isConnected={!!session?.user}
                 />
 
-                {selectedCategory && selectedCategory.name === category.name && (
-                  <Modal
-                    selectedCategory={selectedCategory}
-                    setSelectedCategory={setSelectedCategory}
-                    title={category.name}
-                    path={`/categories/${category.name}/quizz`}
-                  >
-                    <p>{category.longDescription}</p>
-                  </Modal>
-                )}
+                {selectedCategory &&
+                  selectedCategory.name === category.name && (
+                    <Modal
+                      selectedCategory={selectedCategory}
+                      setSelectedCategory={setSelectedCategory}
+                      title={category.name}
+                      path={`/categories/${category.name}/quizz`}
+                    >
+                      <p>{category.longDescription}</p>
+                    </Modal>
+                  )}
               </Fragment>
             ))}
           </div>
-            <div className="text-center">
-              <button
-                onClick={toggleCategoriesDisplay}
-                className="inline-flex items-center text-purple-700 font-medium text-lg focus:outline-none"
-              >
-                <span className="h-px w-12 bg-purple-600 mr-3"></span>
-                <span className="hover:underline italic">
-                  {showAllCategories ? 'Voir moins' : 'Afficher plus'}
-                </span>
-                <span className="h-px w-12 bg-purple-600 ml-3"></span>
-              </button>
-            </div>
+          <div className="text-center">
+            <button
+              onClick={toggleCategoriesDisplay}
+              className="inline-flex items-center text-purple-700 font-medium text-lg focus:outline-none"
+            >
+              <span className="h-px w-12 bg-purple-600 mr-3"></span>
+              <span className="hover:underline italic">
+                {showAllCategories ? 'Voir moins' : 'Afficher plus'}
+              </span>
+              <span className="h-px w-12 bg-purple-600 ml-3"></span>
+            </button>
           </div>
         </div>
-      );
-    }
-  
+      </div>
+    );
+  }
+
   const modeledCategories = categories.map((category) => {
     const completion = categoriesCompletion.find((c) => c.id === category.id);
     if (!completion)
@@ -183,7 +179,8 @@ function CategoryCard({
         `bg-white rounded-lg shadow-md p-6 relative text-center cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-purple-50`,
         {
           'pointer-events-none opacity-50': !isConnected,
-          'ring ring-purple-500 pointer-events-none select-none': isCompleted && isConnected,
+          'ring ring-purple-500 pointer-events-none select-none':
+            isCompleted && isConnected,
         }
       )}
     >
@@ -199,50 +196,52 @@ function CategoryCard({
         </>
       ) : null}
 
-        <div
-          className={cn('flex items-center flex-col', {
-            'blur-[2px] ': isCompleted && isConnected,
-          })}
-        >
-      
+      <div
+        className={cn('flex items-center flex-col', {
+          'blur-[2px] ': isCompleted && isConnected,
+        })}
+      >
         <div className="mb-4 ">{category.icon}</div>
         <h3 className="text-xl font-semibold mb-2 ">{category.name}</h3>
         <p className="text-sm ">{category.shortDescription}</p>
 
         {isConnected ? (
           <div className="space-y-2 w-full ">
-          <p className="text-xs font-bold text-gray-500 mt-1 mb-2">
-            {category.completion}% de questions répondues
-          </p>
+            <p className="text-xs font-bold text-gray-500 mt-1 mb-2">
+              {category.completion}% de questions répondues
+            </p>
 
-          {!isCompleted ? (
-            <div className="w-full  bg-gray-300 h-2 rounded-full">
-              <motion.div
-                variants={{
-                  initial: { width: 0 },
-                  whileInView: {
-                    width: `${category.completion}%`,
-                    transition: {
-                      duration: 0.5,
-                      delay: 0.5,
+            {!isCompleted ? (
+              <div className="w-full  bg-gray-300 h-2 rounded-full">
+                <motion.div
+                  variants={{
+                    initial: { width: 0 },
+                    whileInView: {
+                      width: `${category.completion}%`,
+                      transition: {
+                        duration: 0.5,
+                        delay: 0.5,
+                      },
                     },
-                  },
-                }}
-                whileInView="whileInView"
-                initial="initial"
-                className="bg-purple-700 relative h-2 rounded-full"
-              >
-                {category.completion ? (
-                  <img
-                    src={'/assets/images/rocket.png'}
-                    className="text-lg rotate-45 absolute text-purple-900 top-1/2 size-6 min-w-6 minh-h-6 -translate-y-1/2 -right-2"
-                    alt=""
-                  />
-                ) : null}
-              </motion.div>
-            </div>
-          ) : null}
-        </div>
+                  }}
+                  whileInView="whileInView"
+                  initial="initial"
+                  className="bg-purple-700 relative h-2 rounded-full"
+                >
+                  {category.completion ? (
+                    <Image
+                      width={0}
+                      height={0}
+                      sizes="100vw"
+                      src={'/assets/images/rocket.png'}
+                      className="text-lg rotate-45 absolute text-purple-900 top-1/2 size-6 min-w-6 minh-h-6 -translate-y-1/2 -right-2"
+                      alt=""
+                    />
+                  ) : null}
+                </motion.div>
+              </div>
+            ) : null}
+          </div>
         ) : null}
       </div>
     </div>

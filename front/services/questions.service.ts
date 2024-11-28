@@ -41,7 +41,7 @@ interface PostResponse {
       userId: string;
     };
   };
-  badgesCreated: {
+  badgeCreated: {
     id: number;
     name: string;
     description: string;
@@ -79,11 +79,7 @@ const POST = async ({
   formId,
   userId,
   userAnswer,
-}: PostQuestionAnswerBody): Promise<{
-  newCoinBalance: number;
-  coinValue: number;
-  isCorrect: boolean;
-}> => {
+}: PostQuestionAnswerBody): Promise<PostResponse> => {
   const response = await fetch(constructUrl(`/useranswers`), {
     method: 'POST',
     headers: {
@@ -100,12 +96,14 @@ const POST = async ({
     throw new Error('Error posting answer');
   }
 
-  const { newUserAnswer } = (await response.json()) as PostResponse;
+  const data = await response.json();
+
+  console.log('LAAAA', data);
 
   return {
-    newCoinBalance: newUserAnswer.newCoinBalance,
-    coinValue: newUserAnswer.userAnswerData.coinValue,
-    isCorrect: newUserAnswer.userAnswerData.isCorrect,
+    newUserAnswer: data.newUserAnswer,
+    badgeCreated: data.badgeCreated,
+    message: data.message,
   };
 };
 

@@ -4,13 +4,6 @@ import Link from 'next/link';
 import React from 'react';
 import { CgSpinnerTwo } from 'react-icons/cg';
 
-type Props = {
-  children: React.ReactNode;
-  className?: string;
-  href?: string;
-  variant?: 'default' | 'outline';
-};
-
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {

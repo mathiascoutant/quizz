@@ -15,7 +15,6 @@ export const ProfileTab = () => {
     email: null,
   });
 
-  // État pour stocker les données initiales
   const [initialData, setInitialData] = useState<Record<string, string | null>>(
     {
       firstname: null,
@@ -50,7 +49,6 @@ export const ProfileTab = () => {
     setNewData((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  // Fonction pour vérifier si les données ont été modifiées
   const isUpdated = () => {
     return JSON.stringify(newData) !== JSON.stringify(initialData);
   };
@@ -73,8 +71,6 @@ export const ProfileTab = () => {
         }
         return acc;
       }, {} as Record<string, string | null>);
-
-      console.log('Payload final avant soumission:', payload);
 
       if (Object.keys(payload).length === 0) {
         toast.info('Aucune modification détectée.');
@@ -141,7 +137,7 @@ export const ProfileTab = () => {
               ? 'bg-purple-500 hover:bg-purple-700 opacity-100 text-white'
               : 'bg-gray-300 hover:bg-gray-300 text-gray-600'
           }`}
-          disabled={!isUpdated()} // Désactive le bouton si aucune modification n'a été faite
+          disabled={!isUpdated()}
         >
           Mettre à jour
         </Button>
