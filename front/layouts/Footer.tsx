@@ -129,7 +129,7 @@ const Footer = () => {
 
             <div>
               <h4 className="text-lg font-semibold mb-4">
-                Derniers quizz ajoutés
+                Derniers quiz ajoutés
               </h4>
               <ul className="space-y-2">
                 <li>
