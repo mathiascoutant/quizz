@@ -14,8 +14,7 @@ const app = express();
 
 // Configuration de CORS
 app.use(cors({
-  origin: 'https://quizz-go.vercel.app/',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: '*',
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 // Middleware pour parser le JSON
