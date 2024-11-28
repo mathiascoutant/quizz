@@ -9,6 +9,7 @@ import { getTopUsersWithPosition } from '../controllers/userController.js';
 import { protect } from '../controllers/authController';
 import { getUserCouponsByUserId } from '../controllers/userCouponController.js';
 import { getAllCoupons } from '../controllers/couponController.js';
+import jwt from 'jsonwebtoken';
 const app = express();
 app.use(express.json());
 app.post('/api/auth/register', register);
@@ -21,10 +22,11 @@ app.get('/api/classement/top-users', protect, getTopUsersWithPosition);
 app.get('/api/user-coupons/:userId', getUserCouponsByUserId);
 app.get('/api/coupons', getAllCoupons);
 
-describe('Tests pour l\'inscription et la connexion', () => {
+describe('Tests', () => {
     const userCredentials = {
-        email: 'hehe5@example.com',
-        pseudo: 'hehe5'
+        email: 'hehe11@example.com',
+        pseudo: 'hehe11',
+        password: 'passssword123'
     };
 
     test('Devrait inscrire un nouvel utilisateur', async () => {
@@ -33,7 +35,7 @@ describe('Tests pour l\'inscription et la connexion', () => {
             lastname: 'mma',
             pseudo: userCredentials.pseudo,
             email: userCredentials.email,
-            password: 'passssword123'
+            password: userCredentials.password
         };
 
         const response = await supertest(app).post('/api/auth/register').send(newUser);
@@ -44,7 +46,7 @@ describe('Tests pour l\'inscription et la connexion', () => {
     test('Devrait connecter un utilisateur existant', async () => {
         const userLoginCredentials = {
             email: userCredentials.email,
-            password: 'passssword123'
+            password: userCredentials.password
         };
 
         const response = await supertest(app).post('/api/auth/login').send(userLoginCredentials);
@@ -76,7 +78,7 @@ describe('Tests pour l\'inscription et la connexion', () => {
     test('Devrait récupérer le profil', async () => {
         const userLoginCredentials = {
             email: userCredentials.email,
-            password: 'passssword123'
+            password: userCredentials.password
         };
 
         const loginResponse = await supertest(app).post('/api/auth/login').send(userLoginCredentials);
@@ -93,13 +95,11 @@ describe('Tests pour l\'inscription et la connexion', () => {
         expect(response.body.user).toHaveProperty('badges');
         expect(response.body.user.badges).toBeInstanceOf(Array);
     });
-});
 
-describe('Tests pour le classement des utilisateurs', () => {
-    test('Devrait récupérer les 3 meilleurs utilisateurs et la position de l\'utilisateur courant', async () => {
+    test('Devrait récupérer les 10 meilleurs utilisateurs et la position de l\'utilisateur courant', async () => {
         const userLoginCredentials = {
-            email: 'hehe4@example.com',
-            password: 'passssword123'
+            email: userCredentials.email,
+            password: userCredentials.password
         };
 
         const loginResponse = await supertest(app).post('/api/auth/login').send(userLoginCredentials);
@@ -109,38 +109,41 @@ describe('Tests pour le classement des utilisateurs', () => {
             .get('/api/classement/top-users')
             .set('Authorization', `Bearer ${token}`);
 
+        console.log('Réponse des meilleurs utilisateurs:', response.body);
+
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('topUsers');
         expect(response.body.topUsers).toBeInstanceOf(Array);
         expect(response.body.topUsers.length).toBe(10);
+
+        const currentUser = response.body.currentUser;
+        expect(currentUser).toHaveProperty('id');
+        expect(currentUser).toHaveProperty('pseudo');
+        expect(currentUser).toHaveProperty('coins');
+        expect(currentUser).toHaveProperty('position');
+
+        const isCurrentUserInTopUsers = response.body.topUsers.some(user => user.id === currentUser.id);
+        expect(isCurrentUserInTopUsers).toBe(false);
 
         response.body.topUsers.forEach(user => {
             expect(user).toHaveProperty('id');
             expect(user).toHaveProperty('pseudo');
             expect(user).toHaveProperty('coins');
         });
-
-        expect(response.body).toHaveProperty('currentUser');
-        expect(response.body.currentUser).toHaveProperty('id');
-        expect(response.body.currentUser).toHaveProperty('pseudo');
-        expect(response.body.currentUser).toHaveProperty('coins');
-        expect(response.body.currentUser).toHaveProperty('position');
     });
-});
 
-describe('Tests pour la récupération des coupons de l\'utilisateur', () => {
     test('Devrait récupérer les coupons de l\'utilisateur', async () => {
-        const userId = 41;
         const userLoginCredentials = {
-            email: 'hehe4@example.com',
-            password: 'passssword123'
+            email: userCredentials.email,
+            password: userCredentials.password
         };
 
         const loginResponse = await supertest(app).post('/api/auth/login').send(userLoginCredentials);
         const token = loginResponse.body.token;
 
+        // Assurez-vous que l'utilisateur a des coupons dans la base de données
         const response = await supertest(app)
-            .get(`/api/user-coupons/${userId}`)
+            .get('/api/user-coupons/41') // Utilisez l'ID de l'utilisateur qui a des coupons
             .set('Authorization', `Bearer ${token}`);
 
         expect(response.status).toBe(200);
@@ -149,19 +152,27 @@ describe('Tests pour la récupération des coupons de l\'utilisateur', () => {
 
         response.body.forEach(coupon => {
             expect(coupon).toHaveProperty('id');
-            expect(coupon).toHaveProperty('userId', userId);
+            expect(coupon).toHaveProperty('userId', 41); // Vérifiez que l'ID de l'utilisateur est correct
             expect(coupon).toHaveProperty('couponId');
             expect(coupon).toHaveProperty('discountCode');
+            expect(coupon).toHaveProperty('quantity');
             expect(coupon).toHaveProperty('coupon');
+            expect(coupon.coupon).toHaveProperty('id');
+            expect(coupon.coupon).toHaveProperty('cashReduction');
+            expect(coupon.coupon).toHaveProperty('percentReduction');
+            expect(coupon.coupon).toHaveProperty('nameNominator');
+            expect(coupon.coupon).toHaveProperty('brand');
+            expect(coupon.coupon).toHaveProperty('specificContent');
+            expect(coupon.coupon).toHaveProperty('coinCost');
+            expect(coupon.coupon).toHaveProperty('validityDate');
+            expect(coupon.coupon).toHaveProperty('color');
         });
     });
-});
 
-describe('Tests pour la récupération de tous les coupons', () => {
     test('Devrait récupérer tous les coupons', async () => {
         const userLoginCredentials = {
-            email: 'hehe4@example.com',
-            password: 'passssword123'
+            email: userCredentials.email,
+            password: userCredentials.password
         };
 
         const loginResponse = await supertest(app).post('/api/auth/login').send(userLoginCredentials);
