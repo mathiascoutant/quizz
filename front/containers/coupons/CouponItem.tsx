@@ -17,6 +17,8 @@ export const CouponItem = ({ coupon, unavailable, quantity = 0, discountCode }: 
 
   let miamsAvailable = session?.user.coins - totalCartCost;
 
+  
+
   return (
     <div>
       <div className={`rounded-lg group shadow-md p-2 relative text-center transition-transform duration-300 
@@ -31,6 +33,7 @@ export const CouponItem = ({ coupon, unavailable, quantity = 0, discountCode }: 
             addToCart({
               brand: coupon.brand,
               percentReduction: coupon.percentReduction,
+              cashReduction: coupon.cashReduction,
               id: coupon.id,
               quantity: 1,
               coinCost: coupon.coinCost
