@@ -4,6 +4,7 @@ import { verifyToken } from '../utils/jwtUtils.js';
 import UserBadge from '../models/userBadgeModel.js';
 import { User } from '../models/userModel.js';
 import BadgeModel from '../models/badgeModel.js';
+import { BadgeService } from '../services/badgeService.js';
 
 export const getUserById = async (req, res) => {
   try {
@@ -25,53 +26,76 @@ export const createUser = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-  console.log('req.body', req.body, req.params.userId);
   try {
     const userId = req.params.userId;
-    const { firstname, lastname, pseudo, newPassword, oldPassword, email } = req.body;
-    
+    const { firstname, lastname, pseudo, email, newPassword, oldPassword } = req.body;
+
     // Récupérer l'utilisateur actuel
-    const user = await UserService.getUserById(userId);
-    if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+    const currentUser = await UserService.getUserById(userId);
+    if (!currentUser) return res.status(404).json({ message: "Utilisateur non trouvé" });
 
     let updatedFields = {};
+    let hasChanges = false; // Variable pour suivre les changements
 
-    // Vérifier et mettre à jour le mot de passe si nécessaire
-    if (newPassword && oldPassword) {
-      const isPasswordValid = await comparePassword(oldPassword, user.password);
-      if (!isPasswordValid) {
-        return res.status(400).json({ message: "L'ancien mot de passe est incorrect" });
-      }
-      // Hacher le nouveau mot de passe
-      const hashedPassword = await hashPassword(newPassword);
-      updatedFields.password = hashedPassword;
-      console.log('updatedFields', updatedFields);
-    }
-
-    // Vérifier les autres champs et les mettre à jour si présents
-    if (firstname) updatedFields.firstname = firstname;
-    if (lastname) updatedFields.lastname = lastname;
+    // Vérifier et mettre à jour le pseudo si nécessaire
     if (pseudo) {
-      // Vérifier si le pseudo est déjà utilisé
-      const existingUser = await UserService.getUserByPseudo(pseudo);   
-      if (existingUser) return res.status(400).json({ message: "Ce pseudo est déjà utilisé" });
-      updatedFields.pseudo = pseudo;
+      // Si le pseudo est différent de l'actuel, vérifier son existence
+      if (pseudo !== currentUser.pseudo) {
+        const existingUser = await UserService.getUserByPseudo(pseudo);
+        if (existingUser) return res.status(400).json({ message: "Ce pseudo est déjà utilisé" });
+        updatedFields.pseudo = pseudo; // Mettre à jour le pseudo
+        hasChanges = true; // Indiquer qu'il y a eu un changement
+      }
     }
 
-    if (email) updatedFields.email = email;
+    // Vérifier et mettre à jour d'autres champs (firstname, lastname, email, etc.)
+    if (firstname && firstname !== currentUser.firstname) {
+      updatedFields.firstname = firstname;
+      hasChanges = true; // Indiquer qu'il y a eu un changement
+    }
+    if (lastname && lastname !== currentUser.lastname) {
+      updatedFields.lastname = lastname;
+      hasChanges = true; // Indiquer qu'il y a eu un changement
+    }
+    if (email && email !== currentUser.email) {
+      updatedFields.email = email;
+      hasChanges = true; // Indiquer qu'il y a eu un changement
+    }
 
-    // Appeler le service pour mettre à jour l'utilisateur
-    const updatedUser = await UserService.updateUser(userId, updatedFields);
-    if (!updatedUser) return res.status(404).json({ message: "Erreur lors de la mise à jour de l'utilisateur" });
+    // Si aucune valeur n'a changé, renvoyer un tableau vide
+    if (!hasChanges) {
+      return res.status(200).json([]); // Renvoyer un tableau vide
+    }
 
-    res.status(200).json({ message: "Utilisateur mis à jour avec succès", updatedUser });
+    // Mettre à jour l'utilisateur
+    await UserService.updateUser(userId, updatedFields);
+
+    // Récupérer les badges de l'utilisateur après la mise à jour
+    const badges = await BadgeService.getBadgesUser(userId);
+
+    // Récupérer l'utilisateur mis à jour
+    const updatedUser = await UserService.getUserById(userId);
+
+    // Formater la réponse
+    const responseUser = {
+      id: updatedUser.id,
+      firstname: updatedUser.firstname,
+      lastname: updatedUser.lastname,
+      pseudo: updatedUser.pseudo,
+      email: updatedUser.email,
+      coins: updatedUser.coins,
+      createdAt: updatedUser.createdAt,
+      updatedAt: updatedUser.updatedAt,
+      badges // Ajouter les badges directement dans l'objet user
+    };
+
+    // Renvoyer les informations de l'utilisateur mis à jour
+    return res.status(200).json({ message: "Utilisateur mis à jour avec succès", user: responseUser });
   } catch (error) {
     console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);
-    res.status(500).json({ message: "Erreur serveur lors de la mise à jour de l'utilisateur", error: error.message });
+    return res.status(500).json({ message: "Erreur serveur lors de la mise à jour de l'utilisateur", error: error.message });
   }
 };
-
-
 
 export const deleteUser = async (req, res) => {
   try {

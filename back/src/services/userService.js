@@ -14,16 +14,38 @@ export const UserService = {
     return await UserRepository.saveUser({ pseudo, email, password: hashedPassword });
   },
 
-  updateUser: async (id, updatedData) => {
-    console.log('Tentative de mise à jour de l\'utilisateur avec ID:', id);
-    const updatedUser = await UserRepository.updateUser(id, updatedData);
-    
-    if (!updatedUser) {
-      throw new Error("Utilisateur non trouvé après la mise à jour");
+  updateUser: async (userId, updatedData) => {
+    try {
+      // Récupérer l'utilisateur actuel
+      const currentUser = await User.findById(userId);
+      if (!currentUser) {
+        throw new Error("Utilisateur non trouvé.");
+      }
+
+      // Vérifier si le pseudo a changé
+      if (updatedData.pseudo) {
+        // Comparer le pseudo actuel avec le pseudo envoyé par le front
+        if (updatedData.pseudo !== currentUser.pseudo) {
+          // Vérifier si le nouveau pseudo existe déjà, en excluant l'utilisateur actuel
+          const existingUser = await User.findOne({ 
+            where: { 
+              pseudo: updatedData.pseudo,
+              id: { [Op.ne]: userId } // Exclure l'utilisateur actuel
+            } 
+          });
+          if (existingUser) {
+            throw new Error("Ce pseudo est déjà utilisé.");
+          }
+        }
+      }
+
+      // Mettre à jour l'utilisateur
+      const updatedUser = await User.update(updatedData, { where: { id: userId } });
+      return updatedUser;
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);
+      throw new Error(`Erreur lors de la mise à jour de l'utilisateur : ${error.message}`);
     }
-    
-    console.log('Utilisateur mis à jour:', updatedUser);
-    return updatedUser;
   },
 
 
