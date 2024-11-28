@@ -182,7 +182,7 @@ const Interactive = ({
 
 const Question = ({ question }: { question: string }) => {
   return (
-    <div className="flex flex-col max-w-[80%] mx-auto gap-24 mt-8 z-50 relative">
+    <div className="flex flex-col max-w-[80%] mx-auto gap-24 mt-24 md:mt-8 z-50 relative">
       <span className="text-black font-black text-center uppercase text-3xl">
         {question}
       </span>

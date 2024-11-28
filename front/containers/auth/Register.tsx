@@ -45,7 +45,7 @@ export const Register = () => {
             QuizzGo
           </Link>
         </div>
-        <div className="flex-grow flex items-center justify-center">
+        <div className="mt-6 md:mt-0 flex-grow flex items-center justify-center">
           <form className="w-full max-w-md" onSubmit={handleSubmit}>
             <h1 className="text-2xl font-bold mb-8 text-gray-800">
               Inscription

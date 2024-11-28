@@ -19,8 +19,8 @@ export const Profile = () => {
         Voir et modifier les informations de votre compte.
       </p>
       <hr className="my-4" />
-      <div className="flex justify-center items-start">
-        <nav className="w-1/5 bg-white text-gray-800 p-4 rounded-lg shadow-md border border-gray-300">
+      <div className="flex flex-col md:flex-row justify-center items-start">
+        <nav className="w-full md:w-1/5 bg-white text-gray-800 p-4 rounded-lg shadow-md border border-gray-300">
           <ul className="space-y-2">
             <li
               onClick={() => setActiveTab('account')}
@@ -48,7 +48,7 @@ export const Profile = () => {
             </li>
           </ul>
         </nav>
-        <div className="flex-1 ml-2">
+        <div className="mt-6 w-full md:mt-0 flex-1 ml-0 md:ml-2">
           {activeTab === 'account' && <ProfileTab />}
           {activeTab === 'badges' && <BadgesTab />}
           {activeTab === 'statistics' && <StatisticsTab />}
